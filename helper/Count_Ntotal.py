@@ -8,8 +8,8 @@ import os
 import ROOT
 path = []
 
-#path.append('/pnfs/iihe/cms/store/user/schenara/MC_RunII_2016/DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/crab_DYJetsToLL_M-10to50_v3/191130_081246/0000/')
-#path.append('/pnfs/iihe/cms/store/user/schenara/MC_RunII_2016/DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/crab_DYJetsToLL_M-10to50_v3_ext1/191130_081323/0000/')
+path.append('/pnfs/iihe/cms/store/user/schenara/MC_RunII_2016/DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/crab_DYJetsToLL_M-10to50_v3/191130_081246/0000/')
+path.append('/pnfs/iihe/cms/store/user/schenara/MC_RunII_2016/DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/crab_DYJetsToLL_M-10to50_v3_ext1/191130_081323/0000/')
 
 #path.append('/pnfs/iihe/cms/store/user/schenara/MC_RunII_2016/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/crab_DYJetsToLL_M50_v3_ext1/191130_075804/0000')
 #path.append('/pnfs/iihe/cms/store/user/schenara/MC_RunII_2016/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/crab_DYJetsToLL_M-50_v3_ext2/191130_081130/0000')
@@ -35,7 +35,7 @@ path = []
 #path.append('/pnfs/iihe/cms/store/user/schenara/MC_RunII_2016/TTWJetsToQQ_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8/crab_TTWJetsToQQ/191130_110154/0000/')
 #path.append('/pnfs/iihe/cms/store/user/rgoldouz/TOPptSamples/TT_Mtt-1000toInf_TuneCUETP8M2T4_13TeV-powheg-pythia8/crab_TT_Mtt_1000toInf/200226_084805/0000')
 #path.append('/pnfs/iihe/cms/store/user/rgoldouz/TOPptSamples/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/crab_TT/200226_084823/0000')
-path.append('/pnfs/iihe/cms/store/user/rgoldouz/TOPptSamples/TT_Mtt-700to1000_TuneCUETP8M2T4_13TeV-powheg-pythia8/crab_TT_Mtt_700to1000/200226_084843/0000')
+#path.append('/pnfs/iihe/cms/store/user/rgoldouz/TOPptSamples/TT_Mtt-700to1000_TuneCUETP8M2T4_13TeV-powheg-pythia8/crab_TT_Mtt_700to1000/200226_084843/0000')
 
 nEventsraw = 0
 neventsweight = 0
