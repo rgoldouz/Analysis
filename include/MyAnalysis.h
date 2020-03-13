@@ -667,8 +667,10 @@ public :
    Int_t           trig_HLT_DoubleL2Mu25NoVtx_2Cha_NoL2Matched_accept;
    Int_t           trig_HLT_DoubleL2Mu25NoVtx_2Cha_Eta2p4_accept;
    Int_t           trig_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_accept;
+   Int_t           trig_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_accept;
    Int_t           trig_HLT_Mu19_TrkIsoVVL_Mu9_TrkIsoVVL_accept;
    Int_t           trig_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_accept;
+   Int_t           trig_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_accept;
    Int_t           trig_HLT_Mu19_TrkIsoVVL_Mu9_TrkIsoVVL_DZ_accept;
    Int_t           trig_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8_accept;
    Int_t           trig_HLT_Mu19_TrkIsoVVL_Mu9_TrkIsoVVL_DZ_Mass8_accept;
@@ -1506,8 +1508,10 @@ public :
    TBranch        *b_trig_HLT_DoubleL2Mu25NoVtx_2Cha_NoL2Matched_accept;   //!
    TBranch        *b_trig_HLT_DoubleL2Mu25NoVtx_2Cha_Eta2p4_accept;   //!
    TBranch        *b_trig_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_accept;   //!
+   TBranch        *b_trig_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_accept;   //!
    TBranch        *b_trig_HLT_Mu19_TrkIsoVVL_Mu9_TrkIsoVVL_accept;   //!
    TBranch        *b_trig_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_accept;   //!
+   TBranch        *b_trig_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_accept;   //!
    TBranch        *b_trig_HLT_Mu19_TrkIsoVVL_Mu9_TrkIsoVVL_DZ_accept;   //!
    TBranch        *b_trig_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8_accept;   //!
    TBranch        *b_trig_HLT_Mu19_TrkIsoVVL_Mu9_TrkIsoVVL_DZ_Mass8_accept;   //!
@@ -2886,8 +2890,10 @@ void MyAnalysis::Init(TTree *tree)
    fChain->SetBranchAddress("trig_HLT_DoubleL2Mu25NoVtx_2Cha_NoL2Matched_accept", &trig_HLT_DoubleL2Mu25NoVtx_2Cha_NoL2Matched_accept, &b_trig_HLT_DoubleL2Mu25NoVtx_2Cha_NoL2Matched_accept);
    fChain->SetBranchAddress("trig_HLT_DoubleL2Mu25NoVtx_2Cha_Eta2p4_accept", &trig_HLT_DoubleL2Mu25NoVtx_2Cha_Eta2p4_accept, &b_trig_HLT_DoubleL2Mu25NoVtx_2Cha_Eta2p4_accept);
    fChain->SetBranchAddress("trig_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_accept", &trig_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_accept, &b_trig_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_accept);
+   fChain->SetBranchAddress("trig_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_accept", &trig_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_accept, &b_trig_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_accept);
    fChain->SetBranchAddress("trig_HLT_Mu19_TrkIsoVVL_Mu9_TrkIsoVVL_accept", &trig_HLT_Mu19_TrkIsoVVL_Mu9_TrkIsoVVL_accept, &b_trig_HLT_Mu19_TrkIsoVVL_Mu9_TrkIsoVVL_accept);
    fChain->SetBranchAddress("trig_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_accept", &trig_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_accept, &b_trig_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_accept);
+   fChain->SetBranchAddress("trig_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_accept", &trig_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_accept, &b_trig_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_accept);
    fChain->SetBranchAddress("trig_HLT_Mu19_TrkIsoVVL_Mu9_TrkIsoVVL_DZ_accept", &trig_HLT_Mu19_TrkIsoVVL_Mu9_TrkIsoVVL_DZ_accept, &b_trig_HLT_Mu19_TrkIsoVVL_Mu9_TrkIsoVVL_DZ_accept);
    fChain->SetBranchAddress("trig_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8_accept", &trig_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8_accept, &b_trig_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8_accept);
    fChain->SetBranchAddress("trig_HLT_Mu19_TrkIsoVVL_Mu9_TrkIsoVVL_DZ_Mass8_accept", &trig_HLT_Mu19_TrkIsoVVL_Mu9_TrkIsoVVL_DZ_Mass8_accept, &b_trig_HLT_Mu19_TrkIsoVVL_Mu9_TrkIsoVVL_DZ_Mass8_accept);

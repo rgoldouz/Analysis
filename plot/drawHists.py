@@ -127,6 +127,12 @@ def stackPlots(hists, Fnames, ch = "channel", reg = "region", year='2016', var="
         legend.AddEntry(hists[num],Fnames[num],'F')
     legend.Draw("same")
 
+    if (hs.GetStack().Last().Integral()>0):
+        Label_DM = ROOT.TLatex(0.2,0.75,"Data/MC = " + str(round(hists[0].Integral()/hs.GetStack().Last().Integral(),2)))
+        Label_DM.SetNDC()
+        Label_DM.SetTextFont(42)
+        Label_DM.Draw("same")
+
     pad1.Update()
 
     pad2.cd()
