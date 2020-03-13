@@ -9,11 +9,11 @@ import Files_2018
 SAMPLES = {}
 #SAMPLES ['DYM10to50'] = ['address', 'data/mc','dataset','year', 'run', 'cross section','lumi','Neventsraw']
 mc_2016 = True
-data_2016 = True
+data_2016 = False
 mc_2017 = True
-data_2017 = True
+data_2017 = False
 mc_2018 = True
-data_2018 = True
+data_2018 = False
 
 if mc_2016:
     SAMPLES.update(Files_2016.mc2016_samples)
@@ -38,7 +38,6 @@ cms = '/user/rgoldouz/CMSSW_9_3_4/src/'
 nf =40
 
 for key, value in SAMPLES.items():
-    print key + ' jobs are submitting'
     nf = 40
     for idx, S in enumerate(value[0]):
         for subdir, dirs, files in os.walk(S):
@@ -46,8 +45,8 @@ for key, value in SAMPLES.items():
                 nf = 250
             sequance = [files[i:i+nf] for i in range(0,len(files),nf)]
             for num,  seq in enumerate(sequance):
-#                if key!='2016_TTTo2L2Nu':
-#                    continue
+                if key!='2017_DYM10to50' or num<11:
+                    continue
                 text = ''
                 text += '    TChain* ch    = new TChain("IIHEAnalysis") ;\n'
                 for filename in seq:
@@ -68,9 +67,13 @@ for key, value in SAMPLES.items():
                 "eval `scramv1 runtime -sh`\n"+\
                 "cd "+ dire + "\n"+\
                 "./" + SHNAME1.split('.')[0]+ "\n"+\
-                'rm  ' + SHNAME1.split('.')[0] + '*'
+                'FILE='+'/user/rgoldouz/NewAnalysis2020/Analysis/hists/' + value[3] + '/' + key +'_' + str(idx) +'_' +str(num)  + '.root'+ "\n"+\
+                'if [ -f "$FILE" ]; then'+ "\n"+\
+                '    rm  ' + SHNAME1.split('.')[0] + '*'+ "\n"+\
+                'fi'
                 open(SHNAME, 'wt').write(SHFILE)
                 os.system("chmod +x "+SHNAME)
                 os.system("qsub -q localgrid  -o STDOUT/" + SHNAME1.split('.')[0] + ".stdout -e STDERR/" + SHNAME1.split('.')[0] + ".stderr " + SHNAME)
     print key + ' jobs are submitted'
-    
+   
+ 

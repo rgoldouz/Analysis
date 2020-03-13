@@ -135,11 +135,11 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
       sf_Mu_ISO_H = *sf_Mu_ISO_H_1;
 
       TFile *f_triggeree = new TFile("/user/rgoldouz/NewAnalysis2020/Analysis/input/TriggerSF_ee2016_pt.root");
-      sf_triggeree_H = *(TH2F*)f_triggeree->Get("h_lep1Pt_lep2Pt_Step3");
+      sf_triggeree_H = *(TH2F*)f_triggeree->Get("h_lep1Pt_lep2Pt_Step6");
       TFile *f_triggeremu = new TFile("/user/rgoldouz/NewAnalysis2020/Analysis/input/TriggerSF_emu2016_pt.root");
       sf_triggeremu_H = *(TH2F*)f_triggeremu->Get("h_lep1Pt_lep2Pt_Step3");
       TFile *f_triggermumu = new TFile("/user/rgoldouz/NewAnalysis2020/Analysis/input/TriggerSF_mumu2016_pt.root");
-      sf_triggermumu_H = *(TH2F*)f_triggermumu->Get("h_lep1Pt_lep2Pt_Step3");
+      sf_triggermumu_H = *(TH2F*)f_triggermumu->Get("h_lep1Pt_lep2Pt_Step9");
 
       f_Ele_Reco_Map->Close();
       f_Ele_ID_Map->Close();
@@ -165,11 +165,11 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
       sf_Mu_ISO_H = *(TH2F*)f_Mu_ISO_Map->Get("NUM_TightRelIso_DEN_TightIDandIPCut_pt_abseta");
 
       TFile *f_triggeree = new TFile("/user/rgoldouz/NewAnalysis2020/Analysis/input/TriggerSF_ee2017_pt.root");
-      sf_triggeree_H = *(TH2F*)f_triggeree->Get("h_lep1Pt_lep2Pt_Step3");
+      sf_triggeree_H = *(TH2F*)f_triggeree->Get("h_lep1Pt_lep2Pt_Step6");
       TFile *f_triggeremu = new TFile("/user/rgoldouz/NewAnalysis2020/Analysis/input/TriggerSF_emu2017_pt.root");
       sf_triggeremu_H = *(TH2F*)f_triggeremu->Get("h_lep1Pt_lep2Pt_Step3");
       TFile *f_triggermumu = new TFile("/user/rgoldouz/NewAnalysis2020/Analysis/input/TriggerSF_mumu2017_pt.root");
-      sf_triggermumu_H = *(TH2F*)f_triggermumu->Get("h_lep1Pt_lep2Pt_Step3");
+      sf_triggermumu_H = *(TH2F*)f_triggermumu->Get("h_lep1Pt_lep2Pt_Step9");
 
       f_Ele_Reco_Map->Close();
       f_Ele_ID_Map->Close();
@@ -193,11 +193,11 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
       sf_Mu_ISO_H = *(TH2F*)f_Mu_ISO_Map->Get("NUM_TightRelIso_DEN_TightIDandIPCut_pt_abseta");
 
       TFile *f_triggeree = new TFile("/user/rgoldouz/NewAnalysis2020/Analysis/input/TriggerSF_ee2018_pt.root");
-      sf_triggeree_H = *(TH2F*)f_triggeree->Get("h_lep1Pt_lep2Pt_Step3");
+      sf_triggeree_H = *(TH2F*)f_triggeree->Get("h_lep1Pt_lep2Pt_Step6");
       TFile *f_triggeremu = new TFile("/user/rgoldouz/NewAnalysis2020/Analysis/input/TriggerSF_emu2018_pt.root");
       sf_triggeremu_H = *(TH2F*)f_triggeremu->Get("h_lep1Pt_lep2Pt_Step3");
       TFile *f_triggermumu = new TFile("/user/rgoldouz/NewAnalysis2020/Analysis/input/TriggerSF_mumu2018_pt.root");
-      sf_triggermumu_H = *(TH2F*)f_triggermumu->Get("h_lep1Pt_lep2Pt_Step3");
+      sf_triggermumu_H = *(TH2F*)f_triggermumu->Get("h_lep1Pt_lep2Pt_Step9");
 
       f_Ele_Reco_Map->Close();
       f_Ele_ID_Map->Close();

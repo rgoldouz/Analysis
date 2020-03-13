@@ -16,9 +16,10 @@ from ROOT import THStack
 import gc
 TGaxis.SetMaxDigits(2)
 
-def cutFlowTable(hists, samples, regions, ch, caption='2016'):
+def cutFlowTable(hists, samples, regions, ch, year,caption='2016'):
     mcSum = list(0 for i in xrange(0,len(regions))) 
-    table = '\\begin{sidewaystable*}' + "\n"
+#    table = '\\begin{sidewaystable*}' + "\n"
+    table = '\\begin{table*}' + "\n"
     table += '\\centering' + "\n"
     table += '\\caption{' + caption +"}\n"
     table += '\\resizebox{\\textwidth}{!}{ \n'
@@ -31,8 +32,8 @@ def cutFlowTable(hists, samples, regions, ch, caption='2016'):
             continue
         table += s 
         for idr, r in enumerate(regions):
-            table += (' & ' + str(round(hists[ids][ch][idr][2].Integral(),2)))
-            mcSum[idr] += hists[ids][ch][idr][2].Integral()
+            table += (' & ' + str(round(hists[year][ids][ch][idr][2].Integral(),2)))
+            mcSum[idr] += hists[year][ids][ch][idr][2].Integral()
         table += '\\\\' + "\n"    
     table += '\\hline' + "\n"
     table += 'Prediction '
@@ -42,16 +43,21 @@ def cutFlowTable(hists, samples, regions, ch, caption='2016'):
     table += '\\hline' + "\n"
     table += 'Data '
     for idr, r in enumerate(regions):
-        table += (' & ' + str(hists[0][ch][idr][2].Integral()))
+        table += (' & ' + str(hists[year][0][ch][idr][2].Integral()))
     table += '\\\\' + "\n"
     table += '\\hline' + "\n"
     table += '\\end{tabular}}' + "\n"
-    table += '\\end{sidewaystable*}' + "\n"
+    table += '\\end{table*}' + "\n"
+#    table += '\\end{sidewaystable*}' + "\n"
     print table
 
 def stackPlots(hists, Fnames, ch = "channel", reg = "region", year='2016', var="sample", varname="v"):
-    if not os.path.exists(ch +'/'+reg):
-       os.makedirs(ch +'/'+reg)
+    if not os.path.exists(year):
+       os.makedirs(year)
+    if not os.path.exists(year + '/' + ch):
+       os.makedirs(year + '/' + ch)
+    if not os.path.exists(year + '/' + ch +'/'+reg):
+       os.makedirs(year + '/' + ch +'/'+reg)
     hs = ROOT.THStack("hs","")
     for num in range(len(hists)):
         hists[num].SetBinContent(hists[num].GetXaxis().GetNbins(), hists[num].GetBinContent(hists[num].GetXaxis().GetNbins()) + hists[num].GetBinContent(hists[num].GetXaxis().GetNbins()+1))
@@ -106,7 +112,13 @@ def stackPlots(hists, Fnames, ch = "channel", reg = "region", year='2016', var="
     dummy.Draw("AXISSAMEY+")
     dummy.Draw("AXISSAMEX+")
 
-    Lumi = '35.92'
+    Lumi = '137.42'
+    if (year == '2016'):
+        Lumi = '35.92'
+    if (year == '2017'):
+        Lumi = '41.53'
+    if (year == '2018'):
+        Lumi = '59.97'
     label_cms="CMS Preliminary"
     Label_cms = ROOT.TLatex(0.2,0.92,label_cms)
     Label_cms.SetNDC()
@@ -116,7 +128,7 @@ def stackPlots(hists, Fnames, ch = "channel", reg = "region", year='2016', var="
     Label_lumi.SetNDC()
     Label_lumi.SetTextFont(42)
     Label_lumi.Draw("same")
-    Label_channel = ROOT.TLatex(0.2,0.8,ch+" ("+reg+")")
+    Label_channel = ROOT.TLatex(0.2,0.8,year +" / "+ch+" ("+reg+")")
     Label_channel.SetNDC()
     Label_channel.SetTextFont(42)
     Label_channel.Draw("same")
@@ -166,52 +178,54 @@ def stackPlots(hists, Fnames, ch = "channel", reg = "region", year='2016', var="
     dummy_ratio.Draw()
     dummy_ratio.Draw("AXISSAMEY+")
     dummy_ratio.Draw("AXISSAMEX+")
-    canvas.Print(ch +'/'+reg+'/'+var + ".png")
+    canvas.Print(year + '/' + ch +'/'+reg+'/'+var + ".png")
 
 
+year=['2016','2017','2018','All']
 regions=["ll","llOffZ","llB1", "llBg1", "llMetl30", "llMetg30", "llMetl30Jetg2B1", "llMetl30Jetg2Bg1", "llMetg30Jetg2B1", "llMetg30Jetg2Bg1"]
 channels=["ee", "emu", "mumu"];
 variables=["lep1Pt","lep1Eta","lep1Phi","lep2Pt","lep2Eta","lep2Phi","llM","llPt","llDr","llDphi","jet1Pt","jet1Eta","jet1Phi","njet","nbjet","Met","MetPhi","nVtx"]
 variablesName=["p_{T}(leading lepton)","#eta(leading lepton)","#Phi(leading lepton)","p_{T}(sub-leading lepton)","#eta(sub-leading lepton)","#Phi(sub-leading lepton)","M(ll)","p_{T}(ll)","#Delta R(ll)","#Delta #Phi(ll)","p_{T}(leading jet)","#eta(leading jet)","#Phi(leading jet)","Number of jets","Number of b-tagged jets","MET","#Phi(MET)","Number of vertices"]
 
+
+
 HistAddress = '/user/rgoldouz/NewAnalysis2020/Analysis/hists/'
 
-Samples = ['2016_data.root','2016_WJetsToLNu.root','2016_others.root', '2016_DY.root', '2016_TTTo2L2Nu.root', '2016_ST_tW.root']
-SamplesName = ['Data (2016)','Jets','Others', 'DY', 't#bar{t}', 'tW' ]
-SamplesNameLatex = ['Data (2016)','Jets','Others', 'DY', 'tt', 'tW' ]
+Samples = ['data.root','WJetsToLNu.root','others.root', 'DY.root', 'TTTo2L2Nu.root', 'ST_tW.root']
+SamplesName = ['Data','Jets','Others', 'DY', 't#bar{t}', 'tW' ]
+SamplesNameLatex = ['Data','Jets','Others', 'DY', 'tt', 'tW' ]
 
 colors =  [ROOT.kBlack,ROOT.kYellow,ROOT.kGreen,ROOT.kBlue-3,ROOT.kRed-4,ROOT.kOrange-3]
 
-Files = []
-
-for f in range(len(Samples)):
-    Files.append(ROOT.TFile.Open(HistAddress + Samples[f]))
-
 Hists = []
-for f in range(len(Samples)):
-    l1=[]
+for numyear, nameyear in enumerate(year):
+    l0=[]
+    Files = []
+    for f in range(len(Samples)):
+        l1=[]
+        Files.append(ROOT.TFile.Open(HistAddress + nameyear+ '_' + Samples[f]))
+        for numch, namech in enumerate(channels):
+            l2=[]
+            for numreg, namereg in enumerate(regions):
+                l3=[]
+                for numvar, namevar in enumerate(variables):
+                    h= Files[f].Get(namech + '_' + namereg + '_' + namevar)
+                    h.SetFillColor(colors[f])
+                    h.SetLineColor(colors[f])
+                    l3.append(h)
+                l2.append(l3)
+            l1.append(l2)
+        l0.append(l1)
+    Hists.append(l0)       
+
+for numyear, nameyear in enumerate(year):
     for numch, namech in enumerate(channels):
-        l2=[]
         for numreg, namereg in enumerate(regions):
-            l3=[]
             for numvar, namevar in enumerate(variables):
-                h= Files[f].Get(namech + '_' + namereg + '_' + namevar)
-                h.SetFillColor(colors[f])
-                h.SetLineColor(colors[f])
-                l3.append(h)
-            l2.append(l3)
-        l1.append(l2)
-    Hists.append(l1)       
-
-print Hists[2][2][2][2].GetTitle() 
-
-for numch, namech in enumerate(channels):
-    for numreg, namereg in enumerate(regions):
-        for numvar, namevar in enumerate(variables):
-            HH=[]
-            for f in range(len(Samples)):
-                HH.append(Hists[f][numch][numreg][numvar])
-            stackPlots(HH, SamplesName, namech, namereg, '2016',namevar,variablesName[numvar])
+                HH=[]
+                for f in range(len(Samples)):
+                    HH.append(Hists[numyear][f][numch][numreg][numvar])
+#                stackPlots(HH, SamplesName, namech, namereg, nameyear,namevar,variablesName[numvar])
 
 le = '\\documentclass{article}' + "\n"
 le += '\\usepackage{rotating}' + "\n"
@@ -219,7 +233,10 @@ le += '\\usepackage{rotating}' + "\n"
 le += '\\begin{document}' + "\n"
 
 print le
-cutFlowTable(Hists, SamplesNameLatex, regions, 0, caption='ee 2016')
-cutFlowTable(Hists, SamplesNameLatex, regions, 1, caption='emu 2016')
-cutFlowTable(Hists, SamplesNameLatex, regions, 2, caption='mumu 2016')
+for numyear, nameyear in enumerate(year):
+    for numch, namech in enumerate(channels):
+        cutFlowTable(Hists, SamplesNameLatex, regions, numch, numyear, nameyear + ' ' + namech )
+#cutFlowTable(Hists, SamplesNameLatex, regions, 0, caption='ee 2016')
+#cutFlowTable(Hists, SamplesNameLatex, regions, 1, caption='emu 2016')
+#cutFlowTable(Hists, SamplesNameLatex, regions, 2, caption='mumu 2016')
 print '\\end{document}' + "\n"
