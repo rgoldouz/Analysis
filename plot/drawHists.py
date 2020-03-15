@@ -65,7 +65,9 @@ def stackPlots(hists, Fnames, ch = "channel", reg = "region", year='2016', var="
         hs.Add(hists[num])
 
     dummy = hists[0].Clone()
-    canvas = ROOT.TCanvas("can_name","can_name",50,50,865,780)
+
+    
+    canvas = ROOT.TCanvas(year+ch+reg+var,year+ch+reg+var,50,50,865,780)
     canvas.SetGrid();
     canvas.SetBottomMargin(0.17)
     canvas.cd()
@@ -179,12 +181,14 @@ def stackPlots(hists, Fnames, ch = "channel", reg = "region", year='2016', var="
     dummy_ratio.Draw("AXISSAMEY+")
     dummy_ratio.Draw("AXISSAMEX+")
     canvas.Print(year + '/' + ch +'/'+reg+'/'+var + ".png")
-
+    del canvas
+    gc.collect()
 
 year=['2016','2017','2018','All']
 regions=["ll","llOffZ","llB1", "llBg1", "llMetl30", "llMetg30", "llMetl30Jetg2B1", "llMetl30Jetg2Bg1", "llMetg30Jetg2B1", "llMetg30Jetg2Bg1"]
 channels=["ee", "emu", "mumu"];
-variables=["lep1Pt","lep1Eta","lep1Phi","lep2Pt","lep2Eta","lep2Phi","llM","llPt","llDr","llDphi","jet1Pt","jet1Eta","jet1Phi","njet","nbjet","Met","MetPhi","nVtx"]
+#variables=["lep1Pt","lep1Eta","lep1Phi","lep2Pt","lep2Eta","lep2Phi","llM","llPt","llDr","llDphi","jet1Pt","jet1Eta","jet1Phi","njet","nbjet","Met","MetPhi","nVtx","llMZw"]
+variables=["llMZw"]
 variablesName=["p_{T}(leading lepton)","#eta(leading lepton)","#Phi(leading lepton)","p_{T}(sub-leading lepton)","#eta(sub-leading lepton)","#Phi(sub-leading lepton)","M(ll)","p_{T}(ll)","#Delta R(ll)","#Delta #Phi(ll)","p_{T}(leading jet)","#eta(leading jet)","#Phi(leading jet)","Number of jets","Number of b-tagged jets","MET","#Phi(MET)","Number of vertices"]
 
 
@@ -225,7 +229,7 @@ for numyear, nameyear in enumerate(year):
                 HH=[]
                 for f in range(len(Samples)):
                     HH.append(Hists[numyear][f][numch][numreg][numvar])
-#                stackPlots(HH, SamplesName, namech, namereg, nameyear,namevar,variablesName[numvar])
+                stackPlots(HH, SamplesName, namech, namereg, nameyear,namevar,variablesName[numvar])
 
 le = '\\documentclass{article}' + "\n"
 le += '\\usepackage{rotating}' + "\n"
@@ -233,10 +237,7 @@ le += '\\usepackage{rotating}' + "\n"
 le += '\\begin{document}' + "\n"
 
 print le
-for numyear, nameyear in enumerate(year):
-    for numch, namech in enumerate(channels):
-        cutFlowTable(Hists, SamplesNameLatex, regions, numch, numyear, nameyear + ' ' + namech )
-#cutFlowTable(Hists, SamplesNameLatex, regions, 0, caption='ee 2016')
-#cutFlowTable(Hists, SamplesNameLatex, regions, 1, caption='emu 2016')
-#cutFlowTable(Hists, SamplesNameLatex, regions, 2, caption='mumu 2016')
+#for numyear, nameyear in enumerate(year):
+#    for numch, namech in enumerate(channels):
+#        cutFlowTable(Hists, SamplesNameLatex, regions, numch, numyear, nameyear + ' ' + namech )
 print '\\end{document}' + "\n"

@@ -41,7 +41,7 @@ for key, value in SAMPLES.items():
     nf = 40
     if value[1]=='data':
         addedFilesData[year].append( year + '/' + key + '.root ')
-    if ('TTTo2L2Nu' not in key) and ('DY' not in  key) and ('ST_tW' not in  key) and ('WJetsToLNu' not in  key) and (value[1]=='mc'):
+    if ('TTTo2L2Nu' not in key) and ('DY' not in  key) and ('ST' not in  key) and ('WJetsToLNu' not in  key) and (value[1]=='mc'):
         addedFilesMc[year].append(  year + '/' + key + '.root ')
     hadd='hadd ' + year + '/' + key + '.root '
     for idx, S in enumerate(value[0]):
@@ -78,8 +78,13 @@ os.system('hadd 2016_DY.root 2016/2016_DYM50.root 2016/2016_DYM10to50.root')
 os.system('hadd 2017_DY.root 2017/2017_DYM50.root 2017/2017_DYM10to50.root')
 os.system('hadd 2018_DY.root 2018/2018_DYM50.root 2018/2018_DYM10to50.root')
 
+os.system('rm *tW.root')
+os.system('hadd 2016_ST_tW.root 2016/2016_ST_tW.root 2016/2016_ST_atW.root')
+os.system('hadd 2017_ST_tW.root 2017/2017_ST_tW.root 2017/2017_ST_atW.root')
+os.system('hadd 2018_ST_tW.root 2018/2018_ST_tW.root 2018/2018_ST_atW.root')
+
 Y = ['2016','2017','2018']
-Sam = ['TTTo2L2Nu','ST_tW','WJetsToLNu']
+Sam = ['TTTo2L2Nu','WJetsToLNu']
 
 for y in Y:
     for s in Sam:
