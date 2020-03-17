@@ -6,16 +6,43 @@ import string
 import csv, subprocess
 
 directory = '/user/rgoldouz/NewAnalysis2020/Analysis/bin/Jobs'
-notSubmitted = []
-for subdir, dirs, files in os.walk(directory):
-    for f in files:
-        if '.sh' not in f:
-            continue
-        qsub = "qsub -q localgrid  -o STDOUT/" + f.split('.')[0] + ".stdout -e STDERR/" + f.split('.')[0] + ".stderr Jobs/" + f
-        exit_status = subprocess.call(qsub, shell=True)
-        if exit_status is 1:  # Check to make sure the job submitted
-            notSubmitted.append(qsub)
 
-print 'submit those jobs that are unsubmitted'
-for q in notSubmitted:
-    os.system(qsub)
+import Files_2016
+import Files_2017
+import Files_2018
+SAMPLES = {}
+mc_2016 = True
+data_2016 = False
+mc_2017 = True
+data_2017 = False
+mc_2018 = True
+data_2018 = False
+
+if mc_2016:
+    SAMPLES.update(Files_2016.mc2016_samples)
+if data_2016:
+    SAMPLES.update(Files_2016.data2016_samples)
+if mc_2017:
+    SAMPLES.update(Files_2017.mc2017_samples)
+if data_2017:
+    SAMPLES.update(Files_2017.data2017_samples)
+if mc_2018:
+    SAMPLES.update(Files_2018.mc2018_samples)
+if data_2018:
+    SAMPLES.update(Files_2018.data2018_samples)
+
+
+for key, value in SAMPLES.items():
+    year = value[3]
+    nf = 50
+    for idx, S in enumerate(value[0]):
+        if value[1]=='data':
+            nf = 300
+        for subdir, dirs, files in os.walk(S):
+            sequance = [files[i:i+nf] for i in range(0,len(files),nf)]
+            for num,  seq in enumerate(sequance):
+                f = key +'_' + str(idx) +'_' + str(num)
+                subprocess.call('rm /user/rgoldouz/NewAnalysis2020/Analysis/hists/' + year + '/' + f + '.root', shell=True)
+                qsub = "qsub -q localgrid  -o STDOUT/" + f + ".stdout -e STDERR/" + f + ".stderr Jobs/" + f + '.sh'
+                subprocess.call(qsub, shell=True)
+

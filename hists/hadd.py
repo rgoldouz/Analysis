@@ -99,4 +99,10 @@ for s in allSamples:
     for y in Y:
         haddall +=  y + '_' + s + '.root '
     os.system(haddall) 
-       
+      
+for y in Y:
+    os.system('rm mc_' + y + '.root ') 
+    haddall='hadd mc_' + y + '.root '
+    for s in allSamples:
+        haddall +=  y + '_' + s + '.root '
+    os.system(haddall)

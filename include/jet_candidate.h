@@ -18,7 +18,7 @@ public:
   float pt_;
   float eta_;
   float phi_;
-  int indice_;
+  int flavor_;
   int btag_;
   int isb(float, TString);
   TLorentzVector p4_;

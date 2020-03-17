@@ -74,6 +74,16 @@ float scale_factor( TH2F* h, float X, float Y , TString uncert){
 void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year, TString run, float xs, float lumi, float Nevent)
 {
 
+   Double_t ptBins[11] = {30., 40., 60., 80., 100., 150., 200., 300., 400., 500., 1000.};
+   Double_t etaBins [4]= {0., 0.6, 1.2, 2.4};
+   TH2D *h2_BTaggingEff_Denom_b    = new TH2D("h2_BTaggingEff_Denom_b"   , ";p_{T} [GeV];#eta", 10 , ptBins, 3 , etaBins);
+   TH2D *h2_BTaggingEff_Denom_c    = new TH2D("h2_BTaggingEff_Denom_c"   , ";p_{T} [GeV];#eta", 10 , ptBins, 3 , etaBins);
+   TH2D *h2_BTaggingEff_Denom_udsg = new TH2D("h2_BTaggingEff_Denom_udsg", ";p_{T} [GeV];#eta", 10 , ptBins, 3 , etaBins);
+   TH2D *h2_BTaggingEff_Num_b      = new TH2D("h2_BTaggingEff_Num_b"     , ";p_{T} [GeV];#eta", 10 , ptBins, 3 , etaBins);
+   TH2D *h2_BTaggingEff_Num_c      = new TH2D("h2_BTaggingEff_Num_c"     , ";p_{T} [GeV];#eta", 10 , ptBins, 3 , etaBins);
+   TH2D *h2_BTaggingEff_Num_udsg   = new TH2D("h2_BTaggingEff_Num_udsg"  , ";p_{T} [GeV];#eta", 10 , ptBins, 3 , etaBins); 
+
+
   typedef vector<TH1F*> Dim1;
   typedef vector<Dim1> Dim2;
   typedef vector<Dim2> Dim3;
@@ -110,9 +120,31 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
   TH2F  sf_triggeree_H;
   TH2F  sf_triggeremu_H;
   TH2F  sf_triggermumu_H;
+  TH2F  btagEff_b_H;
+  TH2F  btagEff_c_H;
+  TH2F  btagEff_udsg_H;
   PU wPU;
   std::string rochesterFile;
   std::string btagFile;
+
+  if(data == "mc"){
+    TFile *f_btagEff_Map = new TFile("/user/rgoldouz/NewAnalysis2020/Analysis/input/btagEff.root");
+    if(year == "2016"){
+      btagEff_b_H = *(TH2F*)f_btagEff_Map->Get("2016_h2_BTaggingEff_b");
+      btagEff_c_H = *(TH2F*)f_btagEff_Map->Get("2016_h2_BTaggingEff_c");
+      btagEff_udsg_H = *(TH2F*)f_btagEff_Map->Get("2016_h2_BTaggingEff_udsg");
+    }
+    if(year == "2017"){
+      btagEff_b_H = *(TH2F*)f_btagEff_Map->Get("2017_h2_BTaggingEff_b");
+      btagEff_c_H = *(TH2F*)f_btagEff_Map->Get("2017_h2_BTaggingEff_c");
+      btagEff_udsg_H = *(TH2F*)f_btagEff_Map->Get("2017_h2_BTaggingEff_udsg");
+    }
+    if(year == "2018"){
+      btagEff_b_H = *(TH2F*)f_btagEff_Map->Get("2018_h2_BTaggingEff_b");
+      btagEff_c_H = *(TH2F*)f_btagEff_Map->Get("2018_h2_BTaggingEff_c");
+      btagEff_udsg_H = *(TH2F*)f_btagEff_Map->Get("2018_h2_BTaggingEff_udsg");
+    }
+  }
 
   if(year == "2016")    btagFile = "/user/rgoldouz/NewAnalysis2020/Analysis/input/DeepCSV_2016LegacySF_V1.csv";
   if(year == "2017")    btagFile = "/user/rgoldouz/NewAnalysis2020/Analysis/input/DeepCSV_94XSF_V4_B_F.csv";
@@ -251,7 +283,8 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
   float weight_prefiring;
   float elePt;
   double muPtSFRochester;
-  double bjet_scalefactor;
+  double P_bjet_data;
+  double P_bjet_mc;
   int nAccept=0;
   int nbjet;
 
@@ -279,6 +312,8 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     weight_lep =1;
     weight_lepB =1;
     weight_prefiring =1;
+    P_bjet_data =1;
+    P_bjet_mc =1;
 //MET filters
 
     if(data == "mc"){
@@ -450,12 +485,10 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
       }
       if(jetlepfail) continue; 
       if(data == "mc"){
-        selectedJets->push_back(new jet_candidate((*jet_Smeared_pt)[l],(*jet_eta)[l],(*jet_phi)[l],(*jet_energy)[l],(*jet_DeepCSV)[l], year,l));
-        bjet_scalefactor = reader.eval_auto_bounds("central", BTagEntry::FLAV_B,  abs((*jet_eta)[l]), (*jet_pt)[l]);
-        cout<<bjet_scalefactor<<endl;
+        selectedJets->push_back(new jet_candidate((*jet_Smeared_pt)[l],(*jet_eta)[l],(*jet_phi)[l],(*jet_energy)[l],(*jet_DeepCSV)[l], year,(*jet_partonFlavour)[l]));
       }
       if(data == "data"){
-        selectedJets->push_back(new jet_candidate((*jet_pt)[l],(*jet_eta)[l],(*jet_phi)[l],(*jet_energy)[l],(*jet_DeepCSV)[l],year,l));
+        selectedJets->push_back(new jet_candidate((*jet_pt)[l],(*jet_eta)[l],(*jet_phi)[l],(*jet_energy)[l],(*jet_DeepCSV)[l],year,0));
       }
     }
 
@@ -463,6 +496,43 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     nbjet=0;
     for (int l=0;l<selectedJets->size();l++){
       if((*selectedJets)[l]->btag_) nbjet++;
+      if(data == "data") continue;
+      if( abs((*selectedJets)[l]->flavor_) == 5){
+        h2_BTaggingEff_Denom_b->Fill((*selectedJets)[l]->pt_, abs((*selectedJets)[l]->eta_));
+        if( (*selectedJets)[l]->btag_ ) {
+          h2_BTaggingEff_Num_b->Fill((*selectedJets)[l]->pt_, abs((*selectedJets)[l]->eta_));
+          P_bjet_mc = P_bjet_mc * scale_factor(&btagEff_b_H, (*selectedJets)[l]->pt_, abs((*selectedJets)[l]->eta_),"");
+          P_bjet_data = P_bjet_data * scale_factor(&btagEff_b_H, (*selectedJets)[l]->pt_, abs((*selectedJets)[l]->eta_),"") * reader.eval_auto_bounds("central", BTagEntry::FLAV_B,  abs((*selectedJets)[l]->eta_), (*selectedJets)[l]->pt_);
+        }
+        if( !(*selectedJets)[l]->btag_ ) {
+          P_bjet_mc = P_bjet_mc * (1 - scale_factor(&btagEff_b_H, (*selectedJets)[l]->pt_, abs((*selectedJets)[l]->eta_),""));
+          P_bjet_data = P_bjet_data * (1- (scale_factor(&btagEff_b_H, (*selectedJets)[l]->pt_, abs((*selectedJets)[l]->eta_),"") * reader.eval_auto_bounds("central", BTagEntry::FLAV_B,  abs((*selectedJets)[l]->eta_), (*selectedJets)[l]->pt_)));
+        }  
+      }
+      if( abs((*selectedJets)[l]->flavor_) == 4){
+        h2_BTaggingEff_Denom_c->Fill((*selectedJets)[l]->pt_, abs((*selectedJets)[l]->eta_));
+        if( (*selectedJets)[l]->btag_) {
+          h2_BTaggingEff_Num_c->Fill((*selectedJets)[l]->pt_, abs((*selectedJets)[l]->eta_));
+          P_bjet_mc = P_bjet_mc * scale_factor(&btagEff_c_H, (*selectedJets)[l]->pt_, abs((*selectedJets)[l]->eta_),"");
+          P_bjet_data = P_bjet_data * scale_factor(&btagEff_c_H, (*selectedJets)[l]->pt_, abs((*selectedJets)[l]->eta_),"") * reader.eval_auto_bounds("central", BTagEntry::FLAV_C,  abs((*selectedJets)[l]->eta_), (*selectedJets)[l]->pt_);
+        }
+        if( !(*selectedJets)[l]->btag_ ) {
+          P_bjet_mc = P_bjet_mc * (1 - scale_factor(&btagEff_c_H, (*selectedJets)[l]->pt_, abs((*selectedJets)[l]->eta_),""));
+          P_bjet_data = P_bjet_data * (1- (scale_factor(&btagEff_c_H, (*selectedJets)[l]->pt_, abs((*selectedJets)[l]->eta_),"") * reader.eval_auto_bounds("central", BTagEntry::FLAV_C,  abs((*selectedJets)[l]->eta_), (*selectedJets)[l]->pt_)));
+        }
+      }
+      if( abs((*selectedJets)[l]->flavor_) != 4 && abs((*selectedJets)[l]->flavor_) != 5){
+        h2_BTaggingEff_Denom_udsg->Fill((*selectedJets)[l]->pt_, abs((*selectedJets)[l]->eta_));
+        if( (*selectedJets)[l]->btag_) {
+          h2_BTaggingEff_Num_udsg->Fill((*selectedJets)[l]->pt_, abs((*selectedJets)[l]->eta_));
+          P_bjet_mc = P_bjet_mc * scale_factor(&btagEff_udsg_H, (*selectedJets)[l]->pt_, abs((*selectedJets)[l]->eta_),"");
+          P_bjet_data = P_bjet_data * scale_factor(&btagEff_udsg_H, (*selectedJets)[l]->pt_, abs((*selectedJets)[l]->eta_),"") * reader.eval_auto_bounds("central", BTagEntry::FLAV_UDSG,  abs((*selectedJets)[l]->eta_), (*selectedJets)[l]->pt_);
+        }
+        if( !(*selectedJets)[l]->btag_ ) {
+          P_bjet_mc = P_bjet_mc * (1 - scale_factor(&btagEff_udsg_H, (*selectedJets)[l]->pt_, abs((*selectedJets)[l]->eta_),""));
+          P_bjet_data = P_bjet_data * (1- (scale_factor(&btagEff_udsg_H, (*selectedJets)[l]->pt_, abs((*selectedJets)[l]->eta_),"") * reader.eval_auto_bounds("central", BTagEntry::FLAV_UDSG,  abs((*selectedJets)[l]->eta_), (*selectedJets)[l]->pt_)));
+        }
+      }
     }
 
     if (data == "mc" && ch==0) sf_Trigger = scale_factor(&sf_triggeree_H, (*selectedLeptons)[0]->pt_, (*selectedLeptons)[1]->pt_,"");
@@ -475,7 +545,7 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     if (data == "mc" && (year == "2016" || year == "2017")) weight_prefiring = ev_prefiringweight;
 
     if (data == "mc") weight_lep = sf_Ele_Reco * sf_Ele_ID * sf_Mu_ID * sf_Mu_ISO * sf_Trigger * weight_PU * weight_Lumi  * mc_w_sign * weight_prefiring;
-    if (data == "mc") weight_lepB = sf_Ele_Reco * sf_Ele_ID * sf_Mu_ID * sf_Mu_ISO * sf_Trigger * weight_PU * weight_Lumi * mc_w_sign * BtagSF_Deepcsv_medium * weight_prefiring;
+    if (data == "mc") weight_lepB = sf_Ele_Reco * sf_Ele_ID * sf_Mu_ID * sf_Mu_ISO * sf_Trigger * weight_PU * weight_Lumi * mc_w_sign *  weight_prefiring * (P_bjet_data/P_bjet_mc);
 //     cout<<ev_event<<"   "<<sf_Ele_Reco<<"   "<<sf_Ele_ID<<"      "<<sf_Mu_ID<<"   "<<sf_Mu_ISO<<"   "<<sf_Trigger<<"   "<<weight_PU<<endl;
 //    if(selectedJets->size()<3 || MET_FinalCollection_Pt>30 || nbjet !=1) continue;
 
@@ -719,5 +789,12 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
       }
     }
   }
+
+   h2_BTaggingEff_Denom_b   ->Write("",TObject::kOverwrite); 
+   h2_BTaggingEff_Denom_c   ->Write("",TObject::kOverwrite); 
+   h2_BTaggingEff_Denom_udsg->Write("",TObject::kOverwrite); 
+   h2_BTaggingEff_Num_b     ->Write("",TObject::kOverwrite); 
+   h2_BTaggingEff_Num_c     ->Write("",TObject::kOverwrite); 
+   h2_BTaggingEff_Num_udsg  ->Write("",TObject::kOverwrite); 
   file_out.Close() ;
 }
