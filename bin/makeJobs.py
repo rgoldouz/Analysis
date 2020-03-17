@@ -35,23 +35,23 @@ rootlib22="".join([s for s in rootlib2.strip().splitlines(True) if s.strip()])
 
 dire = '/user/rgoldouz/NewAnalysis2020/Analysis/bin'
 cms = '/user/rgoldouz/CMSSW_9_3_4/src/'
-nf =40
+nf =50
 
 for key, value in SAMPLES.items():
 #########################################
-    if key!='2018_DYM50':
-        continue
+#    if key!='2018_DYM50':
+#       continue
 ########################################
-    nf = 40
+    nf = 50
     for idx, S in enumerate(value[0]):
         for subdir, dirs, files in os.walk(S):
             if value[1]=='data': 
-                nf = 250
+                nf = 300
             sequance = [files[i:i+nf] for i in range(0,len(files),nf)]
             for num,  seq in enumerate(sequance):
 ###############################
-                if num<18:
-                    continue
+#                if num<18:
+#                    continue
 #############################
                 text = ''
                 text += '    TChain* ch    = new TChain("IIHEAnalysis") ;\n'
@@ -64,7 +64,7 @@ for key, value in SAMPLES.items():
                 'main(){\n' +\
                 text +\
                 '}'
-                open(SHNAME1, 'wt').write(SHFILE1)
+                open('Jobs/'+SHNAME1, 'wt').write(SHFILE1)
 #                os.system('g++ -fPIC -fno-var-tracking -Wno-deprecated -D_GNU_SOURCE -O2  -I./../include   '+ rootlib11 +' -ldl  -o ' + SHNAME1.split('.')[0] + ' ' + SHNAME1+ ' ../lib/main.so ' + rootlib22 + '  -lMinuit -lMinuit2 -lTreePlayer -lGenVector')
 
                 SHNAME = key +'_' + str(idx) +'_' + str(num) +'.sh'
@@ -72,14 +72,14 @@ for key, value in SAMPLES.items():
                 "cd "+ cms + "\n"+\
                 "eval `scramv1 runtime -sh`\n"+\
                 "cd "+ dire + "\n"+\
-                'g++ -fPIC -fno-var-tracking -Wno-deprecated -D_GNU_SOURCE -O2  -I./../include   '+ rootlib11 +' -ldl  -o ' + SHNAME1.split('.')[0] + ' ' + SHNAME1+ ' ../lib/main.so ' + rootlib22 + '  -lMinuit -lMinuit2 -lTreePlayer -lGenVector' + "\n"+\
+                'g++ -fPIC -fno-var-tracking -Wno-deprecated -D_GNU_SOURCE -O2  -I./../include   '+ rootlib11 +' -ldl  -o ' + SHNAME1.split('.')[0] + ' Jobs/' + SHNAME1+ ' ../lib/main.so ' + rootlib22 + '  -lMinuit -lMinuit2 -lTreePlayer -lGenVector' + "\n"+\
                 "./" + SHNAME1.split('.')[0]+ "\n"+\
                 'FILE='+'/user/rgoldouz/NewAnalysis2020/Analysis/hists/' + value[3] + '/' + key +'_' + str(idx) +'_' +str(num)  + '.root'+ "\n"+\
                 'if [ -f "$FILE" ]; then'+ "\n"+\
                 '    rm  ' + SHNAME1.split('.')[0] + "\n"+\
                 'fi'
-                open(SHNAME, 'wt').write(SHFILE)
-                os.system("chmod +x "+SHNAME)
+                open('Jobs/'+SHNAME, 'wt').write(SHFILE)
+                os.system("chmod +x "+'Jobs/'+SHNAME)
 #                os.system("qsub -q localgrid  -o STDOUT/" + SHNAME1.split('.')[0] + ".stdout -e STDERR/" + SHNAME1.split('.')[0] + ".stderr " + SHNAME)
     print key + ' jobs are made'
    

@@ -3,6 +3,8 @@
 #include "PU_reWeighting.h"
 #include "lepton_candidate.h"
 #include "jet_candidate.h"
+#include "TRandom.h"
+#include "TRandom3.h"
 #include <TH2.h>
 #include <TStyle.h>
 #include <TCanvas.h>
@@ -12,6 +14,8 @@
 #include <iostream>
 #include <cmath>
 #include <vector>
+#include "RoccoR.h"
+#include "BTagCalibrationStandalone.h"
 
 void displayProgress(long current, long max){
   using std::cerr;
@@ -77,7 +81,7 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
   std::vector<TString> regions{"ll","llOffZ","llB1", "llBg1", "llMetl30", "llMetg30", "llMetl30Jetg2B1", "llMetl30Jetg2Bg1", "llMetg30Jetg2B1", "llMetg30Jetg2Bg1"};
   std::vector<TString> channels{"ee", "emu", "mumu"};
   std::vector<TString> vars   {"lep1Pt","lep1Eta","lep1Phi","lep2Pt","lep2Eta","lep2Phi","llM","llPt","llDr","llDphi","jet1Pt","jet1Eta","jet1Phi","njet","nbjet","Met","MetPhi","nVtx", "llMZw"};
-  std::vector<int>    nbins   {30      ,20       ,25       ,20      ,20       ,25       ,30   ,20    ,25    ,15      ,20      ,20       ,25       ,10    ,6      ,30   ,20      ,70    ,40};   
+  std::vector<int>    nbins   {30      ,20       ,25       ,20      ,20       ,25       ,30   ,20    ,25    ,15      ,20      ,20       ,25       ,10    ,6      ,30   ,20      ,70    ,80};   
   std::vector<float> lowEdge  {0       ,-3       ,-4       ,0       ,-3       ,-4       ,0    ,0     ,0     ,0       ,0       ,-3       ,-4       ,0     ,0      ,0    ,-4      ,0     ,70};
   std::vector<float> highEdge {300     ,3        ,4        ,200     ,3        ,4        ,500  ,200   ,7     ,4       ,300     ,3        ,4        ,10    ,6      ,210  ,4       ,70    ,110};       
 
@@ -107,6 +111,23 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
   TH2F  sf_triggeremu_H;
   TH2F  sf_triggermumu_H;
   PU wPU;
+  std::string rochesterFile;
+  std::string btagFile;
+
+  if(year == "2016")    btagFile = "/user/rgoldouz/NewAnalysis2020/Analysis/input/DeepCSV_2016LegacySF_V1.csv";
+  if(year == "2017")    btagFile = "/user/rgoldouz/NewAnalysis2020/Analysis/input/DeepCSV_94XSF_V4_B_F.csv";
+  if(year == "2018")    btagFile = "/user/rgoldouz/NewAnalysis2020/Analysis/input/DeepCSV_102XSF_V1.csv";
+
+  BTagCalibration calib("DeepCSV",btagFile);
+  BTagCalibrationReader reader(BTagEntry::OP_MEDIUM, "central", {"up", "down"});      
+  reader.load(calib,BTagEntry::FLAV_B,"comb"); 
+  reader.load(calib,BTagEntry::FLAV_C,"comb");
+  reader.load(calib,BTagEntry::FLAV_UDSG,"comb");
+
+  if(year == "2016")    rochesterFile = "/user/rgoldouz/NewAnalysis2020/Analysis/input/RoccoR2016.txt";
+  if(year == "2017")    rochesterFile = "/user/rgoldouz/NewAnalysis2020/Analysis/input/RoccoR2017.txt";
+  if(year == "2018")    rochesterFile = "/user/rgoldouz/NewAnalysis2020/Analysis/input/RoccoR2018.txt";
+  RoccoR  rc(rochesterFile);
 
   if(data == "mc"){
     if(year == "2016"){
@@ -227,7 +248,10 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
   float weight_Lumi;
   float weight_lep;
   float weight_lepB;
+  float weight_prefiring;
   float elePt;
+  double muPtSFRochester;
+  double bjet_scalefactor;
   int nAccept=0;
   int nbjet;
 
@@ -254,6 +278,7 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     weight_Lumi =1;
     weight_lep =1;
     weight_lepB =1;
+    weight_prefiring =1;
 //MET filters
 
     if(data == "mc"){
@@ -372,10 +397,17 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     }
 // Muon
     for (int l=0;l<mu_gt_pt->size();l++){
-      if((*mu_gt_pt)[l] <20 || abs((*mu_gt_eta)[l]) > 2.4) continue;
+      if(data == "data"){
+        muPtSFRochester = rc.kScaleDT((*mu_gt_charge)[l], (*mu_gt_pt)[l],(*mu_gt_eta)[l],(*mu_gt_phi)[l], 0, 0);
+      }
+      if (data == "mc"){
+         if ((*mu_mc_index)[l]!=-1 && abs((*mc_pdgId)[(*mu_mc_index)[l]]) == 13) muPtSFRochester = rc.kSpreadMC((*mu_gt_charge)[l], (*mu_gt_pt)[l],(*mu_gt_eta)[l],(*mu_gt_phi)[l], (*mc_pt)[(*mu_mc_index)[l]],0, 0);
+         if ((*mu_mc_index)[l]<0) muPtSFRochester = rc.kSmearMC((*mu_gt_charge)[l], (*mu_gt_pt)[l],(*mu_gt_eta)[l],(*mu_gt_phi)[l], (*mu_trackerLayersWithMeasurement)[l] , gRandom->Rndm(),0, 0);
+      }
+      if(muPtSFRochester * (*mu_gt_pt)[l] <20 || abs((*mu_gt_eta)[l]) > 2.4) continue;
       if(!(*mu_isTightMuon)[l]) continue;
       if((*mu_pfIsoDbCorrected04)[l] > 0.15) continue;
-      selectedLeptons->push_back(new lepton_candidate((*mu_gt_pt)[l],(*mu_gt_eta)[l],(*mu_gt_phi)[l],(*mu_gt_charge)[l],l,10));
+      selectedLeptons->push_back(new lepton_candidate(muPtSFRochester * (*mu_gt_pt)[l],(*mu_gt_eta)[l],(*mu_gt_phi)[l],(*mu_gt_charge)[l],l,10));
       if (data == "mc" && year == "2016") sf_Mu_ID = sf_Mu_ID * scale_factor(&sf_Mu_ID_H, (*mu_gt_eta)[l], (*mu_gt_pt)[l],"");
       if (data == "mc" && year == "2016") sf_Mu_ISO = sf_Mu_ISO * scale_factor(&sf_Mu_ISO_H, (*mu_gt_eta)[l], (*mu_gt_pt)[l],"");
       if (data == "mc" && year != "2016") sf_Mu_ID = sf_Mu_ID * scale_factor(&sf_Mu_ID_H, (*mu_gt_pt)[l], abs((*mu_gt_eta)[l]),"");
@@ -419,6 +451,8 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
       if(jetlepfail) continue; 
       if(data == "mc"){
         selectedJets->push_back(new jet_candidate((*jet_Smeared_pt)[l],(*jet_eta)[l],(*jet_phi)[l],(*jet_energy)[l],(*jet_DeepCSV)[l], year,l));
+        bjet_scalefactor = reader.eval_auto_bounds("central", BTagEntry::FLAV_B,  abs((*jet_eta)[l]), (*jet_pt)[l]);
+        cout<<bjet_scalefactor<<endl;
       }
       if(data == "data"){
         selectedJets->push_back(new jet_candidate((*jet_pt)[l],(*jet_eta)[l],(*jet_phi)[l],(*jet_energy)[l],(*jet_DeepCSV)[l],year,l));
@@ -438,9 +472,10 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     if (data == "mc" && year == "2017") weight_PU = wPU.PU_2017(mc_trueNumInteractions,"nominal");
     if (data == "mc" && year == "2018") weight_PU = wPU.PU_2018(mc_trueNumInteractions,"nominal");
     if (data == "mc") weight_Lumi = (1000*xs*lumi)/Nevent;
+    if (data == "mc" && (year == "2016" || year == "2017")) weight_prefiring = ev_prefiringweight;
 
-    if (data == "mc") weight_lep = sf_Ele_Reco * sf_Ele_ID * sf_Mu_ID * sf_Mu_ISO * sf_Trigger * weight_PU * weight_Lumi  * mc_w_sign;
-    if (data == "mc") weight_lepB = sf_Ele_Reco * sf_Ele_ID * sf_Mu_ID * sf_Mu_ISO * sf_Trigger * weight_PU * weight_Lumi * mc_w_sign * BtagSF_Deepcsv_medium;
+    if (data == "mc") weight_lep = sf_Ele_Reco * sf_Ele_ID * sf_Mu_ID * sf_Mu_ISO * sf_Trigger * weight_PU * weight_Lumi  * mc_w_sign * weight_prefiring;
+    if (data == "mc") weight_lepB = sf_Ele_Reco * sf_Ele_ID * sf_Mu_ID * sf_Mu_ISO * sf_Trigger * weight_PU * weight_Lumi * mc_w_sign * BtagSF_Deepcsv_medium * weight_prefiring;
 //     cout<<ev_event<<"   "<<sf_Ele_Reco<<"   "<<sf_Ele_ID<<"      "<<sf_Mu_ID<<"   "<<sf_Mu_ISO<<"   "<<sf_Trigger<<"   "<<weight_PU<<endl;
 //    if(selectedJets->size()<3 || MET_FinalCollection_Pt>30 || nbjet !=1) continue;
 

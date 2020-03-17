@@ -16,7 +16,7 @@ LIBS           = $(ROOTLIBS)
 
 GLIBS         = $(ROOTGLIBS) -lMinuit -lMinuit2 -lTreePlayer -lGenVector
 
-SRCS =  src/lepton_candidate.cc src/jet_candidate.cc src/PU_reWeighting.cc src/MyAnalysis.cc 
+SRCS = src/BTagCalibrationStandalone.cc src/RoccoR.cc src/lepton_candidate.cc src/jet_candidate.cc src/PU_reWeighting.cc src/MyAnalysis.cc 
 OBJS =  $(patsubst %.C,%.o,$(SRCS:.cc=.o))
 
 LIB=lib/main.so

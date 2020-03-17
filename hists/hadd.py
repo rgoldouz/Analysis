@@ -38,7 +38,7 @@ addedFilesMc = {"2016": [], "2017": [], "2018": []}
 for key, value in SAMPLES.items():
     year = value[3]
     os.system('rm '+ year + '/' +key + '.root')
-    nf = 40
+    nf = 50
     if value[1]=='data':
         addedFilesData[year].append( year + '/' + key + '.root ')
     if ('TTTo2L2Nu' not in key) and ('DY' not in  key) and ('ST' not in  key) and ('WJetsToLNu' not in  key) and (value[1]=='mc'):
@@ -46,7 +46,7 @@ for key, value in SAMPLES.items():
     hadd='hadd ' + year + '/' + key + '.root '
     for idx, S in enumerate(value[0]):
         if value[1]=='data':
-            nf = 250
+            nf = 300
         for subdir, dirs, files in os.walk(S):
             sequance = [files[i:i+nf] for i in range(0,len(files),nf)]
             for num,  seq in enumerate(sequance):
