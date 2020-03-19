@@ -46,6 +46,11 @@ def cutFlowTable(hists, samples, regions, ch, year,caption='2016'):
         table += (' & ' + str(hists[year][0][ch][idr][2].Integral()))
     table += '\\\\' + "\n"
     table += '\\hline' + "\n"
+    table += 'Data$/$Pred. '
+    for idr, r in enumerate(mcSum):
+        table += (' & ' + str(round(hists[year][0][ch][idr][2].Integral()/r,2)))
+    table += '\\\\' + "\n"
+    table += '\\hline' + "\n"
     table += '\\end{tabular}}' + "\n"
     table += '\\end{table*}' + "\n"
 #    table += '\\end{sidewaystable*}' + "\n"
@@ -229,7 +234,7 @@ for numyear, nameyear in enumerate(year):
                 HH=[]
                 for f in range(len(Samples)):
                     HH.append(Hists[numyear][f][numch][numreg][numvar])
-                stackPlots(HH, SamplesName, namech, namereg, nameyear,namevar,variablesName[numvar])
+#                stackPlots(HH, SamplesName, namech, namereg, nameyear,namevar,variablesName[numvar])
 
 le = '\\documentclass{article}' + "\n"
 le += '\\usepackage{rotating}' + "\n"
@@ -237,7 +242,7 @@ le += '\\usepackage{rotating}' + "\n"
 le += '\\begin{document}' + "\n"
 
 print le
-#for numyear, nameyear in enumerate(year):
-#    for numch, namech in enumerate(channels):
-#        cutFlowTable(Hists, SamplesNameLatex, regions, numch, numyear, nameyear + ' ' + namech )
+for numyear, nameyear in enumerate(year):
+    for numch, namech in enumerate(channels):
+        cutFlowTable(Hists, SamplesNameLatex, regions, numch, numyear, nameyear + ' ' + namech )
 print '\\end{document}' + "\n"
