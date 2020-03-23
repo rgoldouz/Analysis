@@ -35,18 +35,18 @@ rootlib22="".join([s for s in rootlib2.strip().splitlines(True) if s.strip()])
 
 dire = '/user/rgoldouz/NewAnalysis2020/Analysis/bin'
 cms = '/user/rgoldouz/CMSSW_9_3_4/src/'
-nf =50
+nf =40
 
 for key, value in SAMPLES.items():
 #########################################
 #    if key!='2018_DYM50':
 #       continue
 ########################################
-    nf = 50
+    nf = 40
     for idx, S in enumerate(value[0]):
         for subdir, dirs, files in os.walk(S):
             if value[1]=='data': 
-                nf = 300
+                nf = 255
             sequance = [files[i:i+nf] for i in range(0,len(files),nf)]
             for num,  seq in enumerate(sequance):
 ###############################
@@ -81,6 +81,7 @@ for key, value in SAMPLES.items():
                 open('Jobs/'+SHNAME, 'wt').write(SHFILE)
                 os.system("chmod +x "+'Jobs/'+SHNAME)
 #                os.system("qsub -q localgrid  -o STDOUT/" + SHNAME1.split('.')[0] + ".stdout -e STDERR/" + SHNAME1.split('.')[0] + ".stderr " + SHNAME)
+            break
     print key + ' jobs are made'
    
  

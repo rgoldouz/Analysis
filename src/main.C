@@ -25,7 +25,7 @@ main(){
     ch ->Add("/pnfs/iihe/cms/store/user/xgao/samples-20191203/data/2016/MuonEG/crab_MuonEG_runC/191203_070345/0000/outfile_368.root");
     MyAnalysis t1(ch);
 
-    t1.Loop("/user/rgoldouz/NewAnalysis2020/Analysis/hists/test.root", "data","MuonEG","2016", "C",1,1,1);
+    t1.Loop("/user/rgoldouz/NewAnalysis2020/Analysis/hists/test.root", "data","SingleElectron","2016", "C",1,1,1);
 }
 
 
