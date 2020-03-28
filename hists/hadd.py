@@ -82,6 +82,16 @@ os.system('hadd 2016_ST_tW.root 2016/2016_ST_tW.root 2016/2016_ST_atW.root')
 os.system('hadd 2017_ST_tW.root 2017/2017_ST_tW.root 2017/2017_ST_atW.root')
 os.system('hadd 2018_ST_tW.root 2018/2018_ST_tW.root 2018/2018_ST_atW.root')
 
+os.system('rm *_LFV*')
+os.system('hadd 2016_LFVVecC.root 2017/2016_LFVTtVecC.root 2017/2016_LFVStVecC.root')
+os.system('hadd 2017_LFVVecC.root 2017/2017_LFVTtVecC.root 2017/2017_LFVStVecC.root')
+os.system('hadd 2018_LFVVecC.root 2017/2018_LFVTtVecC.root 2017/2018_LFVStVecC.root')
+
+os.system('hadd 2016_LFVVecU.root 2017/2016_LFVTtVecU.root 2017/2016_LFVStVecU.root')
+os.system('hadd 2017_LFVVecU.root 2017/2017_LFVTtVecU.root 2017/2017_LFVStVecU.root')
+os.system('hadd 2018_LFVVecU.root 2017/2018_LFVTtVecU.root 2017/2018_LFVStVecU.root')
+
+
 Y = ['2016','2017','2018']
 Sam = ['TTTo2L2Nu','WJetsToLNu']
 
@@ -90,7 +100,8 @@ for y in Y:
         txt = 'cp ' + y + '/' + y + '_' + s + '.root .'
         os.system(txt)
 
-allSamples = ['TTTo2L2Nu','ST_tW','WJetsToLNu','data', 'others', 'DY']
+allSamples = ['TTTo2L2Nu','ST_tW','WJetsToLNu','data', 'others', 'DY', 'LFVVecU', 'LFVVecC']
+allMCSamples = ['TTTo2L2Nu','ST_tW','WJetsToLNu', 'others', 'DY']
 
 for s in allSamples:
     os.system('rm All_' + s + '.root ')
@@ -102,6 +113,6 @@ for s in allSamples:
 for y in Y:
     os.system('rm mc_' + y + '.root ') 
     haddall='hadd mc_' + y + '.root '
-    for s in allSamples:
+    for s in allMCSamples:
         haddall +=  y + '_' + s + '.root '
     os.system(haddall)

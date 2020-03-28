@@ -39,9 +39,8 @@ nf =40
 
 for key, value in SAMPLES.items():
 #########################################
-#    if key!='2018_DYM50':
-#       continue
-########################################
+    if 'LFV' not in key:
+       continue
     nf = 40
     for idx, S in enumerate(value[0]):
         for subdir, dirs, files in os.walk(S):

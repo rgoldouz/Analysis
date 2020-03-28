@@ -71,6 +71,10 @@ float scale_factor( TH2F* h, float X, float Y , TString uncert){
   else return  h->GetBinContent(binx, biny);
 }
 
+float topPt(float pt){
+  return (0.973 - (0.000134 * pt) + (0.103 * exp(pt * (-0.0118))));  
+}
+
 void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year, TString run, float xs, float lumi, float Nevent)
 {
 
@@ -267,10 +271,12 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
 //    cout<<"ev_event"<<"   "<<"sf_Ele_Reco"<<"   "<<"sf_Ele_ID"<<"      "<<"sf_Mu_ID"<<"   "<<"sf_Mu_ISO"<<"   "<<"sf_trigger"<<"   "<<"PU weight"<<endl;
   std::vector<lepton_candidate*> *selectedLeptons;
   std::vector<jet_candidate*> *selectedJets;
+  TLorentzVector wp, wm, b, ab;
   bool triggerPassEE;
   bool triggerPassEMu;
   bool triggerPassMuMu;
   bool metFilterPass;
+  bool ifTopPt=false;
   int ch;
   float sf_Ele_Reco;
   float sf_Ele_ID;
@@ -282,12 +288,15 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
   float weight_lep;
   float weight_lepB;
   float weight_prefiring;
+  float weight_topPt;
   float elePt;
   double muPtSFRochester;
   double P_bjet_data;
   double P_bjet_mc;
   int nAccept=0;
   int nbjet;
+
+  if (fname.Contains("TTTo2L2Nu")) ifTopPt=true;
 
   if (fChain == 0) return;
   Long64_t nentries = fChain->GetEntriesFast();
@@ -315,6 +324,7 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     weight_lep =1;
     weight_lepB =1;
     weight_prefiring =1;
+    weight_topPt =1;
     P_bjet_data =1;
     P_bjet_mc =1;
 //MET filters
@@ -574,9 +584,18 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     if (data == "mc" && year == "2018") weight_PU = wPU.PU_2018(mc_trueNumInteractions,"nominal");
     if (data == "mc") weight_Lumi = (1000*xs*lumi)/Nevent;
     if (data == "mc" && (year == "2016" || year == "2017")) weight_prefiring = ev_prefiringweight;
+    if (data == "mc" && ifTopPt) {
+      for (int l=0;l<mc_status->size();l++){
+        if((*mc_status)[l]<30 && (*mc_status)[l]>20 && (*mc_pdgId)[l]==24) wp.SetPtEtaPhiE((*mc_pt)[l], (*mc_eta)[l], (*mc_phi)[l], (*mc_energy)[l]) ;
+        if((*mc_status)[l]<30 && (*mc_status)[l]>20 && (*mc_pdgId)[l]==-24) wm.SetPtEtaPhiE((*mc_pt)[l], (*mc_eta)[l], (*mc_phi)[l], (*mc_energy)[l]) ;
+        if((*mc_status)[l]<30 && (*mc_status)[l]>20 && (*mc_pdgId)[l]==5) b.SetPtEtaPhiE((*mc_pt)[l], (*mc_eta)[l], (*mc_phi)[l], (*mc_energy)[l]) ;
+        if((*mc_status)[l]<30 && (*mc_status)[l]>20 && (*mc_pdgId)[l]==-5) ab.SetPtEtaPhiE((*mc_pt)[l], (*mc_eta)[l], (*mc_phi)[l], (*mc_energy)[l]) ;
+      }
+    weight_topPt = sqrt(topPt((wp + b).Pt()) * topPt((wm + ab).Pt()));
+    }
 
-    if (data == "mc") weight_lep = sf_Ele_Reco * sf_Ele_ID * sf_Mu_ID * sf_Mu_ISO * sf_Trigger * weight_PU * weight_Lumi  * mc_w_sign * weight_prefiring;
-    if (data == "mc") weight_lepB = sf_Ele_Reco * sf_Ele_ID * sf_Mu_ID * sf_Mu_ISO * sf_Trigger * weight_PU * weight_Lumi * mc_w_sign *  weight_prefiring * (P_bjet_data/P_bjet_mc);
+    if (data == "mc") weight_lep = sf_Ele_Reco * sf_Ele_ID * sf_Mu_ID * sf_Mu_ISO * sf_Trigger * weight_PU * weight_Lumi  * mc_w_sign * weight_prefiring * weight_topPt;
+    if (data == "mc") weight_lepB = sf_Ele_Reco * sf_Ele_ID * sf_Mu_ID * sf_Mu_ISO * sf_Trigger * weight_PU * weight_Lumi * mc_w_sign *  weight_prefiring * weight_topPt * (P_bjet_data/P_bjet_mc);
 //     cout<<ev_event<<"   "<<sf_Ele_Reco<<"   "<<sf_Ele_ID<<"      "<<sf_Mu_ID<<"   "<<sf_Mu_ISO<<"   "<<sf_Trigger<<"   "<<weight_PU<<endl;
 //    if(selectedJets->size()<3 || MET_FinalCollection_Pt>30 || nbjet !=1) continue;
 

@@ -35,7 +35,7 @@ path = []
 #path.append('/pnfs/iihe/cms/store/user/schenara/MC_RunII_2016/WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/crab_WJetsToLNu_amc_v3_v1/191130_144027/0000/')
 #path.append('/pnfs/iihe/cms/store/user/schenara/MC_RunII_2016/WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/crab_WJetsToLNu_amc_v3_ext2_v1/191130_144155/0000/')
 #path.append('/pnfs/iihe/cms/store/user/schenara/MC_RunII_2016/WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/crab_WJetsToLNu_amc_v3_ext2_v1/191130_144155/0001/')
-path.append('/pnfs/iihe/cms/store/user/schenara/MC_RunII_2016/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/crab_DYJetsToLL_M-50-amcFXFX/200310_182844/0000/')
+#path.append('/pnfs/iihe/cms/store/user/schenara/MC_RunII_2016/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/crab_DYJetsToLL_M-50-amcFXFX/200310_182844/0000/')
 
 #path.append('/pnfs/iihe/cms/store/user/schenara/MC_RunII_2017/DYJetsToLL_M-10to50_TuneCP5_13TeV-madgraphMLM-pythia8/crab_DYJetsToLL_M-10to50_v14-v1/191201_123859/0000/')
 #path.append('/pnfs/iihe/cms/store/user/schenara/MC_RunII_2017/DYJetsToLL_M-10to50_TuneCP5_13TeV-madgraphMLM-pythia8/crab_DYJetsToLL_M-10to50_v14_ext1_v2/191201_123656/0000/')
@@ -57,6 +57,10 @@ path.append('/pnfs/iihe/cms/store/user/schenara/MC_RunII_2016/DYJetsToLL_M-50_Tu
 #path.append('/pnfs/iihe/cms/store/user/schenara/MC_RunII_2017/TTZToQQ_TuneCP5_13TeV-amcatnlo-pythia8/crab_TTZToQQ_v14_v1/191201_132958/0000/')
 #path.append('/pnfs/iihe/cms/store/user/schenara/MC_RunII_2017/ST_tW_top_5f_NoFullyHadronicDecays_TuneCP5_13TeV-powheg-pythia8/crab_ST_tW_top/191201_124931/0000/')
 #path.append('/pnfs/iihe/cms/store/user/schenara/MC_RunII_2017/ST_tW_antitop_5f_NoFullyHadronicDecays_TuneCP5_13TeV-powheg-pythia8/crab_ST_tW_antitop/191201_125119/0000/')
+#path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2017/IIHE_Ntuple/ntuple_SMEFTfr_ST_vector_emutc/')
+#path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2017/IIHE_Ntuple/ntuple_SMEFTfr_ST_vector_emutu/')
+#path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2017/IIHE_Ntuple/ntuple_SMEFTfr_TT_vector_emutc/')
+path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2017/IIHE_Ntuple/ntuple_SMEFTfr_TT_vector_emutu/')
 
 #path.append('/pnfs/iihe/cms/store/user/schenara/MC_RunII_2018/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/crab_DYJetsToLL_M-50_amcatnlo_v15_v1/200311_151257/0000/')
 #path.append('/pnfs/iihe/cms/store/user/schenara/MC_RunII_2018/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/crab_DYJetsToLL_M-50_amcatnlo_v15_ext2_v1/200311_150842/0000/')
