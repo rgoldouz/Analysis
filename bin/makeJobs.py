@@ -38,20 +38,17 @@ cms = '/user/rgoldouz/CMSSW_9_3_4/src/'
 nf =40
 
 for key, value in SAMPLES.items():
-#########################################
-    if 'LFV' not in key:
-       continue
-    nf = 40
+    if 'CR' not in key:
+        continue
+    nf = 72
     for idx, S in enumerate(value[0]):
         for subdir, dirs, files in os.walk(S):
+            if 'TTTo2L2Nu' in key or 'tw' in key or 'DY' in key:
+                nf = 35
             if value[1]=='data': 
-                nf = 255
+                nf = 205
             sequance = [files[i:i+nf] for i in range(0,len(files),nf)]
             for num,  seq in enumerate(sequance):
-###############################
-#                if num<18:
-#                    continue
-#############################
                 text = ''
                 text += '    TChain* ch    = new TChain("IIHEAnalysis") ;\n'
                 for filename in seq:

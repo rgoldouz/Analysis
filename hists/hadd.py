@@ -37,22 +37,24 @@ addedFilesMc = {"2016": [], "2017": [], "2018": []}
 
 for key, value in SAMPLES.items():
     year = value[3]
-    os.system('rm '+ year + '/' +key + '.root')
-    nf = 40
+    nf = 72
+    if 'TTTo2L2Nu' in key or 'tw' in key or 'DY' in key:
+        nf = 35
+    if value[1]=='data':
+        nf = 205
     if value[1]=='data':
         addedFilesData[year].append( year + '/' + key + '.root ')
-    if ('TTTo2L2Nu' not in key) and ('DY' not in  key) and ('ST' not in  key) and ('WJetsToLNu' not in  key) and (value[1]=='mc'):
+    if ('TTTo2L2Nu' not in key) and ('DY' not in  key) and ('ST' not in  key) and ('WJetsToLNu' not in  key) and ('LFV' not in key) and (value[1]=='mc') and ('sys' not in key):
         addedFilesMc[year].append(  year + '/' + key + '.root ')
     hadd='hadd ' + year + '/' + key + '.root '
     for idx, S in enumerate(value[0]):
-        if value[1]=='data':
-            nf = 255
         for subdir, dirs, files in os.walk(S):
             sequance = [files[i:i+nf] for i in range(0,len(files),nf)]
             for num,  seq in enumerate(sequance):
                 hadd +=  year + '/' + key +'_' + str(idx) +'_' + str(num) + '.root '
             break
-    os.system(hadd)
+#    os.system('rm '+ year + '/' +key + '.root')
+#    os.system(hadd)
 
 os.system('rm *_data.root')
 os.system('rm *_others.root')
@@ -93,14 +95,14 @@ os.system('hadd 2018_LFVVecU.root 2017/2018_LFVTtVecU.root 2017/2018_LFVStVecU.r
 
 
 Y = ['2016','2017','2018']
-Sam = ['TTTo2L2Nu','WJetsToLNu']
+Sam = ['TTTo2L2Nu','WJetsToLNu','TTsys_hdampUP','TTsys_hdampDOWN','TTsys_TuneCP5up','TTsys_TuneCP5down','TTsys_CR1QCDbased','TTsys_CRerdON']
 
 for y in Y:
     for s in Sam:
         txt = 'cp ' + y + '/' + y + '_' + s + '.root .'
         os.system(txt)
 
-allSamples = ['TTTo2L2Nu','ST_tW','WJetsToLNu','data', 'others', 'DY', 'LFVVecU', 'LFVVecC']
+allSamples = ['TTTo2L2Nu','ST_tW','WJetsToLNu','data', 'others', 'DY', 'LFVVecU', 'LFVVecC','TTsys_hdampUP','TTsys_hdampDOWN','TTsys_TuneCP5up','TTsys_TuneCP5down','TTsys_CR1QCDbased','TTsys_CRerdON']
 allMCSamples = ['TTTo2L2Nu','ST_tW','WJetsToLNu', 'others', 'DY']
 
 for s in allSamples:

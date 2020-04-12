@@ -78,10 +78,6 @@ path = []
 #path.append('/pnfs/iihe/cms/store/user/schenara/SYS_RunII_2017/TTTo2L2Nu_hdampDOWN_TuneCP5_PSweights_13TeV-powheg-pythia8/crab_TTo2L2Nu_hdampDOWN_v14_v1/200311_161259/0000/')
 #path.append('/pnfs/iihe/cms/store/user/schenara/SYS_RunII_2017/TTTo2L2Nu_TuneCP5up_PSweights_13TeV-powheg-pythia8/crab_TTTo2L2Nu_TuneCP5up_v14_v1/200311_161406/0000/')
 #path.append('/pnfs/iihe/cms/store/user/schenara/SYS_RunII_2017/TTTo2L2Nu_TuneCP5down_PSweights_13TeV-powheg-pythia8/crab_TTTo2L2Nu_TuneCP5down_v14_v1/200311_161500/0000/')
-#path.append('/pnfs/iihe/cms/store/user/schenara/SYS_RunII_2017/TTTo2L2Nu_TuneCP5CR1_QCDbased_PSweights_13TeV-powheg-pythia8/crab_TTTo2L2Nu_TuneCP5CR1_QCDbased_v14_ext1_v1/200408_071405/0000/')
-#path.append('/pnfs/iihe/cms/store/user/schenara/SYS_RunII_2017/TTTo2L2Nu_TuneCP5CR1_QCDbased_PSweights_13TeV-powheg-pythia8/crab_TTTo2L2Nu_TuneCP5CR1_QCDbased_v14_v1/200408_071733/0000/')
-path.append('/pnfs/iihe/cms/store/user/schenara/SYS_RunII_2017/TTTo2L2Nu_TuneCP5_erdON_13TeV-powheg-pythia8/crab_TTTo2L2Nu_TuneCP5_erdON_v14_ext1-v1/200408_072222/0000/')
-path.append('/pnfs/iihe/cms/store/user/schenara/SYS_RunII_2017/TTTo2L2Nu_TuneCP5_erdON_13TeV-powheg-pythia8/crab_TTTo2L2Nu_TuneCP5_erdON_v14_v1/200408_072813/0000/')
 
 
 #path.append('/pnfs/iihe/cms/store/user/schenara/MC_RunII_2018/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/crab_DYJetsToLL_M-50_amcatnlo_v15_v1/200311_151257/0000/')
@@ -93,7 +89,7 @@ path.append('/pnfs/iihe/cms/store/user/schenara/SYS_RunII_2017/TTTo2L2Nu_TuneCP5
 #path.append('/pnfs/iihe/cms/store/user/schenara/MC_RunII_2018/DYJetsToLL_M-10to50_TuneCP5_13TeV-madgraphMLM-pythia8/crab_DYJetsToLL_M-10to50_v15_v2/191201_145133/0000/')
 #path.append('/pnfs/iihe/cms/store/user/schenara/MC_RunII_2018/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/crab_DYJetsToLL_M-50/191201_144729/0000/')
 #path.append('/pnfs/iihe/cms/store/user/schenara/MC_RunII_2018/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/crab_DYJetsToLL_M-50/191201_144729/0001/')
-#path.append('/pnfs/iihe/cms/store/user/schenara/MC_RunII_2018/TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/crab_TTTo2L2Nu_3/191215_182557/0000/')
+path.append('/pnfs/iihe/cms/store/user/schenara/MC_RunII_2018/TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/crab_TTTo2L2Nu_3/191215_182557/0000/')
 #path.append('/pnfs/iihe/cms/store/user/schenara/MC_RunII_2018/ST_tW_antitop_5f_NoFullyHadronicDecays_TuneCP5_13TeV-powheg-pythia8/crab_ST_tW_antitop_v15_ext1-v2/191201_152039/0000/')
 #path.append('/pnfs/iihe/cms/store/user/schenara/MC_RunII_2018/ST_tW_top_5f_NoFullyHadronicDecays_TuneCP5_13TeV-powheg-pythia8/crab_ST_tW_top_v15_ext1-v2/191201_151723/0000/')
 #path.append('/pnfs/iihe/cms/store/user/schenara/MC_RunII_2018/WWTo2L2Nu_NNPDF31_TuneCP5_13TeV-powheg-pythia8/crab_WWTo2L2Nu/191201_145426/0000/')
@@ -114,17 +110,17 @@ path.append('/pnfs/iihe/cms/store/user/schenara/SYS_RunII_2017/TTTo2L2Nu_TuneCP5
 #path.append('/pnfs/iihe/cms/store/user/schenara/SYS_RunII_2018/TTTo2L2Nu_TuneCP5up_13TeV-powheg-pythia8/crab_TTTo2L2Nu_TuneCP5up_v15_v1/200311_154516/0000/')
 #path.append('/pnfs/iihe/cms/store/user/schenara/SYS_RunII_2018/TTTo2L2Nu_TuneCP5down_13TeV-powheg-pythia8/crab_TTTo2L2Nu_TuneCP5down_v15_ext1_v1/200311_154727/0000/')
 #path.append('/pnfs/iihe/cms/store/user/schenara/SYS_RunII_2018/TTTo2L2Nu_TuneCP5down_13TeV-powheg-pythia8/crab_TTTo2L2Nu_TuneCP5down_v15_v1/200311_154910/0000/')
-#path.append('/pnfs/iihe/cms/store/user/schenara/SYS_RunII_2018/TTTo2L2Nu_TuneCP5CR1_QCDbased_13TeV-powheg-pythia8/crab_TTTo2L2Nu_TuneCP5CR1_QCDbased/200311_155229/0000/')
-#path.append('/pnfs/iihe/cms/store/user/schenara/SYS_RunII_2018/TTTo2L2Nu_TuneCP5_erdON_13TeV-powheg-pythia8/crab_TTTo2L2Nu_TuneCP5_erdON_v15_v1/200311_155126/0000/')
-#path.append('/pnfs/iihe/cms/store/user/schenara/SYS_RunII_2018/TTTo2L2Nu_TuneCP5_erdON_13TeV-powheg-pythia8/crab_TTTo2L2Nu_TuneCP5_erdON_v15_ext1_v1/200311_155018/0000/')
-
 nEventsraw = 0
 neventsweight = 0
 nEventsStored = 0
 nEventsiihe = 0
-for a in path:
+LHEWeightID=[]
+sumOfLHEWeight=[]
+sumOfMcWeight=[]
+
+for n,a in enumerate(path):
     filenames = os.listdir(a)
-    for fname in filenames:
+    for fnum, fname in enumerate(filenames):
         filename = a + '/' + fname
         print fname 
         if 'fail' in fname:
@@ -141,7 +137,27 @@ for a in path:
         nEventsraw += tree_meta.nEventsRaw
         nEventsStored += tree_meta.nEventsStored
         neventsweight += tree_meta.mc_nEventsWeighted
+        if fnum==0 and n==0:
+            for j in range(tree_meta.mc_LHEweightsId.size()):
+                LHEWeightID.append(float(tree_meta.mc_LHEweightsId[j]))
+                sumOfLHEWeight.append(tree_meta.mc_sumofLHEWeights[j])
+            for j in range(tree_meta.mc_sumofgenWeights.size()):
+                sumOfMcWeight.append(tree_meta.mc_sumofgenWeights[j])
+        else:
+            for j in range(tree_meta.mc_LHEweightsId.size()):
+                sumOfLHEWeight[j]+=tree_meta.mc_sumofLHEWeights[j]
+            for j in range(tree_meta.mc_sumofgenWeights.size()):
+                sumOfMcWeight[j]+=tree_meta.mc_sumofgenWeights[j]
         f.Close()
+
+round_sumOfLHEWeight = [round(num, 2) for num in sumOfLHEWeight]
+round_sumOfMcWeight = [round(num, 2) for num in sumOfMcWeight]
+print 'LHEWeightID='
+print LHEWeightID
+print 'sumOfLHEWeight='
+print round_sumOfLHEWeight
+print 'sumOfMcWeight='
+print round_sumOfMcWeight
 print 'nEventsraw %d   '%(nEventsraw)
 print 'neventsweight %d   '%(neventsweight)
 print 'nEventsStored %d   '%(nEventsStored)

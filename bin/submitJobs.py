@@ -11,12 +11,14 @@ import Files_2016
 import Files_2017
 import Files_2018
 SAMPLES = {}
-mc_2016 = True
-data_2016 = True
-mc_2017 = True
-data_2017 = True
-mc_2018 = True
-data_2018 = True
+MC = True
+Data = True
+mc_2016 = MC
+data_2016 = Data
+mc_2017 = MC
+data_2017 = Data
+mc_2018 = MC
+data_2018 = Data
 
 if mc_2016:
     SAMPLES.update(Files_2016.mc2016_samples)
@@ -33,18 +35,20 @@ if data_2018:
 
 
 for key, value in SAMPLES.items():
-    if 'LFV' not in key:
-       continue
+    if 'CR' not in key:
+        continue
     year = value[3]
-    nf = 40
+    nf = 72
     for idx, S in enumerate(value[0]):
+        if 'TTTo2L2Nu' in key or 'tw' in key or 'DY' in key:
+            nf = 35
         if value[1]=='data':
-            nf = 255
+            nf = 205
         for subdir, dirs, files in os.walk(S):
             sequance = [files[i:i+nf] for i in range(0,len(files),nf)]
             for num,  seq in enumerate(sequance):
                 f = key +'_' + str(idx) +'_' + str(num)
-                subprocess.call('rm /user/rgoldouz/NewAnalysis2020/Analysis/hists/' + year + '/' + f + '.root', shell=True)
+#                subprocess.call('rm /user/rgoldouz/NewAnalysis2020/Analysis/hists/' + year + '/' + f + '.root', shell=True)
                 qsub = "qsub -q localgrid  -o STDOUT/" + f + ".stdout -e STDERR/" + f + ".stderr Jobs/" + f + '.sh'
                 subprocess.call(qsub, shell=True)
             break

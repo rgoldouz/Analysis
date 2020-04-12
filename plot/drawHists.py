@@ -200,66 +200,6 @@ def stackPlots(hists, SignalHists, Fnames, ch = "channel", reg = "region", year=
     gc.collect()
 
 
-def compareHists(hists,Fnames, ch = "channel", reg = "region", var="sample", varname="v"):
-    for num in range(len(hists)):
-        if (hists[num].Integral() <= 0):
-            return  
-    Fol = 'compareHists'
-    if not os.path.exists(Fol):
-       os.makedirs(Fol)
-    if not os.path.exists(Fol + '/' + ch):
-       os.makedirs(Fol + '/' + ch)
-    if not os.path.exists(Fol + '/' + ch +'/'+reg):
-       os.makedirs(Fol + '/' + ch +'/'+reg)
-    for num in range(len(hists)):
-        hists[num].SetBinContent(hists[num].GetXaxis().GetNbins(), hists[num].GetBinContent(hists[num].GetXaxis().GetNbins()) + hists[num].GetBinContent(hists[num].GetXaxis().GetNbins()+1))
-        hists[num].Scale(1/hists[num].Integral())
-
-    canvas = ROOT.TCanvas(ch+reg+var,ch+reg+var,50,50,865,780)
-    canvas.SetGrid();
-    canvas.SetBottomMargin(0.17)
-    canvas.cd()
-
-    legend = ROOT.TLegend(0.6,0.7,0.85,0.88)
-    legend.SetBorderSize(0)
-    legend.SetTextFont(42)
-    legend.SetTextSize(0.03)
-
-    pad1=ROOT.TPad("pad1", "pad1", 0.05, 0.05, 1, 0.99 , 0)#used for the hist plot
-    pad1.Draw()
-    pad1.cd()
-    pad1.SetLogx(ROOT.kFALSE)
-    pad1.SetLogy(ROOT.kFALSE)
-
-    y_min=0
-    y_max=1.2* max(hists[0].GetMaximum(), hists[1].GetMaximum(), hists[2].GetMaximum())
-    hists[0].SetTitle("")
-    hists[0].GetYaxis().SetTitle('Fraction')
-    hists[0].GetXaxis().SetLabelSize(0.03)
-    hists[0].GetYaxis().SetTitleOffset(0.8)
-    hists[0].GetYaxis().SetTitleSize(0.05)
-    hists[0].GetYaxis().SetLabelSize(0.04)
-    hists[0].GetYaxis().SetRangeUser(y_min,y_max)
-    hists[0].GetXaxis().SetTitle(varname)
-    hists[0].Draw("Hist")
-    hists[0].SetLineWidth(2)
-    hists[0].SetFillColor(0)
-    for H in range(1,len(hists)):
-        hists[H].SetLineWidth(2)
-        hists[H].SetFillColor(0)
-        hists[H].Draw("histSAME")
-    hists[0].Draw("AXISSAMEY+")
-    hists[0].Draw("AXISSAMEX+")
-
-    for num in range(0,len(hists)):
-        legend.AddEntry(hists[num],Fnames[num],'L')
-    legend.Draw("same")
-
-    pad1.Update()
-    canvas.Print(Fol + '/' + ch +'/'+reg+'/'+var + ".png")
-    del canvas
-    gc.collect()
-
 year=['2016','2017','2018','All']
 #year=['2016']
 regions=["ll","llOffZ","llB1", "llBg1", "llMetl30", "llMetg30", "llMetl30Jetg2B1", "llMetl30Jetg2Bg1", "llMetg30Jetg2B1", "llMetg30Jetg2Bg1"]
@@ -311,7 +251,7 @@ for numyear, nameyear in enumerate(year):
                     else:
                         HH.append(Hists[numyear][f][numch][numreg][numvar])
 
-#                stackPlots(HH, HHsignal, SamplesName, namech, namereg, nameyear,namevar,variablesName[numvar])
+                stackPlots(HH, HHsignal, SamplesName, namech, namereg, nameyear,namevar,variablesName[numvar])
 
 le = '\\documentclass{article}' + "\n"
 le += '\\usepackage{rotating}' + "\n"
@@ -325,12 +265,3 @@ for numyear, nameyear in enumerate(year):
 print '\\end{document}' + "\n"
 
 
-for numreg, namereg in enumerate(regions):
-    for numvar, namevar in enumerate(variables):
-        HH=[]
-        HHname=[]
-        for f in range(len(Samples)):
-            if 'LFV' in Samples[f] or 'TT' in Samples[f]:
-                HH.append(Hists[1][f][1][numreg][numvar])
-                HHname.append(SamplesName[f])
-        compareHists(HH,HHname, 'emu', namereg,namevar,variablesName[numvar])
