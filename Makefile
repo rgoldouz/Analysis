@@ -14,7 +14,7 @@ LDFLAGS        =
 SOFLAGS        = -O -shared  -fPIC #-flat_namespace 
 LIBS           = $(ROOTLIBS) 
 
-GLIBS         = $(ROOTGLIBS) -lMinuit -lMinuit2 -lTreePlayer -lGenVector
+GLIBS         = $(ROOTGLIBS) -lMinuit -lTreePlayer -lGenVector
 
 SRCS = src/BTagCalibrationStandalone.cc src/RoccoR.cc src/lepton_candidate.cc src/jet_candidate.cc src/PU_reWeighting.cc src/MyAnalysis.cc 
 OBJS =  $(patsubst %.C,%.o,$(SRCS:.cc=.o))
@@ -25,7 +25,7 @@ LIB=lib/main.so
 .SUFFIXES: .cc,.C,.hh,.h
 
 # Rules ====================================
-all: $(LIB)  bin/RunAll
+all: $(LIB)  RunAll
 
 lib : $(LIB)
 $(LIB): $(OBJS)
@@ -34,7 +34,7 @@ $(LIB): $(OBJS)
 	$(LD) $(LDFLAGS) $(GLIBS) $(SOFLAGS) $(OBJS) -o $(LIB)
 	@echo "$(LIB) successfully compiled!"
 
-bin/RunAll : src/main.C $(LIB)	
+RunAll : src/main.cc $(LIB)	
 	mkdir -p bin
 	$(CXX) $(CXXFLAGS) -ldl $(LDFLAGS) -o $@ $^ $(GLIBS)
 
