@@ -14,7 +14,7 @@ LDFLAGS        =
 SOFLAGS        = -O -shared  -fPIC #-flat_namespace 
 LIBS           = $(ROOTLIBS) 
 
-GLIBS         = $(ROOTGLIBS) -lMinuit -lTreePlayer -lGenVector
+GLIBS         = $(ROOTGLIBS) -lMinuit -lTreePlayer 
 
 SRCS = src/BTagCalibrationStandalone.cc src/RoccoR.cc src/lepton_candidate.cc src/jet_candidate.cc src/PU_reWeighting.cc src/MyAnalysis.cc 
 OBJS =  $(patsubst %.C,%.o,$(SRCS:.cc=.o))
@@ -41,7 +41,7 @@ RunAll : src/main.cc $(LIB)
 clean:
 	$(RM) $(OBJS)	
 	$(RM) $(LIB)
-	$(RM) bin/RunAll
+	$(RM) RunAll
 
 purge:
 	$(RM) $(OBJS)
