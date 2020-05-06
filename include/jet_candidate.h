@@ -20,7 +20,12 @@ public:
   float phi_;
   int flavor_;
   int btag_;
+  float bt_; //b-tagging score
   int isb(float, TString);
+  int isbajet; // jet coming from standard top 
+  void setbajet(){
+       isbajet=1;
+  }
   TLorentzVector p4_;
 
 

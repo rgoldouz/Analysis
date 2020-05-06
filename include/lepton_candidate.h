@@ -21,6 +21,10 @@ public:
   int charge_;
   int indice_;
   int lep_;
+  int isbalep;//bachelor lepton: lepton comeing from standard top
+  void setbalep(){
+       isbalep=1;
+  }
   TLorentzVector p4_;
 
 
