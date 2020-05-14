@@ -69,12 +69,19 @@ print"gfal-ls output written to file {}".format( ARGS.NAME + '.txt'  )
 if ARGS.CPTOEOS :
     # Move these files to my EOS space
     #gfal-copy -f --from-file files.txt file://$PWD                                                                                             # where files.txt is a file where every line is a source in srm url syntax                                       
+    isreal = os.system( "ls "+  ARGS.EOSDEST+ARGS.NAME  )  
+    print  ARGS.EOSDEST+ARGS.NAME 
+    print isreal
+    
+    if isreal > 0 :  
+        print "create eos dir if it doesn't exist: {}".format(ARGS.EOSDEST+ARGS.NAME)
+        os.system( "mkdir "+ ARGS.EOSDEST+ARGS.NAME )
 
-    print "create eos dir if it doesn't exist: {}".format(ARGS.EOSDEST+ARGS.NAME)
-    os.system( "mkdir "+ ARGS.EOSDEST+ARGS.NAME )
-
-    # Copy files to their new home
-    gfcom = "gfal-copy -f --from-file  " + ARGS.NAME+ ".txt  " + ARGS.EOSDEST+ARGS.NAME + "/" 
-    print gfcom
-    os.system( gfcom )
-    print "Done moving all files from {} to {}".format ( ARGS.LOC , ARGS.EOSDEST+ARGS.NAME  )
+        # Copy files to their new home
+        gfcom = "gfal-copy -f --from-file  " + ARGS.NAME+ ".txt  " + ARGS.EOSDEST+ARGS.NAME + "/" 
+        print gfcom
+        os.system( gfcom )
+        print "Done moving all files from {} to {}".format ( ARGS.LOC , ARGS.EOSDEST+ARGS.NAME  )
+    elif isreal == 0 :
+        print "eos dir exists, skipping..."
+    
