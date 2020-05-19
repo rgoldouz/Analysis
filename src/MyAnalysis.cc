@@ -183,13 +183,13 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
   BTagCalibrationReader reader(BTagEntry::OP_MEDIUM, "central", {"up", "down"});
 
   RoccoR  rc;
-  if(year == "2016")    rochesterFile = "../TopLFV/input/RoccoR2016.txt";
-  if(year == "2017")    rochesterFile = "../TopLFV/input/RoccoR2017.txt";
-  if(year == "2018")    rochesterFile = "../TopLFV/input/RoccoR2018.txt";
+  if(year == "2016")    rochesterFile = "input/RoccoR2016.txt";
+  if(year == "2017")    rochesterFile = "input/RoccoR2017.txt";
+  if(year == "2018")    rochesterFile = "input/RoccoR2018.txt";
   rc.init(rochesterFile);
 
   if(data == "mc"){
-    TFile *f_btagEff_Map = new TFile("../TopLFV/input/btagEff.root");
+    TFile *f_btagEff_Map = new TFile("input/btagEff.root");
     if(year == "2016"){
       btagEff_b_H = *(TH2F*)f_btagEff_Map->Get("2016_h2_BTaggingEff_b");
       btagEff_c_H = *(TH2F*)f_btagEff_Map->Get("2016_h2_BTaggingEff_c");
@@ -206,9 +206,9 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
       btagEff_udsg_H = *(TH2F*)f_btagEff_Map->Get("2018_h2_BTaggingEff_udsg");
     }
 
-    if(year == "2016")    btagFile = "../TopLFV/input/DeepCSV_2016LegacySF_V1.csv";
-    if(year == "2017")    btagFile = "../TopLFV/input/DeepCSV_94XSF_V4_B_F.csv";
-    if(year == "2018")    btagFile = "../TopLFV/input/DeepCSV_102XSF_V1.csv";
+    if(year == "2016")    btagFile = "input/DeepCSV_2016LegacySF_V1.csv";
+    if(year == "2017")    btagFile = "input/DeepCSV_94XSF_V4_B_F.csv";
+    if(year == "2018")    btagFile = "input/DeepCSV_102XSF_V1.csv";
 
     BTagCalibration calib("DeepCSV",btagFile);
     reader.load(calib,BTagEntry::FLAV_B,"comb"); 
@@ -216,35 +216,35 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     reader.load(calib,BTagEntry::FLAV_UDSG,"comb");
 
     if(year == "2016"){
-      TFile *f_Ele_Reco_Map = new TFile("../TopLFV/input/EGM2D_BtoH_GT20GeV_RecoSF_Legacy2016.root");
+      TFile *f_Ele_Reco_Map = new TFile("input/EGM2D_BtoH_GT20GeV_RecoSF_Legacy2016.root");
       sf_Ele_Reco_H = *(TH2F*)f_Ele_Reco_Map->Get("EGamma_SF2D");
 
-      TFile *f_Ele_ID_Map = new TFile("../TopLFV/input/2016LegacyReReco_ElectronTight_Fall17V2.root");
+      TFile *f_Ele_ID_Map = new TFile("input/2016LegacyReReco_ElectronTight_Fall17V2.root");
       sf_Ele_ID_H = *(TH2F*)f_Ele_ID_Map->Get("EGamma_SF2D");
 
-      TFile *f_Mu_ID_Map_1 = new TFile("../TopLFV/input/2016_RunBCDEF_SF_ID.root");
+      TFile *f_Mu_ID_Map_1 = new TFile("input/2016_RunBCDEF_SF_ID.root");
       TH2F *sf_Mu_ID_H_1 = (TH2F*)f_Mu_ID_Map_1->Get("NUM_TightID_DEN_genTracks_eta_pt");
-      TFile *f_Mu_ID_Map_2 = new TFile("../TopLFV/input/2016_RunGH_SF_ID.root");
+      TFile *f_Mu_ID_Map_2 = new TFile("input/2016_RunGH_SF_ID.root");
       TH2F *sf_Mu_ID_H_2 = (TH2F*)f_Mu_ID_Map_2->Get("NUM_TightID_DEN_genTracks_eta_pt");
       sf_Mu_ID_H_1->Scale(0.55);
       sf_Mu_ID_H_2->Scale(0.45);
       sf_Mu_ID_H_1->Add(sf_Mu_ID_H_2);
       sf_Mu_ID_H = *sf_Mu_ID_H_1;
 
-      TFile *f_Mu_ISO_Map_1 = new TFile("../TopLFV/input/2016_RunBCDEF_SF_ISO.root");
+      TFile *f_Mu_ISO_Map_1 = new TFile("input/2016_RunBCDEF_SF_ISO.root");
       TH2F *sf_Mu_ISO_H_1 = (TH2F*)f_Mu_ISO_Map_1->Get("NUM_TightRelIso_DEN_TightIDandIPCut_eta_pt");
-      TFile *f_Mu_ISO_Map_2 = new TFile("../TopLFV/input/2016_RunGH_SF_ISO.root");
+      TFile *f_Mu_ISO_Map_2 = new TFile("input/2016_RunGH_SF_ISO.root");
       TH2F *sf_Mu_ISO_H_2 = (TH2F*)f_Mu_ISO_Map_2->Get("NUM_TightRelIso_DEN_TightIDandIPCut_eta_pt");
       sf_Mu_ISO_H_1->Scale(0.55);
       sf_Mu_ISO_H_2->Scale(0.45);
       sf_Mu_ISO_H_1->Add(sf_Mu_ISO_H_2);
       sf_Mu_ISO_H = *sf_Mu_ISO_H_1;
 
-      TFile *f_triggeree = new TFile("../TopLFV/input/TriggerSF_ee2016_pt.root");
+      TFile *f_triggeree = new TFile("input/TriggerSF_ee2016_pt.root");
       sf_triggeree_H = *(TH2F*)f_triggeree->Get("h_lep1Pt_lep2Pt_Step6");
-      TFile *f_triggeremu = new TFile("../TopLFV/input/TriggerSF_emu2016_pt.root");
+      TFile *f_triggeremu = new TFile("input/TriggerSF_emu2016_pt.root");
       sf_triggeremu_H = *(TH2F*)f_triggeremu->Get("h_lep1Pt_lep2Pt_Step3");
-      TFile *f_triggermumu = new TFile("../TopLFV/input/TriggerSF_mumu2016_pt.root");
+      TFile *f_triggermumu = new TFile("input/TriggerSF_mumu2016_pt.root");
       sf_triggermumu_H = *(TH2F*)f_triggermumu->Get("h_lep1Pt_lep2Pt_Step9");
 
       f_Ele_Reco_Map->Close();
@@ -258,23 +258,23 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
       f_triggermumu->Close();
     }
     if(year == "2017"){
-      TFile *f_Ele_Reco_Map = new TFile("../TopLFV/input/egammaEffi.txt_EGM2D_runBCDEF_passingRECO.root");
+      TFile *f_Ele_Reco_Map = new TFile("input/egammaEffi.txt_EGM2D_runBCDEF_passingRECO.root");
       sf_Ele_Reco_H = *(TH2F*)f_Ele_Reco_Map->Get("EGamma_SF2D");
 
-      TFile *f_Ele_ID_Map = new TFile("../TopLFV/input/2017_ElectronTight.root");
+      TFile *f_Ele_ID_Map = new TFile("input/2017_ElectronTight.root");
       sf_Ele_ID_H = *(TH2F*)f_Ele_ID_Map->Get("EGamma_SF2D");
 
-      TFile *f_Mu_ID_Map = new TFile("../TopLFV/input/2017_RunBCDEF_SF_ID_syst.root");
+      TFile *f_Mu_ID_Map = new TFile("input/2017_RunBCDEF_SF_ID_syst.root");
       sf_Mu_ID_H = *(TH2F*)f_Mu_ID_Map->Get("NUM_TightID_DEN_genTracks_pt_abseta");
 
-      TFile *f_Mu_ISO_Map = new TFile("../TopLFV/input/2017_RunBCDEF_SF_ISO_syst.root");
+      TFile *f_Mu_ISO_Map = new TFile("input/2017_RunBCDEF_SF_ISO_syst.root");
       sf_Mu_ISO_H = *(TH2F*)f_Mu_ISO_Map->Get("NUM_TightRelIso_DEN_TightIDandIPCut_pt_abseta");
 
-      TFile *f_triggeree = new TFile("../TopLFV/input/TriggerSF_ee2017_pt.root");
+      TFile *f_triggeree = new TFile("input/TriggerSF_ee2017_pt.root");
       sf_triggeree_H = *(TH2F*)f_triggeree->Get("h_lep1Pt_lep2Pt_Step6");
-      TFile *f_triggeremu = new TFile("../TopLFV/input/TriggerSF_emu2017_pt.root");
+      TFile *f_triggeremu = new TFile("input/TriggerSF_emu2017_pt.root");
       sf_triggeremu_H = *(TH2F*)f_triggeremu->Get("h_lep1Pt_lep2Pt_Step3");
-      TFile *f_triggermumu = new TFile("../TopLFV/input/TriggerSF_mumu2017_pt.root");
+      TFile *f_triggermumu = new TFile("input/TriggerSF_mumu2017_pt.root");
       sf_triggermumu_H = *(TH2F*)f_triggermumu->Get("h_lep1Pt_lep2Pt_Step9");
 
       f_Ele_Reco_Map->Close();
@@ -286,23 +286,23 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
       f_triggermumu->Close();
     }
     if(year == "2018"){
-      TFile *f_Ele_Reco_Map = new TFile("../TopLFV/input/egammaEffi.txt_EGM2D_updatedAll.root");
+      TFile *f_Ele_Reco_Map = new TFile("input/egammaEffi.txt_EGM2D_updatedAll.root");
       sf_Ele_Reco_H = *(TH2F*)f_Ele_Reco_Map->Get("EGamma_SF2D");
 
-      TFile *f_Ele_ID_Map = new TFile("../TopLFV/input/2018_ElectronTight.root");
+      TFile *f_Ele_ID_Map = new TFile("input/2018_ElectronTight.root");
       sf_Ele_ID_H = *(TH2F*)f_Ele_ID_Map->Get("EGamma_SF2D");
 
-      TFile *f_Mu_ID_Map = new TFile("../TopLFV/input/2018_RunABCD_SF_ID.root");
+      TFile *f_Mu_ID_Map = new TFile("input/2018_RunABCD_SF_ID.root");
       sf_Mu_ID_H = *(TH2F*)f_Mu_ID_Map->Get("NUM_TightID_DEN_TrackerMuons_pt_abseta");
 
-      TFile *f_Mu_ISO_Map = new TFile("../TopLFV/input/2018_RunABCD_SF_ISO.root");
+      TFile *f_Mu_ISO_Map = new TFile("input/2018_RunABCD_SF_ISO.root");
       sf_Mu_ISO_H = *(TH2F*)f_Mu_ISO_Map->Get("NUM_TightRelIso_DEN_TightIDandIPCut_pt_abseta");
 
-      TFile *f_triggeree = new TFile("../TopLFV/input/TriggerSF_ee2018_pt.root");
+      TFile *f_triggeree = new TFile("input/TriggerSF_ee2018_pt.root");
       sf_triggeree_H = *(TH2F*)f_triggeree->Get("h_lep1Pt_lep2Pt_Step6");
-      TFile *f_triggeremu = new TFile("../TopLFV/input/TriggerSF_emu2018_pt.root");
+      TFile *f_triggeremu = new TFile("input/TriggerSF_emu2018_pt.root");
       sf_triggeremu_H = *(TH2F*)f_triggeremu->Get("h_lep1Pt_lep2Pt_Step3");
-      TFile *f_triggermumu = new TFile("../TopLFV/input/TriggerSF_mumu2018_pt.root");
+      TFile *f_triggermumu = new TFile("input/TriggerSF_mumu2018_pt.root");
       sf_triggermumu_H = *(TH2F*)f_triggermumu->Get("h_lep1Pt_lep2Pt_Step9");
 
       f_Ele_Reco_Map->Close();
