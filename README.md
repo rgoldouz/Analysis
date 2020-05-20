@@ -8,32 +8,116 @@ This framework can be compiled standalone, although it depends on ROOT&&BOOST li
 
 ## I. File Lists
 
-bin/Files_2016.py                   Python file to store addresses of 2016 samples                  
-bin/Files_2017.py                   ... 2017 ...
-bin/Files_2018.py                   ... 2018 ...
-bin/Files_2017_A.py                 Addresses of samples for Top Trilepton analysis
-bin/makeGFAL-COPYtxtfiles.py        Python function to make gfal-copy files
-bin/GFAL-COPY-ALL.py                Python function to run makeGFAL-COPYtxtfiles.py
-bin/makeJobs.py                     Python function for writing condor jobs
-bin/submitJobs.py                   Python function for submitting condor jobs
-bin/input/                          Duplicate of input/ directory
-bin/Jobs/                           Directory where condor job files live
-helper/                             Directory where utility functions live
-hists/2016/                         Directory to store output file for 2016 data/mc
-hists/2017/                         ... 2017 ...
-hists/2018/                         ... 2018 ...
-hists/hadd.py                       Utility function for merging root files
-include/                            Directory where header files live
-input/                              Directory where input files live 
-plot/                               Directory where plotting functions live
-src/BTagCalibrationStandalone.cc    B-tagging calibration file
-src/MyAnalysis.cc                   Main analysis file 
-src/PU_reWeighting.cc               Pile-Up reweighting file 
-src/RoccoR.cc                       Rochester correction file 
-src/jet_candidate.cc                Object class for jet
-src/lepton_candidate.cc             Object class for lepton
-src/main.cc                         Testing file 
-Makefile                            Tool for compiling 
+<table border="0">
+ <tr>
+    <td><b style="font-size:30px">Files</b></td>
+    <td><b style="font-size:30px">Description</b></td>
+ </tr>
+ <tr>
+    <td>bin/Files_2016.py</td>
+    <td>Python file to store addresses of 2016 samples</td>
+ </tr>
+ <tr>
+    <td>bin/Files_2017.py</td>
+    <td>Python file to store addresses of 2017 samples</td>
+ </tr>
+ <tr>
+    <td>bin/Files_2018.py</td>
+    <td>Python file to store addresses of 2018 samples</td>
+ </tr>
+ <tr>
+    <td>bin/Files_2017_A.py</td>
+    <td>Addresses of samples for Top Trilepton analysis</td>
+ </tr>
+ <tr>
+    <td>bin/makeGFAL-COPYtxtfiles.py</td>
+    <td>Python function to make gfal-copy files</td>
+ </tr>
+ <tr>
+    <td>bin/GFAL-COPY-ALL.py</td>
+    <td>Python function to run makeGFAL-COPYtxtfiles.py</td>
+ </tr>
+ <tr>
+    <td>bin/makeJobs.py</td>
+    <td>Python function for writing condor jobs</td>
+ </tr>
+ <tr>
+    <td>bin/submitJobs.py</td>
+    <td>Python function for submitting condor jobs</td>
+ </tr>
+ <tr>
+    <td>bin/input/</td>
+    <td>Duplicate of input/ directory</td>
+ </tr>
+ <tr>
+    <td>bin/Jobs/</td>
+    <td>Directory where condor job files live</td>
+ </tr>
+ <tr>
+    <td>helper/</td>
+    <td>Directory where utility functions live</td>
+ </tr>
+ <tr>
+    <td>hists/2016/</td>
+    <td>Directory to store output file for 2016 data/mc</td>
+ </tr>
+ <tr>
+    <td>hists/2017/</td>
+    <td>Directory to store output file for 2017 data/mc</td>
+ </tr>
+ <tr>
+    <td>hists/2018/</td>
+    <td>Directory to store output file for 2018 data/mc</td>
+ </tr>
+ <tr>
+    <td>hists/hadd.py</td>
+    <td>Utility function for merging root files</td>
+ </tr>
+ <tr>
+    <td>include/</td>
+    <td>Directory where header files live</td>
+ </tr>
+ <tr>
+    <td>input/</td>
+    <td>Directory where input files live</td>
+ </tr>
+ <tr>
+    <td>plot/</td>
+    <td>Directory where plotting functions live</td>
+ </tr>
+ <tr>
+    <td>src/BTagCalibrationStandalone.cc</td>
+    <td>B-tagging calibration file</td>
+ </tr>
+ <tr>
+    <td>src/MyAnalysis.cc</td>
+    <td>Main analysis file</td>
+ </tr>
+ <tr>
+    <td>src/PU_reWeighting.cc</td>
+    <td>Pile-Up reweighting file</td>
+ </tr>
+ <tr>
+    <td>src/RoccoR.cc</td>
+    <td>Rochester correction file</td>
+ </tr>
+ <tr>
+    <td>src/jet_candidate.cc</td>
+    <td>Object class for jet</td>
+ </tr>
+ <tr>
+    <td>src/lepton_candidate.cc</td>
+    <td>Object class for lepton</td>
+ </tr>
+ <tr>
+    <td>src/main.cc</td>
+    <td>Testing file</td>
+ </tr>
+ <tr>
+    <td>Makefile</td>
+    <td>Tool for compiling</td>
+ </tr>
+</table>
 
 ## II. To compile & run 
 
