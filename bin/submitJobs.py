@@ -12,7 +12,7 @@ import Files_2017
 import Files_2018
 SAMPLES = {}
 MC = True
-Data = True
+Data = False
 mc_2016 = MC
 data_2016 = Data
 mc_2017 = MC
@@ -35,7 +35,7 @@ if data_2018:
 
 
 for key, value in SAMPLES.items():
-    if 'CR' not in key:
+    if '2016' not in key:
         continue
     year = value[3]
     nf = 72
@@ -48,8 +48,8 @@ for key, value in SAMPLES.items():
             sequance = [files[i:i+nf] for i in range(0,len(files),nf)]
             for num,  seq in enumerate(sequance):
                 f = key +'_' + str(idx) +'_' + str(num)
-#                subprocess.call('rm /user/rgoldouz/NewAnalysis2020/Analysis/hists/' + year + '/' + f + '.root', shell=True)
                 qsub = "qsub -q localgrid  -o STDOUT/" + f + ".stdout -e STDERR/" + f + ".stderr Jobs/" + f + '.sh'
+#                subprocess.call('rm /user/rgoldouz/NewAnalysis2020/Analysis/hists/' + year + '/' + f + '.root', shell=True)
                 subprocess.call(qsub, shell=True)
             break
 

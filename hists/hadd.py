@@ -53,8 +53,8 @@ for key, value in SAMPLES.items():
             for num,  seq in enumerate(sequance):
                 hadd +=  year + '/' + key +'_' + str(idx) +'_' + str(num) + '.root '
             break
-#    os.system('rm '+ year + '/' +key + '.root')
-#    os.system(hadd)
+    os.system('rm '+ year + '/' +key + '.root')
+    os.system(hadd)
 
 os.system('rm *_data.root')
 os.system('rm *_others.root')

@@ -58,7 +58,7 @@
     <Variable VarIndex="0" Expression="leading_pt" Label="leading_pt" Title="leading_pt" Unit="" Internal="leading_pt" Type="F" Min="2.50058937e+01" Max="1.32283154e+04"/>
     <Variable VarIndex="1" Expression="jet_leading_pt" Label="jet_leading_pt" Title="jet_leading_pt" Unit="" Internal="jet_leading_pt" Type="F" Min="3.00009956e+01" Max="3.06301611e+03"/>
     <Variable VarIndex="2" Expression="deltaR_ll" Label="deltaR_ll" Title="deltaR_ll" Unit="" Internal="deltaR_ll" Type="F" Min="1.55530930e-01" Max="5.50613165e+00"/>
-    <Variable VarIndex="3" Expression="MET_FinalCollection_Pt" Label="MET_FinalCollection_Pt" Title="MET_FinalCollection_Pt" Unit="" Internal="MET_FinalCollection_Pt" Type="F" Min="7.07361400e-02" Max="1.43298157e+03"/>
+    <Variable VarIndex="3" Expression="MET" Label="MET" Title="MET" Unit="" Internal="MET" Type="F" Min="7.07361400e-02" Max="1.43298157e+03"/>
     <Variable VarIndex="4" Expression="n_jet" Label="n_jet" Title="n_jet" Unit="" Internal="n_jet" Type="I" Min="1.00000000e+00" Max="1.10000000e+01"/>
   </Variables>
   <Spectators NSpec="0"/>

@@ -23,7 +23,7 @@ year=['2016','2017','2018','All']
 LumiErr = [0.025, 0.023, 0.025, 0.018]
 regions=["llB1", "llBg1"]
 channels=["emu"]
-variables=["llM"]
+variables=["BDT"]
 sys = ["eleRecoSf", "eleIDSf", "muIdSf", "muIsoSf", "bcTagSF", "udsgTagSF","pu", "prefiring", "jes", "jer"]
 HistAddress = '/user/rgoldouz/NewAnalysis2020/Analysis/hists/'
 

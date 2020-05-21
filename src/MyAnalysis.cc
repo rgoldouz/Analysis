@@ -87,12 +87,12 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
 
    TMVA::Tools::Instance();
    TMVA::Reader *readerMVA = new TMVA::Reader( "!Color:!Silent" );
-   Float_t leading_pt, jet_leading_pt, deltaR_ll, MET_FinalCollection_Pt, n_jet;
+   Float_t leading_pt, jet_leading_pt, deltaR_ll, MET, n_jet;
  
    readerMVA->AddVariable ("leading_pt", &leading_pt);
    readerMVA->AddVariable ("jet_leading_pt", &jet_leading_pt);
    readerMVA->AddVariable ("deltaR_ll", &deltaR_ll);
-   readerMVA->AddVariable ("MET_FinalCollection_Pt", &MET_FinalCollection_Pt);
+   readerMVA->AddVariable ("MET", &MET);
    readerMVA->AddVariable ("n_jet", &n_jet);
    readerMVA->BookMVA( "BDT_1b_tc_BDT", "/user/rgoldouz/NewAnalysis2020/Analysis/input/TMVA_BDT_1b_tc_BDT.weights.xml");
 
@@ -239,7 +239,7 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     BTagCalibration calib("DeepCSV",btagFile);
     reader.load(calib,BTagEntry::FLAV_B,"comb"); 
     reader.load(calib,BTagEntry::FLAV_C,"comb");
-    reader.load(calib,BTagEntry::FLAV_UDSG,"comb");
+    reader.load(calib,BTagEntry::FLAV_UDSG,"incl");
 
     if(year == "2016"){
       TFile *f_Ele_Reco_Map = new TFile("/user/rgoldouz/NewAnalysis2020/Analysis/input/EGM2D_BtoH_GT20GeV_RecoSF_Legacy2016.root");
@@ -397,6 +397,7 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
   Long64_t nentries = fChain->GetEntriesFast();
   Long64_t nbytes = 0, nb = 0;
   Long64_t ntr = fChain->GetEntries ();
+
   for (Long64_t jentry=0; jentry<nentries;jentry++) {
 //  for (Long64_t jentry=0; jentry<100;jentry++) {
     Long64_t ientry = LoadTree(jentry);
@@ -604,19 +605,19 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
 
         sf_Mu_ISO = sf_Mu_ISO * scale_factor(&sf_Mu_ISO_H, (*mu_gt_eta)[l], (*mu_gt_pt)[l],"");
         nominalWeights[3] = nominalWeights[3] * scale_factor(&sf_Mu_ISO_H, (*mu_gt_eta)[l], (*mu_gt_pt)[l],"");
-        sysUpWeights[3] = sysUpWeights[3] * scale_factor(&sf_Mu_ISO_H, (*mu_gt_eta)[l], (*mu_gt_pt)[l],"");
-        sysDownWeights[3] = sysDownWeights[3] * scale_factor(&sf_Mu_ISO_H, (*mu_gt_eta)[l], (*mu_gt_pt)[l],"");
+        sysUpWeights[3] = sysUpWeights[3] * scale_factor(&sf_Mu_ISO_H, (*mu_gt_eta)[l], (*mu_gt_pt)[l],"up");
+        sysDownWeights[3] = sysDownWeights[3] * scale_factor(&sf_Mu_ISO_H, (*mu_gt_eta)[l], (*mu_gt_pt)[l],"down");
       }
       if (data == "mc" && year != "2016") {
         sf_Mu_ID = sf_Mu_ID * scale_factor(&sf_Mu_ID_H, (*mu_gt_pt)[l], abs((*mu_gt_eta)[l]),"");
         nominalWeights[2] = nominalWeights[2] * scale_factor(&sf_Mu_ID_H, (*mu_gt_pt)[l], abs((*mu_gt_eta)[l]),"");
-        sysUpWeights[2] = sysUpWeights[2] * scale_factor(&sf_Mu_ID_H, (*mu_gt_pt)[l], abs((*mu_gt_eta)[l]),"");
-        sysDownWeights[2] = sysDownWeights[2] * scale_factor(&sf_Mu_ID_H, (*mu_gt_pt)[l], abs((*mu_gt_eta)[l]),"");
+        sysUpWeights[2] = sysUpWeights[2] * scale_factor(&sf_Mu_ID_H, (*mu_gt_pt)[l], abs((*mu_gt_eta)[l]),"up");
+        sysDownWeights[2] = sysDownWeights[2] * scale_factor(&sf_Mu_ID_H, (*mu_gt_pt)[l], abs((*mu_gt_eta)[l]),"down");
 
         sf_Mu_ISO = sf_Mu_ISO * scale_factor(&sf_Mu_ISO_H, (*mu_gt_pt)[l], abs((*mu_gt_eta)[l]),"");
         nominalWeights[3] = nominalWeights[3] * scale_factor(&sf_Mu_ISO_H, (*mu_gt_pt)[l], abs((*mu_gt_eta)[l]),"");
-        sysUpWeights[3] = sysUpWeights[3] * scale_factor(&sf_Mu_ISO_H, (*mu_gt_pt)[l], abs((*mu_gt_eta)[l]),"");
-        sysDownWeights[3] = sysDownWeights[3] * scale_factor(&sf_Mu_ISO_H, (*mu_gt_pt)[l], abs((*mu_gt_eta)[l]),"");
+        sysUpWeights[3] = sysUpWeights[3] * scale_factor(&sf_Mu_ISO_H, (*mu_gt_pt)[l], abs((*mu_gt_eta)[l]),"up");
+        sysDownWeights[3] = sysDownWeights[3] * scale_factor(&sf_Mu_ISO_H, (*mu_gt_pt)[l], abs((*mu_gt_eta)[l]),"down");
       }
 
     }
@@ -783,32 +784,32 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     jet_leading_pt = 0;
     if (selectedJets->size()>0) jet_leading_pt = (*selectedJets)[0]->pt_;
     deltaR_ll = deltaR((*selectedLeptons)[0]->eta_,(*selectedLeptons)[0]->phi_,(*selectedLeptons)[1]->eta_,(*selectedLeptons)[1]->phi_);
-    MET_FinalCollection_Pt = MET_FinalCollection_Pt;
+    MET = MET_FinalCollection_Pt;
     n_jet = selectedJets->size();
     MVAoutput = readerMVA->EvaluateMVA( "BDT_1b_tc_BDT");
 
     if (data == "mc"){
       jet_leading_pt = 0;
       if (selectedJetsJesUp->size()>0) jet_leading_pt = (*selectedJetsJesUp)[0]->pt_;
-      MET_FinalCollection_Pt = MET_T1SmearJetEnUp_Pt;
+      MET = MET_T1SmearJetEnUp_Pt;
       n_jet = selectedJetsJesUp->size();
       MVAoutputJesUp = readerMVA->EvaluateMVA( "BDT_1b_tc_BDT");
 
       jet_leading_pt = 0;
       if (selectedJetsJesDown->size()>0) jet_leading_pt = (*selectedJetsJesDown)[0]->pt_;
-      MET_FinalCollection_Pt = MET_T1SmearJetEnDown_Pt;
+      MET = MET_T1SmearJetEnDown_Pt;
       n_jet = selectedJetsJesDown->size();
       MVAoutputJesDown = readerMVA->EvaluateMVA( "BDT_1b_tc_BDT");
 
       jet_leading_pt = 0;
       if (selectedJetsJerUp->size()>0) jet_leading_pt = (*selectedJetsJerUp)[0]->pt_;
-      MET_FinalCollection_Pt = MET_T1SmearJetResUp_Pt;
+      MET = MET_T1SmearJetResUp_Pt;
       n_jet = selectedJetsJerUp->size();
       MVAoutputJerUp = readerMVA->EvaluateMVA( "BDT_1b_tc_BDT");
 
       jet_leading_pt = 0;
       if (selectedJetsJerDown->size()>0) jet_leading_pt = (*selectedJetsJerDown)[0]->pt_;
-      MET_FinalCollection_Pt = MET_T1SmearJetResUp_Pt;
+      MET = MET_T1SmearJetResUp_Pt;
       n_jet = selectedJetsJerDown->size();
       MVAoutputJerDown = readerMVA->EvaluateMVA( "BDT_1b_tc_BDT");
   }
@@ -1176,7 +1177,7 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
       HistsSysDown[ch][2][15][n]->Fill(MET_FinalCollection_Pt,weight_lepB * (sysDownWeights[n]/nominalWeights[n]));
       HistsSysDown[ch][2][16][n]->Fill(MET_FinalCollection_phi,weight_lepB * (sysDownWeights[n]/nominalWeights[n]));
       HistsSysDown[ch][2][17][n]->Fill(pv_n,weight_lepB * (sysDownWeights[n]/nominalWeights[n]));
-      HistsSysDown[ch][2][13][n]->Fill(selectedJetsJerDown->size(),weight_lepB );HistsSysDown[ch][2][18][n]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M(),weight_lepB * (sysDownWeights[n]/nominalWeights[n]));
+      HistsSysDown[ch][2][18][n]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M(),weight_lepB * (sysDownWeights[n]/nominalWeights[n]));
       HistsSysDown[ch][2][19][n]->Fill(MVAoutput,weight_lepB * (sysDownWeights[n]/nominalWeights[n]));
     }
     if (fname.Contains("TTTo2L2Nu")){
@@ -1292,7 +1293,7 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     HistsSysUp[ch][2][11][9]->Fill((*selectedJetsJerUp)[0]->eta_,weight_lepB);
     HistsSysUp[ch][2][12][9]->Fill((*selectedJetsJerUp)[0]->phi_,weight_lepB);
     HistsSysUp[ch][2][13][9]->Fill(selectedJetsJerUp->size(),weight_lepB );
-    HistsSysUp[ch][2][14][8]->Fill(nbjetJerUp,weight_lepB);
+    HistsSysUp[ch][2][14][9]->Fill(nbjetJerUp,weight_lepB);
     HistsSysUp[ch][2][15][9]->Fill(MET_T1SmearJetResUp_Pt,weight_lepB );
     HistsSysUp[ch][2][19][9]->Fill(MVAoutputJerUp,weight_lepB );
   }
@@ -1498,7 +1499,7 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     HistsSysUp[ch][3][11][9]->Fill((*selectedJetsJerUp)[0]->eta_,weight_lepB);
     HistsSysUp[ch][3][12][9]->Fill((*selectedJetsJerUp)[0]->phi_,weight_lepB);
     HistsSysUp[ch][3][13][9]->Fill(selectedJetsJerUp->size(),weight_lepB );
-    HistsSysUp[ch][3][14][8]->Fill(nbjetJerUp,weight_lepB);
+    HistsSysUp[ch][3][14][9]->Fill(nbjetJerUp,weight_lepB);
     HistsSysUp[ch][3][15][9]->Fill(MET_T1SmearJetResUp_Pt,weight_lepB );
     HistsSysUp[ch][3][19][9]->Fill(MVAoutputJerUp,weight_lepB );
   }
