@@ -7,6 +7,25 @@ import Files_2016
 import Files_2017
 import Files_2018
 import Files_2017_A
+
+
+
+
+import argparse
+# set up an argument parser                                                                                                                                                                         
+parser = argparse.ArgumentParser()
+
+parser.add_argument('--v', dest='VERBOSE', default=True)
+parser.add_argument('--l', dest = 'LOCATION', default= '/afs/cern.ch/user/a/asparker/public/LFVTopCode_MyFork/TopLFV/')
+parser.add_argument('--n', dest = 'NAMETAG', default= 'SMEFTfr' )
+
+ARGS = parser.parse_args()
+
+verbose = ARGS.VERBOSE
+loc = ARGS.LOCATION
+name = ARGS.NAMETAG
+
+
 SAMPLES = {}
 #SAMPLES ['DYM10to50'] = ['address', 'data/mc','dataset','year', 'run', 'cross section','lumi','Neventsraw']
 mc_2016 = False
@@ -24,9 +43,9 @@ if mc_2016:
 if data_2016:
     SAMPLES.update(Files_2016.data2016_samples)
 if mc_2017:
-    SAMPLES.update(Files_2017.mc2017_samples)
+    SAMPLES.update(Files_2017_A.mc2017_samples)
 if data_2017:
-    SAMPLES.update(Files_2017.data2017_samples)
+    SAMPLES.update(Files_2017_A.data2017_samples)
 if mc_2018:
     SAMPLES.update(Files_2018.mc2018_samples)
 if data_2018:
@@ -37,13 +56,13 @@ rootlib11="".join([s for s in rootlib1.strip().splitlines(True) if s.strip()])
 rootlib2 = subprocess.check_output("root-config --glibs", shell=True)
 rootlib22="".join([s for s in rootlib2.strip().splitlines(True) if s.strip()])
 
-dire = '/afs/cern.ch/user/j/jingyan/TopLFV/bin'
-dire_h = '/afs/cern.ch/user/j/jingyan/TopLFV/hists/'
+dire = loc+'bin'
+dire_h = loc+'hists/'
 nf =40
 
 for key, value in SAMPLES.items():
 #########################################
-    if 'LFV' not in key:
+    if name  not in key:
        continue
     nf = 40
     for idx, S in enumerate(value[0]):
@@ -83,6 +102,7 @@ for key, value in SAMPLES.items():
                 os.system("chmod +x "+'Jobs/'+SHNAME)
 #                os.system("qsub -q localgrid  -o STDOUT/" + SHNAME1.split('.')[0] + ".stdout -e STDERR/" + SHNAME1.split('.')[0] + ".stderr " + SHNAME)
             break
-    print key + ' jobs are made'
+    if verbose : 
+        print key + ' jobs are made'
    
  

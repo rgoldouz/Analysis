@@ -5,7 +5,23 @@ import readline
 import string
 import csv, subprocess
 
-dire = '/afs/cern.ch/user/j/jingyan/TopLFV/hists/'
+
+
+import argparse
+# set up an argument parser                                                                                                                                                                                        
+parser = argparse.ArgumentParser()
+
+parser.add_argument('--v', dest='VERBOSE', default=True)
+parser.add_argument('--l', dest = 'LOCATION', default= '/afs/cern.ch/user/a/asparker/public/LFVTopCode_MyFork/TopLFV/')
+parser.add_argument('--n', dest = 'NAMETAG', default= 'SMEFTfr' )
+
+ARGS = parser.parse_args()
+
+verbose = ARGS.VERBOSE
+loc = ARGS.LOCATION
+name = ARGS.NAMETAG
+
+dire = loc + 'hists/'
 
 import Files_2016
 import Files_2017
@@ -49,7 +65,7 @@ sub1.write(submit+'\n')
 sub1.close()
 
 for key, value in SAMPLES.items():
-    if 'LFV' not in key:
+    if name  not in key:
        continue
     year = value[3]
     nf = 40
