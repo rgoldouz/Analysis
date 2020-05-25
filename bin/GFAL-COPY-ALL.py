@@ -9,9 +9,9 @@ import Files_2018
 SAMPLES = {}
 #SAMPLES ['DYM10to50'] = ['address', 'data/mc','dataset','year', 'run', 'cross section','lumi','Neventsraw']
 mc_2016 = False #True
-data_2016 = True
-mc_2017 = False #True
-data_2017 = False#True
+data_2016 = False #True
+mc_2017 = True
+data_2017 = True
 mc_2018 = False #True
 data_2018 = False #True
 
