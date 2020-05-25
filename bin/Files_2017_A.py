@@ -8,7 +8,7 @@ data2017_samples = {}
 mc2017_samples = {}
 #data2017_samples ['DYM10to50'] = ['address', 'data/mc','dataset','year', 'run', 'cross section','lumi','Neventsraw']
 
-mc2017_samples['2017_DYM10to50'] = [['/eos/user/a/asparker/TopLFV/2017_DYM10to50_ext0/', '/eos/user/a/asparker/TopLFV/2017_DYM10to50_ext1/'], 'mc','','2017', '','18610','41.53','78994955']
+mc2017_samples['2017_DYM10to50'] = [['/eos/cms/store/user/asparker/TopLFV/2017_DYM10to50_ext0/', '/eos/cms/store/user/asparker/TopLFV/2017_DYM10to50_ext1/'], 'mc','','2017', '','18610','41.53','78994955']
 mc2017_samples['2017_DYM50'] = [['/eos/user/a/asparker/TopLFV/2017_DYM50_ext0/', '/eos/user/a/asparker/TopLFV/2017_DYM50_ext1/', '/eos/user/a/asparker/TopLFV/2017_DYM50_ext2/'], 'mc','','2017', '','5765.4','41.53','84597528']
 mc2017_samples['2017_TTTo2L2Nu'] = [['/eos/user/a/asparker/TopLFV/2017_TTTo2L2Nu/'], 'mc','','2017', '','87.31','41.53','8926992']
 mc2017_samples['2017_ST_tW'] = [['/eos/user/a/asparker/TopLFV/2017_ST_tW/'], 'mc','','2017', '','19.47','41.53','4917240']
@@ -24,10 +24,21 @@ mc2017_samples['2017_TTWJetsToLNu'] = [['/eos/user/a/asparker/TopLFV/2017_TTWJet
 mc2017_samples['2017_TTZToLLNuNu'] = [['/eos/user/a/asparker/TopLFV/2017_TTZToLLNuNu/'], 'mc','','2017', '','0.2529','41.53','3570720']
 mc2017_samples['2017_TTZToQQ'] = [['/eos/user/a/asparker/TopLFV/2017_TTZToQQ/'], 'mc','','2017', '','0.5297','41.53','356286']
 
-mc2017_samples['2017_LFVStVecC'] = [['/eos/user/a/asparker/TopLFV/2017_LFVStVecC/'], 'mc','','2017', '','0.0512' ,'41.53','500000']
-mc2017_samples['2017_LFVStVecU'] = [['/eos/user/a/asparker/TopLFV/2017_LFVStVecU/'], 'mc','','2017', '','0.515' ,'41.53','494000']
-mc2017_samples['2017_LFVTtVecC'] = [['/eos/user/a/asparker/TopLFV/2017_LFVTtVecC/'], 'mc','','2017', '','0.032'  ,'41.53','500000']
-mc2017_samples['2017_LFVTtVecU'] = [['/eos/user/a/asparker/TopLFV/2017_LFVTtVecU/'], 'mc','','2017', '','0.032','41.53','498000']
+#mc2017_samples['2017_LFVStVecC'] = [['/eos/cms/store/user/asparker/TopLFV/2017_LFVStVecC/'], 'mc','','2017', '','0.0512' ,'41.53','500000']
+mc2017_samples['2017_SMEFTfr_ST_vector_emutc'] = [['/eos/cms/store/user/asparker/TopLFV/2017_SMEFTfr_ST_vector_emutc/'], 'mc','','2017', '','0.0512' ,'41.53','500000']
+mc2017_samples['2017_SMEFTfr_ST_vector_emutu'] = [['/eos/cms/store/user/asparker/TopLFV/2017_SMEFTfr_ST_vector_emutu/'], 'mc','','2017', '','0.515' ,'41.53','494000']
+mc2017_samples['2017_SMEFTfr_TT_vector_emutc'] = [['/eos/cms/store/user/asparker/TopLFV/2017_SMEFTfr_TT_vector_emutc/'], 'mc','','2017', '','0.032'  ,'41.53','500000']
+mc2017_samples['2017_SMEFTfr_TT_vector_emutu'] = [['/eos/cms/store/user/asparker/TopLFV/2017_SMEFTfr_TT_vector_emutu/'], 'mc','','2017', '','0.032','41.53','498000']
+
+mc2017_samples['2017_SMEFTfr_ST_clequ1_emutc'] = [['/eos/cms/store/user/asparker/TopLFV/2017_SMEFTfr_ST_clequ1_emutc/'], 'mc','','2017', '','1','1','1']
+mc2017_samples['2017_SMEFTfr_ST_clequ3_emutu'] = [['/eos/cms/store/user/asparker/TopLFV/2017_SMEFTfr_ST_clequ3_emutu/'], 'mc','','2017', '','1','1','1']
+mc2017_samples['2017_SMEFTfr_ST_clequ3_emutc'] = [['/eos/cms/store/user/asparker/TopLFV/2017_SMEFTfr_ST_clequ3_emutc/'], 'mc','','2017', '','1','1','1']
+mc2017_samples['2017_SMEFTfr_TT_clequ1_emutc'] = [['/eos/cms/store/user/asparker/TopLFV/2017_SMEFTfr_TT_clequ1_emutc/'], 'mc','','2017', '','1','1','1']
+mc2017_samples['2017_SMEFTfr_TT_clequ1_emutu'] = [['/eos/cms/store/user/asparker/TopLFV/2017_SMEFTfr_TT_clequ1_emutu/'], 'mc','','2017', '','1','1','1']
+mc2017_samples['2017_SMEFTfr_TT_clequ3_emutu'] = [['/eos/cms/store/user/asparker/TopLFV/2017_SMEFTfr_TT_clequ3_emutu/'], 'mc','','2017', '','1','1','1']
+
+
+
 
 data2017_samples['2017_B_MuonEG'] = [['/eos/user/a/asparker/TopLFV/2017_B_MuonEG/'], 'data','MuonEG','2017', 'B','1','1','1']
 data2017_samples['2017_C_MuonEG'] = [['/eos/user/a/asparker/TopLFV/2017_C_MuonEG_ext0/', '/eos/user/a/asparker/TopLFV/2017_C_MuonEG_ext1/'], 'data','MuonEG','2017', 'C','1','1','1']
@@ -36,7 +47,7 @@ data2017_samples['2017_E_MuonEG'] = [['/eos/user/a/asparker/TopLFV/2017_E_MuonEG
 data2017_samples['2017_F_MuonEG'] = [['/eos/user/a/asparker/TopLFV/2017_F_MuonEG_ext0/', '/eos/user/a/asparker/TopLFV/2017_F_MuonEG_ext1/'], 'data','MuonEG','2017', 'F','1','1','1']
 
 data2017_samples['2017_B_SingleMuon'] = [['/eos/user/a/asparker/TopLFV/2017_B_SingleMuon/'], 'data','SingleMuon','2017', 'B','1','1','1']
-data2017_samples['2017_C_SingleMuon'] = [['/eos/user/a/asparker/TopLFV/2017_C_SingleMuon_ext0/', '/eos/user/a/asparker/TopLFV/2017_C_SingleMuon_ext1/'], 'data','SingleMuon','2017', 'C','1','1','1']
+data2017_samples['2017_C_SingleMuon'] = [['/eos/user/a/asparker/TopLFV/2017_C_SingleMuon_ext0/', '/eos/cms/store/user/asparker/TopLFV/2017_C_SingleMuon_ext1/'], 'data','SingleMuon','2017', 'C','1','1','1']
 data2017_samples['2017_D_SingleMuon'] = [['/eos/user/a/asparker/TopLFV/2017_D_SingleMuon/'], 'data','SingleMuon','2017', 'D','1','1','1']
 data2017_samples['2017_E_SingleMuon'] = [['/eos/user/a/asparker/TopLFV/2017_E_SingleMuon_ext0/', '/eos/user/a/asparker/TopLFV/2017_E_SingleMuon_ext1/'], 'data','SingleMuon','2017', 'E','1','1','1']
 data2017_samples['2017_F_SingleMuon'] = [['/eos/user/a/asparker/TopLFV/2017_F_SingleMuon_ext0/', '/eos/user/a/asparker/TopLFV/2017_F_SingleMuon_ext1/'], 'data','SingleMuon','2017', 'F','1','1','1']
