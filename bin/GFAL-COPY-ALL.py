@@ -8,12 +8,12 @@ import Files_2017
 import Files_2018
 SAMPLES = {}
 #SAMPLES ['DYM10to50'] = ['address', 'data/mc','dataset','year', 'run', 'cross section','lumi','Neventsraw']
-mc_2016 = True
-data_2016 = True
+mc_2016 = False #True
+data_2016 = False #True
 mc_2017 = True
 data_2017 = True
-mc_2018 = True
-data_2018 = True
+mc_2018 = False #True
+data_2018 = False #True
 
 if mc_2016:
     SAMPLES.update(Files_2016.mc2016_samples)

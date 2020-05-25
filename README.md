@@ -135,12 +135,14 @@ It takes 1~2 min to produce test.root file where you can find all the interestin
 
 ## III. To write & submit jobs (Condor) 
 
-The first thing you need to do is to modify these two lines https://github.com/Jingyan95/Analysis/blob/Trilepton_Selection/bin/makeJobs.py#L40-L41 , as well as this https://github.com/Jingyan95/Analysis/blob/Trilepton_Selection/bin/submitJobs.py#L8 . Make sure replacing these with your own paths on lxplus. 
+The first thing you need to do is to modify the --l option below, replacing these with your own paths on lxplus.The --n option tells the name in a given sample you want to run, the one below will give you the signal samples or 2017 would give you all 2017 files, see Files_2017_A.py for the keys to the dictionary in order to choose a different --n option to suit your needs. 
 
 ```sh
 cd TopLFV/bin
-python makeJobs.py
-python submitJobs.py
+python makeJobs.py --l /afs/cern.ch/user/a/asparker/public/LFVTopCode_MyFork/TopLFV/ --n SMEFTfr
+python submitJobs.py --l /afs/cern.ch/user/a/asparker/public/LFVTopCode_MyFork/TopLFV/ --n SMEFTfr
+
+
 
 Output files can be found at TopLFV/hists/2017/ 
 ```
