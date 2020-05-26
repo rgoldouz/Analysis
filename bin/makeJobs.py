@@ -98,8 +98,12 @@ for key, value in SAMPLES.items():
                 'if [ -f "$FILE" ]; then'+ "\n"+\
                 '    rm  ' + SHNAME1.split('.')[0] + "\n"+\
                 'fi'
+                os.system(" mkdir Jobs")
                 open('Jobs/'+SHNAME, 'wt').write(SHFILE)
+                print "wrote file :"
+                print 'Jobs/'+SHNAME
                 os.system("chmod +x "+'Jobs/'+SHNAME)
+                print "chmod +x "+'Jobs/'+SHNAME
 #                os.system("qsub -q localgrid  -o STDOUT/" + SHNAME1.split('.')[0] + ".stdout -e STDERR/" + SHNAME1.split('.')[0] + ".stderr " + SHNAME)
             break
     if verbose : 
