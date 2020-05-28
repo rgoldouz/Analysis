@@ -90,6 +90,37 @@ float getTopmass(lepton_candidate *a, jet_candidate *b, float MET, float phi){
     return Topmass;
 }
 
+float getLFVTopmass(lepton_candidate *a,lepton_candidate *b,std::vector<jet_candidate*> *selectedJets){
+
+  struct LFV_top_quark{
+    int ij;
+    float mass;
+    float masserr;
+  }temp,min_tq;
+  min_tq.masserr=std::numeric_limits<float>::infinity();
+
+  TLorentzVector lv_elmujet;
+
+  for(int ij = 1;ij < selectedJets->size();ij++){
+      float dr1 = deltaR(a->eta_,a->phi_,(*selectedJets)[ij]->eta_,(*selectedJets)[ij]->phi_);
+      float dr2 = deltaR(b->eta_,b->phi_,(*selectedJets)[ij]->eta_,(*selectedJets)[ij]->phi_);
+      if(dr1<0.4 || dr2<0.4) continue;
+      lv_elmujet = a->p4_ + b->p4_ + (*selectedJets)[ij]->p4_;
+      temp.ij=ij;
+      temp.mass=lv_elmujet.M();
+      temp.masserr=fabs(lv_elmujet.M()-172);
+      if(temp.masserr<min_tq.masserr){
+        min_tq=temp;
+      }
+  }
+  if(min_tq.masserr==std::numeric_limits<float>::infinity()){
+    return -1;
+  }
+  else{
+    return min_tq.mass;
+  }
+}
+
 float scale_factor( TH2F* h, float X, float Y , TString uncert){
   int NbinsX=h->GetXaxis()->GetNbins();
   int NbinsY=h->GetYaxis()->GetNbins();
@@ -135,19 +166,19 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
   std::vector<TString> channels{"eee", "emul", "mumumu"};
   std::vector<TString> vars   {"lep1Pt","lep1Eta","lep1Phi","lep2Pt","lep2Eta","lep2Phi","lep3Pt","lep3Eta","lep3Phi",
         "LFVePt","LFVeEta","LFVePhi","LFVmuPt","LFVmuEta","LFVmuPhi","balPt","balEta","balPhi","Topmass",
-        "llM","llPt","llDr","llDphi","jet1Pt","jet1Eta","jet1Phi","njet","nbjet","Met","MetPhi","nVtx", "llMZw"};
+        "llM","llPt","llDr","llDphi","jet1Pt","jet1Eta","jet1Phi","njet","nbjet","Met","MetPhi","nVtx", "llMZw","LFVTopmass"};
 
   std::vector<int>    nbins   {30      ,20       ,25       ,20      ,20       ,25       ,15      ,20       ,25       ,
         20      ,20       ,25       ,20       ,20        ,25        ,20     ,20      ,25      ,12       ,
-        30   ,20    ,25    ,15      ,20      ,20       ,25       ,10    ,6      ,30   ,20      ,70    ,80};
+        30   ,20    ,25    ,15      ,20      ,20       ,25       ,10    ,6      ,30   ,20      ,70    ,80   ,12};
 
   std::vector<float> lowEdge  {0       ,-3       ,-4       ,0       ,-3       ,-4       ,0       ,-3       ,-4       ,
         0       ,-3       ,-4       ,0        ,-3        ,-4        ,0      ,-3      ,-4      ,100      ,
-        0    ,0     ,0     ,0       ,0       ,-3       ,-4       ,0     ,0      ,0    ,-4      ,0     ,70};
+        0    ,0     ,0     ,0       ,0       ,-3       ,-4       ,0     ,0      ,0    ,-4      ,0     ,70   ,100};
 
   std::vector<float> highEdge {300     ,3        ,4        ,200     ,3        ,4        ,150     ,3        ,4        ,
         200     ,3        ,4        ,200      ,3         ,4         ,200    ,3       ,4       ,340      ,
-        500  ,200   ,7     ,4       ,300     ,3        ,4        ,10    ,6      ,210  ,4       ,70    ,110};
+        500  ,200   ,7     ,4       ,300     ,3        ,4        ,10    ,6      ,210  ,4       ,70    ,110    ,340};
 
   Dim3 Hists(channels.size(),Dim2(regions.size(),Dim1(vars.size())));  
   std::stringstream name;
@@ -349,8 +380,9 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
   double P_bjet_mc;
   int nAccept=0;
   int nbjet;
-  float t1,t2;
+  float t1,t2,t3,t4;
   float Topmass=0;
+  float LFVTopmass=0;
   float mT=172;
 
   if (fname.Contains("TTTo2L2Nu")) ifTopPt=true;
@@ -723,26 +755,34 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
       if (ch1==0||ch1==1){
           t1=getTopmass((*selectedLeptons_copy)[0],(*selectedJets_copy)[0],MET_FinalCollection_Pt,MET_FinalCollection_phi);
           t2=getTopmass((*selectedLeptons_copy)[1],(*selectedJets_copy)[0],MET_FinalCollection_Pt,MET_FinalCollection_phi);
+          t3=getLFVTopmass((*selectedLeptons_copy)[0],(*selectedLeptons_copy)[2],selectedJets_copy);
+          t4=getLFVTopmass((*selectedLeptons_copy)[1],(*selectedLeptons_copy)[2],selectedJets_copy);
           if (t1<0&&t2<0) continue;
           if (abs(t1-mT)>abs(t2-mT)){// the one gives the better standard top mass wins
               Topmass=t2;
+              LFVTopmass=t3;
               (*selectedLeptons_copy)[1]->setbalep();
           }
           else{
               Topmass=t1;
+              LFVTopmass=t4;
               (*selectedLeptons_copy)[0]->setbalep();
           }
       }
       else{
           t1=getTopmass((*selectedLeptons_copy)[1],(*selectedJets_copy)[0],MET_FinalCollection_Pt,MET_FinalCollection_phi);
           t2=getTopmass((*selectedLeptons_copy)[2],(*selectedJets_copy)[0],MET_FinalCollection_Pt,MET_FinalCollection_phi);
+          t3=getLFVTopmass((*selectedLeptons_copy)[1],(*selectedLeptons_copy)[0],selectedJets_copy);
+          t4=getLFVTopmass((*selectedLeptons_copy)[2],(*selectedLeptons_copy)[0],selectedJets_copy);
           if (t1<0&&t2<0) continue;
           if (abs(t1-mT)>abs(t2-mT)){
               Topmass=t2;
+              LFVTopmass=t3;
               (*selectedLeptons_copy)[2]->setbalep();
           }
           else{
               Topmass=t1;
+              LFVTopmass=t4;
               (*selectedLeptons_copy)[1]->setbalep();
           }
       }
@@ -814,6 +854,7 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     Hists[ch][0][29]->Fill(MET_FinalCollection_phi,weight_lep);
     Hists[ch][0][30]->Fill(pv_n,weight_lep);
     Hists[ch][0][31]->Fill(((*selectedLeptons_copy)[0]->p4_ + (*selectedLeptons_copy)[1]->p4_).M(),weight_lep);
+    Hists[ch][0][32]->Fill(LFVTopmass,weight_lep);
 
     if (ch==1&&!compete){
     TLorentzVector zcand;
@@ -859,6 +900,7 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     Hists[ch][1][29]->Fill(MET_FinalCollection_phi,weight_lep);
     Hists[ch][1][30]->Fill(pv_n,weight_lep);
     Hists[ch][1][31]->Fill(((*selectedLeptons_copy)[0]->p4_ + (*selectedLeptons_copy)[1]->p4_).M(),weight_lep);
+    Hists[ch][1][32]->Fill(LFVTopmass,weight_lep);
 
     if(nbjet==1){
     Hists[ch][2][0]->Fill((*selectedLeptons)[0]->pt_,weight_lepB);
@@ -893,6 +935,7 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     Hists[ch][2][29]->Fill(MET_FinalCollection_phi,weight_lepB);
     Hists[ch][2][30]->Fill(pv_n,weight_lepB);
     Hists[ch][2][31]->Fill(((*selectedLeptons_copy)[0]->p4_ + (*selectedLeptons_copy)[1]->p4_).M(),weight_lepB);
+    Hists[ch][2][32]->Fill(LFVTopmass,weight_lep);
     }
     if(nbjet>1){
     Hists[ch][3][0]->Fill((*selectedLeptons)[0]->pt_,weight_lepB);
@@ -927,6 +970,7 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     Hists[ch][3][29]->Fill(MET_FinalCollection_phi,weight_lepB);
     Hists[ch][3][30]->Fill(pv_n,weight_lepB);
     Hists[ch][3][31]->Fill(((*selectedLeptons_copy)[0]->p4_ + (*selectedLeptons_copy)[1]->p4_).M(),weight_lepB);
+    Hists[ch][3][32]->Fill(LFVTopmass,weight_lep);
     }
     if(MET_FinalCollection_Pt<20){
     Hists[ch][4][0]->Fill((*selectedLeptons)[0]->pt_,weight_lep);
@@ -961,6 +1005,7 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     Hists[ch][4][29]->Fill(MET_FinalCollection_phi,weight_lep);
     Hists[ch][4][30]->Fill(pv_n,weight_lep);
     Hists[ch][4][31]->Fill(((*selectedLeptons_copy)[0]->p4_ + (*selectedLeptons_copy)[1]->p4_).M(),weight_lep);
+    Hists[ch][4][32]->Fill(LFVTopmass,weight_lep);
     }
 
     if(MET_FinalCollection_Pt>20){
@@ -996,6 +1041,7 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     Hists[ch][5][29]->Fill(MET_FinalCollection_phi,weight_lep);
     Hists[ch][5][30]->Fill(pv_n,weight_lep);
     Hists[ch][5][31]->Fill(((*selectedLeptons_copy)[0]->p4_ + (*selectedLeptons_copy)[1]->p4_).M(),weight_lep);
+    Hists[ch][5][32]->Fill(LFVTopmass,weight_lep);
     }
 
     if(nbjet==1 && MET_FinalCollection_Pt<20 && selectedJets->size()>0){
@@ -1031,6 +1077,7 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     Hists[ch][6][29]->Fill(MET_FinalCollection_phi,weight_lepB);
     Hists[ch][6][30]->Fill(pv_n,weight_lepB);
     Hists[ch][6][31]->Fill(((*selectedLeptons_copy)[0]->p4_ + (*selectedLeptons_copy)[1]->p4_).M(),weight_lepB);
+    Hists[ch][6][32]->Fill(LFVTopmass,weight_lep);
     }
 
     if(nbjet==1 && MET_FinalCollection_Pt<20 && selectedJets->size()>1){
@@ -1066,6 +1113,7 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     Hists[ch][7][29]->Fill(MET_FinalCollection_phi,weight_lepB);
     Hists[ch][7][30]->Fill(pv_n,weight_lepB);
     Hists[ch][7][31]->Fill(((*selectedLeptons_copy)[0]->p4_ + (*selectedLeptons_copy)[1]->p4_).M(),weight_lepB);
+    Hists[ch][7][32]->Fill(LFVTopmass,weight_lep);
     }
 
     if(nbjet>1 && MET_FinalCollection_Pt<20 && selectedJets->size()>2){
@@ -1101,6 +1149,7 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     Hists[ch][8][29]->Fill(MET_FinalCollection_phi,weight_lepB);
     Hists[ch][8][30]->Fill(pv_n,weight_lepB);
     Hists[ch][8][31]->Fill(((*selectedLeptons_copy)[0]->p4_ + (*selectedLeptons_copy)[1]->p4_).M(),weight_lepB);
+    Hists[ch][8][32]->Fill(LFVTopmass,weight_lep);
     }
 
     if(nbjet==1 && MET_FinalCollection_Pt>20 && selectedJets->size()>0){
@@ -1136,6 +1185,7 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     Hists[ch][9][29]->Fill(MET_FinalCollection_phi,weight_lepB);
     Hists[ch][9][30]->Fill(pv_n,weight_lepB);
     Hists[ch][9][31]->Fill(((*selectedLeptons_copy)[0]->p4_ + (*selectedLeptons_copy)[1]->p4_).M(),weight_lepB);
+    Hists[ch][9][32]->Fill(LFVTopmass,weight_lep);
     }
     if(nbjet==1 && MET_FinalCollection_Pt>20 && selectedJets->size()>1){
     Hists[ch][10][0]->Fill((*selectedLeptons)[0]->pt_,weight_lepB);
@@ -1170,6 +1220,7 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     Hists[ch][10][29]->Fill(MET_FinalCollection_phi,weight_lepB);
     Hists[ch][10][30]->Fill(pv_n,weight_lepB);
     Hists[ch][10][31]->Fill(((*selectedLeptons_copy)[0]->p4_ + (*selectedLeptons_copy)[1]->p4_).M(),weight_lepB);
+    Hists[ch][10][32]->Fill(LFVTopmass,weight_lep);
     }
     if(nbjet>1 && MET_FinalCollection_Pt>20 && selectedJets->size()>2){
     Hists[ch][11][0]->Fill((*selectedLeptons)[0]->pt_,weight_lepB);
@@ -1204,6 +1255,7 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     Hists[ch][11][29]->Fill(MET_FinalCollection_phi,weight_lepB);
     Hists[ch][11][30]->Fill(pv_n,weight_lepB);
     Hists[ch][11][31]->Fill(((*selectedLeptons_copy)[0]->p4_ + (*selectedLeptons_copy)[1]->p4_).M(),weight_lepB);
+    Hists[ch][11][32]->Fill(LFVTopmass,weight_lep);
     }
 
     for (int l=0;l<selectedLeptons->size();l++){
@@ -1229,7 +1281,7 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
 
     nAccept++;
   } //end of event loop
-  cout<<"from "<<ntr<<" evnets, "<<nAccept<<" events are accepted"<<endl;
+  cout<<endl<<"from "<<ntr<<" events, "<<nAccept<<" events are accepted"<<endl;
 
   for (int i=0;i<channels.size();++i){
     for (int k=0;k<regions.size();++k){
@@ -1239,11 +1291,27 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     }
   }
 
-   h2_BTaggingEff_Denom_b   ->Write("",TObject::kOverwrite); 
-   h2_BTaggingEff_Denom_c   ->Write("",TObject::kOverwrite); 
-   h2_BTaggingEff_Denom_udsg->Write("",TObject::kOverwrite); 
-   h2_BTaggingEff_Num_b     ->Write("",TObject::kOverwrite); 
-   h2_BTaggingEff_Num_c     ->Write("",TObject::kOverwrite); 
-   h2_BTaggingEff_Num_udsg  ->Write("",TObject::kOverwrite); 
+  for (int i=0;i<channels.size();++i){
+    for (int k=0;k<regions.size();++k){
+      for (int l=0;l<vars.size();++l){
+        delete Hists[i][k][l];
+      }
+    }
+  }
+
+   h2_BTaggingEff_Denom_b   ->Write("",TObject::kOverwrite);
+   h2_BTaggingEff_Denom_c   ->Write("",TObject::kOverwrite);
+   h2_BTaggingEff_Denom_udsg->Write("",TObject::kOverwrite);
+   h2_BTaggingEff_Num_b     ->Write("",TObject::kOverwrite);
+   h2_BTaggingEff_Num_c     ->Write("",TObject::kOverwrite);
+   h2_BTaggingEff_Num_udsg  ->Write("",TObject::kOverwrite);
+
+   delete h2_BTaggingEff_Denom_b;
+   delete h2_BTaggingEff_Denom_c;
+   delete h2_BTaggingEff_Denom_udsg;
+   delete h2_BTaggingEff_Num_b;
+   delete h2_BTaggingEff_Num_c;
+   delete h2_BTaggingEff_Num_udsg;
+
   file_out.Close() ;
 }
