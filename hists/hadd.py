@@ -46,6 +46,7 @@ addedFilesTTbar = {"2017": []}
 for key, value in SAMPLES.items():
     year = value[3]
     os.system('rm '+ key + '.root')
+    os.system('rm '+ year + '/' +key + '.root')
     nf = 40
     if value[1]=='data':
         addedFilesData[year].append( year + '/' + key + '.root ')

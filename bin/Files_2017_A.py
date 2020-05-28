@@ -60,7 +60,7 @@ data2017_samples['2017_F_SingleElectron'] = [['/eos/user/a/asparker/TopLFV/2017_
 
 data2017_samples['2017_B_DoubleEG'] = [['/eos/user/a/asparker/TopLFV/2017_B_DoubleEG/'], 'data','DoubleEG','2017', 'B','1','1','1']
 data2017_samples['2017_C_DoubleEG'] = [['/eos/user/a/asparker/TopLFV/2017_C_DoubleEG_ext0/', '/eos/user/a/asparker/TopLFV/2017_C_DoubleEG_ext1/'], 'data','DoubleEG','2017', 'C','1','1','1']
-data2017_samples['2017_D_DoubleEG'] = [['/eos/user/a/asparker/TopLFV/2017_D_DoubleEG/'], 'data','DoubleEG','2017', 'D','1','1','1']
+data2017_samples['2017_D_DoubleEG'] = [['/eos/cms/store/user/asparker/TopLFV/2017_D_DoubleEG/'], 'data','DoubleEG','2017', 'D','1','1','1']
 data2017_samples['2017_E_DoubleEG'] = [['/eos/user/a/asparker/TopLFV/2017_E_DoubleEG_ext0/', '/eos/user/a/asparker/TopLFV/2017_E_DoubleEG_ext1/'], 'data','DoubleEG','2017', 'E','1','1','1']
 data2017_samples['2017_F_DoubleEG'] = [['/eos/user/a/asparker/TopLFV/2017_F_DoubleEG_ext0/', '/eos/user/a/asparker/TopLFV/2017_F_DoubleEG_ext1/'], 'data','DoubleEG','2017', 'F','1','1','1']
 
