@@ -53,7 +53,7 @@ data2017_samples['2017_E_SingleMuon'] = [['/eos/user/a/asparker/TopLFV/2017_E_Si
 data2017_samples['2017_F_SingleMuon'] = [['/eos/user/a/asparker/TopLFV/2017_F_SingleMuon_ext0/', '/eos/user/a/asparker/TopLFV/2017_F_SingleMuon_ext1/'], 'data','SingleMuon','2017', 'F','1','1','1']
 
 data2017_samples['2017_B_SingleElectron'] = [['/eos/user/a/asparker/TopLFV/2017_B_SingleElectron/'], 'data','SingleElectron','2017', 'B','1','1','1']
-data2017_samples['2017_C_SingleElectron'] = [['/eos/user/a/asparker/TopLFV/2017_C_SingleElectron_ext0/', '/eos/user/a/asparker/TopLFV/2017_C_SingleElectron_ext1/'], 'data','SingleElectron','2017', 'C','1','1','1']
+data2017_samples['2017_C_SingleElectron'] = [['/eos/cms/store/user/asparker/TopLFV/2017_C_SingleElectron_ext0/', '/eos/cms/store/user/asparker/TopLFV/2017_C_SingleElectron_ext1/'], 'data','SingleElectron','2017', 'C','1','1','1']
 data2017_samples['2017_D_SingleElectron'] = [['/eos/user/a/asparker/TopLFV/2017_D_SingleElectron/'], 'data','SingleElectron','2017', 'D','1','1','1']
 data2017_samples['2017_E_SingleElectron'] = [['/eos/user/a/asparker/TopLFV/2017_E_SingleElectron_ext0/', '/eos/user/a/asparker/TopLFV/2017_E_SingleElectron_ext1/'], 'data','SingleElectron','2017', 'E','1','1','1']
 data2017_samples['2017_F_SingleElectron'] = [['/eos/user/a/asparker/TopLFV/2017_F_SingleElectron_ext0/', '/eos/user/a/asparker/TopLFV/2017_F_SingleElectron_ext1/'], 'data','SingleElectron','2017', 'F','1','1','1']
