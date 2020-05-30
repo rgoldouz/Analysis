@@ -64,7 +64,7 @@ data2017_samples['2017_D_DoubleEG'] = [['/eos/cms/store/user/asparker/TopLFV/201
 data2017_samples['2017_E_DoubleEG'] = [['/eos/user/a/asparker/TopLFV/2017_E_DoubleEG_ext0/', '/eos/user/a/asparker/TopLFV/2017_E_DoubleEG_ext1/'], 'data','DoubleEG','2017', 'E','1','1','1']
 data2017_samples['2017_F_DoubleEG'] = [['/eos/user/a/asparker/TopLFV/2017_F_DoubleEG_ext0/', '/eos/user/a/asparker/TopLFV/2017_F_DoubleEG_ext1/'], 'data','DoubleEG','2017', 'F','1','1','1']
 
-data2017_samples['2017_B_DoubleMu'] = [['/eos/user/a/asparker/TopLFV/2017_B_DoubleMu/'], 'data','DoubleMu','2017', 'B','1','1','1']
+data2017_samples['2017_B_DoubleMu'] = [['/eos/cms/store/user/asparker/TopLFV/2017_B_DoubleMu/'], 'data','DoubleMu','2017', 'B','1','1','1']
 data2017_samples['2017_C_DoubleMu'] = [['/eos/user/a/asparker/TopLFV/2017_C_DoubleMu_ext0/', '/eos/user/a/asparker/TopLFV/2017_C_DoubleMu_ext1/'], 'data','DoubleMu','2017', 'C','1','1','1']
 data2017_samples['2017_D_DoubleMu'] = [['/eos/user/a/asparker/TopLFV/2017_D_DoubleMu/'], 'data','DoubleMu','2017', 'D','1','1','1']
 data2017_samples['2017_E_DoubleMu'] = [['/eos/user/a/asparker/TopLFV/2017_E_DoubleMu_ext0/', '/eos/user/a/asparker/TopLFV/2017_E_DoubleMu_ext1/'], 'data','DoubleMu','2017', 'E','1','1','1']
