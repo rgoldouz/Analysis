@@ -48,6 +48,7 @@ for key, value in SAMPLES.items():
     os.system('rm '+ key + '.root')
     os.system('rm '+ year + '/' +key + '.root')
     nf = 40
+    hadd='hadd ' + year + '/' + key + '.root '
     if value[1]=='data':
         addedFilesData[year].append( year + '/' + key + '.root ')
     elif ('TTW' in key) or ('TTZ' in  key):
@@ -56,12 +57,10 @@ for key, value in SAMPLES.items():
         addedFilesVV[year].append(  year + '/' + key + '.root ')
     elif ('TTTo' in key):
         addedFilesTTbar[year].append(  year + '/' + key + '.root ')
-    else:
+    elif ('SMEFTfr' not in key):
         addedFilesMc[year].append(  year + '/' + key + '.root ')
-    if ('SMEFTfr' in key):
-        hadd='hadd ' + key + '.root '
     else:
-        hadd='hadd ' + year + '/' + key + '.root '
+        hadd='hadd ' + key + '.root '
     for idx, S in enumerate(value[0]):
         if value[1]=='data':
             nf = 255

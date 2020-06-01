@@ -14,9 +14,10 @@ from ROOT import TColor
 from ROOT import TGaxis
 from ROOT import THStack
 import gc
+import argparse
 TGaxis.SetMaxDigits(2)
 
-def cutFlowTable(hists, samples, regions, ch, year,caption='2016', nsig=6):
+def cutFlowTable(hists, samples, regions, ch, year,caption='2017', nsig=6):
     mcSum = list(0 for i in xrange(0,len(regions))) 
 #    table = '\\begin{sidewaystable*}' + "\n"
     table = '\\begin{table*}' + "\n"
@@ -57,7 +58,7 @@ def cutFlowTable(hists, samples, regions, ch, year,caption='2016', nsig=6):
 #    table += '\\end{sidewaystable*}' + "\n"
     print table
 
-def stackPlots(hists, SignalHists, Fnames, ch = "channel", reg = "region", year='2016', var="sample", varname="v"):
+def stackPlots(hists, SignalHists, Fnames, ch = "channel", reg = "region", year='2017', var="sample", varname="v"):
     if not os.path.exists(year):
        os.makedirs(year)
     if not os.path.exists(year + '/' + ch):
@@ -260,21 +261,31 @@ def compareHists(hists,Fnames, ch = "channel", reg = "region", var="sample", var
     del canvas
     gc.collect()
 
-year=['2016','2017','2018','All']
-#year=['2016']
-regions=["ll","llOffZ","llB1", "llBg1", "llMetl30", "llMetg30", "llMetl30Jetg2B1", "llMetl30Jetg2Bg1", "llMetg30Jetg2B1", "llMetg30Jetg2Bg1"]
-channels=["ee", "emu", "mumu"];
-variables=["lep1Pt","lep1Eta","lep1Phi","lep2Pt","lep2Eta","lep2Phi","llM","llPt","llDr","llDphi","jet1Pt","jet1Eta","jet1Phi","njet","nbjet","Met","MetPhi","nVtx","llMZw"]
+#year=['2016','2017','2018','All']
+year=['2017']
+regions=["lll","lllOffZ","lllBleq1","lllB1", "lllBgeq2", "lllMetl20", "lllMetg20", "lllMetl20Jetgeq1Bleq1", "lllMetl20Jetgeq1B1", "lllMetl20Jet1B1", "lllMetl20Jetgeq2Bleq1", "lllMetl20Jetgeq2B1", "lllMetl20Jetgeq2Bgeq2", "lllMetg20Jetgeq1Bleq1", "lllMetg20Jetgeq1B1", "lllMetg20Jet1B1", "lllMetg20Jetgeq2Bleq1", "lllMetg20Jetgeq2B1", "lllMetg20Jetgeq2Bgeq2"]
+channels=["eee", "emul", "mumumu"];
+variables=["lep1Pt","lep1Eta","lep1Phi","lep2Pt","lep2Eta","lep2Phi","lep3Pt","lep3Eta","lep3Phi",
+           "LFVePt","LFVeEta","LFVePhi","LFVmuPt","LFVmuEta","LFVmuPhi","balPt","balEta","balPhi","Topmass",
+           "llM","llPt","llDr","llDphi","jet1Pt","jet1Eta","jet1Phi","njet","nbjet","Met","MetPhi","nVtx","llMZw","LFVTopmass"]
 #variables=["lep1Pt"]
-variablesName=["p_{T}(leading lepton)","#eta(leading lepton)","#Phi(leading lepton)","p_{T}(sub-leading lepton)","#eta(sub-leading lepton)","#Phi(sub-leading lepton)","M(ll)","p_{T}(ll)","#Delta R(ll)","#Delta #Phi(ll)","p_{T}(leading jet)","#eta(leading jet)","#Phi(leading jet)","Number of jets","Number of b-tagged jets","MET","#Phi(MET)","Number of vertices", "M(ll) [z window]"]
+variablesName=["Leading lepton p_{T} [GeV]","Leading lepton #eta","Leading lepton #varphi","2nd-Leading lepton p_{T} [GeV]","2nd-Leading lepton #eta","2nd-Leading lepton #varphi","3rd-Leading lepton p_{T} [GeV]","3rd-Leading lepton #eta","3rd-Leading lepton #varphi","cLFV electron p_{T} [GeV]","cLFV electron #eta","cLFV electron #varphi","cLFV muon p_{T} [GeV]","cLFV muon #eta","cLFV muon #varphi","Bachelor lepton p_{T} [GeV]","Bachelor lepton #eta","Bachelor lepton #varphi","Standard top mass [GeV]","M(ll) [GeV]","p_{T}(ll) [GeV]","#Delta R(ll)","#Delta #varphi(ll)","Leading jet p_{T} [GeV]","Leading jet #eta","Leading jet #varphi","Number of jets","Number of b-tagged jets","MET [GeV]","#varphi(MET)","Number of vertices", "M(ll) (z window) [GeV]", "cLFV top mass [GeV]"]
 
 
+# set up an argument parser
+parser = argparse.ArgumentParser()
 
-HistAddress = '/user/rgoldouz/NewAnalysis2020/Analysis/hists/'
+parser.add_argument('--v', dest='VERBOSE', default=True)
+parser.add_argument('--l', dest = 'LOCATION', default= '/afs/cern.ch/user/a/asparker/public/LFVTopCode_MyFork/TopLFV/hists/')
 
-Samples = ['data.root','WJetsToLNu.root','others.root', 'DY.root', 'TTTo2L2Nu.root', 'ST_tW.root', 'LFVVecC.root', 'LFVVecU.root']
-SamplesName = ['Data','Jets','Others', 'DY', 't#bar{t}', 'tW' , 'LFV-vec [c_{e#mutc}=5]', 'LFV-vec [c_{e#mutu}=2]']
-SamplesNameLatex = ['Data','Jets','Others', 'DY', 'tt', 'tW',  'LFV-vector(emutc)', 'LFV-vector(emutu)']
+ARGS = parser.parse_args()
+
+verbose = ARGS.VERBOSE
+HistAddress = ARGS.LOCATION
+
+Samples = ['data.root','TTV.root','VV.root', 'TTbar.root', 'others.root', 'SMEFTfr_ST_vector_emutu.root', 'SMEFTfr_TT_vector_emutu.root']
+SamplesName = ['data','TTV','VV', 'TTbar', 'others', 'ST_vector_emutu', 'TT_vector_emutu']
+SamplesNameLatex = ['data','TTV','VV', 'TTbar', 'others', 'ST_vector_emutu', 'TT_vector_emutu']
 
 colors =  [ROOT.kBlack,ROOT.kYellow,ROOT.kGreen,ROOT.kBlue-3,ROOT.kRed-4,ROOT.kOrange-3, ROOT.kOrange-6, ROOT.kCyan-6]
 
@@ -285,6 +296,7 @@ for numyear, nameyear in enumerate(year):
     for f in range(len(Samples)):
         l1=[]
         Files.append(ROOT.TFile.Open(HistAddress + nameyear+ '_' + Samples[f]))
+        print HistAddress + nameyear+ '_' + Samples[f]
         for numch, namech in enumerate(channels):
             l2=[]
             for numreg, namereg in enumerate(regions):
@@ -306,12 +318,12 @@ for numyear, nameyear in enumerate(year):
                 HH=[]
                 HHsignal=[]
                 for f in range(len(Samples)):
-                    if 'LFV' in Samples[f]:
+                    if 'SMEFTfr' in Samples[f]:
                         HHsignal.append(Hists[numyear][f][numch][numreg][numvar])
                     else:
                         HH.append(Hists[numyear][f][numch][numreg][numvar])
 
-#                stackPlots(HH, HHsignal, SamplesName, namech, namereg, nameyear,namevar,variablesName[numvar])
+                stackPlots(HH, HHsignal, SamplesName, namech, namereg, nameyear,namevar,variablesName[numvar])
 
 le = '\\documentclass{article}' + "\n"
 le += '\\usepackage{rotating}' + "\n"
@@ -330,7 +342,7 @@ for numreg, namereg in enumerate(regions):
         HH=[]
         HHname=[]
         for f in range(len(Samples)):
-            if 'LFV' in Samples[f] or 'TT' in Samples[f]:
-                HH.append(Hists[1][f][1][numreg][numvar])
+            if 'SMEFTfr' in Samples[f] or 'TTbar' in Samples[f]:
+                HH.append(Hists[0][f][1][numreg][numvar])
                 HHname.append(SamplesName[f])
-        compareHists(HH,HHname, 'emu', namereg,namevar,variablesName[numvar])
+        compareHists(HH,HHname, 'emul', namereg,namevar,variablesName[numvar])

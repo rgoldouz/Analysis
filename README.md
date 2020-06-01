@@ -213,3 +213,19 @@ This removes the job with a certain ID.
 More on Condor can be found at http://information-technology.web.cern.ch/services/fe/lxbatch/howto/quickstart-guide-htcondor
 
 
+## IV. To make plots
+If you have figured out how to submit jobs, congratulations ! You should be able to find output files at TopLFV/hists/2017/ shortly. The next step for us is to merge root files with the same prefix together, a function called hadd.py is designed to do that. 
+
+```sh
+cd TopLFV/hists/
+python hadd.py
+
+Make sure all the necessary output files are there under TopLFV/hists/2017/, otherwise, this function might run into problems. 
+```
+
+We use the function under TopLFV/plot/ to make plots:
+
+```sh
+cd TopLFV/plot/
+python drawHists.py --l /afs/cern.ch/user/a/asparker/public/LFVTopCode_MyFork/TopLFV/hists/
+```
