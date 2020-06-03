@@ -17,12 +17,18 @@ import gc
 TGaxis.SetMaxDigits(2)
 
 def cutFlowTable(hists, samples, regions, ch, year,caption='2016', nsig=6):
-    mcSum = list(0 for i in xrange(0,len(regions))) 
+    mcSum = list(0 for i in xrange(0,len(regions)))
+    for ids, s in enumerate(samples):
+        if ids==0:
+            continue
+        for idr, r in enumerate(regions):
+            if ids<nsig:
+                mcSum[idr] += hists[year][ids][ch][idr][2].Integral() 
 #    table = '\\begin{sidewaystable*}' + "\n"
     table = '\\begin{table*}' + "\n"
     table += '\\centering' + "\n"
-    table += '\\caption{' + caption +"}\n"
-    table += '\\resizebox{\\textwidth}{!}{ \n'
+    table += '\\caption{' + caption +": Number of expected signal and background events, compared to the event yields in the data, after various selection steps. Percentage event fractions of the MC predictions are given in brackets.}\n"
+#    table += '\\resizebox{\\textwidth}{!}{ \n'
     table += '\\begin{tabular}{|l|l|l|l|l|l|l|l|l|l|l|}' + "\n"
     table += '\\hline' + "\n"
     table += 'Samples & ' + ' & '.join(regions) + '\\\\' + "\n"
@@ -32,9 +38,10 @@ def cutFlowTable(hists, samples, regions, ch, year,caption='2016', nsig=6):
             continue
         table += s 
         for idr, r in enumerate(regions):
-            table += (' & ' + str(round(hists[year][ids][ch][idr][2].Integral(),2)))
             if ids<nsig:
-                mcSum[idr] += hists[year][ids][ch][idr][2].Integral()
+                table += (' & ' + str(round(hists[year][ids][ch][idr][2].Integral(),2)) + '[' + str(round((100*hists[year][ids][ch][idr][2].Integral())/mcSum[idr],2)) +'\%]')
+            else:
+                table += (' & ' + str(round(hists[year][ids][ch][idr][2].Integral(),2))) 
         table += '\\\\' + "\n"    
     table += '\\hline' + "\n"
     table += 'Prediction '
@@ -52,7 +59,7 @@ def cutFlowTable(hists, samples, regions, ch, year,caption='2016', nsig=6):
         table += (' & ' + str(round(hists[year][0][ch][idr][2].Integral()/r,2)))
     table += '\\\\' + "\n"
     table += '\\hline' + "\n"
-    table += '\\end{tabular}}' + "\n"
+    table += '\\end{tabular}' + "\n"
     table += '\\end{table*}' + "\n"
 #    table += '\\end{sidewaystable*}' + "\n"
     print table
@@ -202,7 +209,9 @@ def stackPlots(hists, SignalHists, Fnames, ch = "channel", reg = "region", year=
 
 year=['2016','2017','2018','All']
 #year=['2016']
-regions=["ll","llOffZ","llB1", "llBg1", "llMetl30", "llMetg30", "llMetl30Jetg2B1", "llMetl30Jetg2Bg1", "llMetg30Jetg2B1", "llMetg30Jetg2Bg1"]
+#regions=["ll","llOffZ","llB1", "llBg1"]
+regions=["ll","llB1", "llBg1"]
+regionsName=["2 leptons","1 b-tag", "$>$ 1 b-tag"]
 channels=["ee", "emu", "mumu"];
 variables=["lep1Pt","lep1Eta","lep1Phi","lep2Pt","lep2Eta","lep2Phi","llM","llPt","llDr","llDphi","jet1Pt","jet1Eta","jet1Phi","njet","nbjet","Met","MetPhi","nVtx","llMZw"]
 #variables=["lep1Pt"]
@@ -251,7 +260,7 @@ for numyear, nameyear in enumerate(year):
                     else:
                         HH.append(Hists[numyear][f][numch][numreg][numvar])
 
-                stackPlots(HH, HHsignal, SamplesName, namech, namereg, nameyear,namevar,variablesName[numvar])
+#                stackPlots(HH, HHsignal, SamplesName, namech, namereg, nameyear,namevar,variablesName[numvar])
 
 le = '\\documentclass{article}' + "\n"
 le += '\\usepackage{rotating}' + "\n"
@@ -261,7 +270,7 @@ le += '\\begin{document}' + "\n"
 print le
 for numyear, nameyear in enumerate(year):
     for numch, namech in enumerate(channels):
-        cutFlowTable(Hists, SamplesNameLatex, regions, numch, numyear, nameyear + ' ' + namech, 6 )
+        cutFlowTable(Hists, SamplesNameLatex, regionsName, numch, numyear, nameyear + ' ' + namech, 6 )
 print '\\end{document}' + "\n"
 
 

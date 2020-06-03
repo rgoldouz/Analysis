@@ -29,12 +29,23 @@ mc2017_samples['2017_TTsys_hdampDOWN'] = [['/pnfs/iihe/cms/store/user/schenara/S
 mc2017_samples['2017_TTsys_TuneCP5up'] = [['/pnfs/iihe/cms/store/user/schenara/SYS_RunII_2017/TTTo2L2Nu_TuneCP5up_PSweights_13TeV-powheg-pythia8/crab_TTTo2L2Nu_TuneCP5up_v14_v1/200311_161406/0000/'], 'mc','','2017', '','87.31','41.53','5455706']
 mc2017_samples['2017_TTsys_TuneCP5down'] = [['/pnfs/iihe/cms/store/user/schenara/SYS_RunII_2017/TTTo2L2Nu_TuneCP5down_PSweights_13TeV-powheg-pythia8/crab_TTTo2L2Nu_TuneCP5down_v14_v1/200311_161500/0000/'], 'mc','','2017', '','87.31','41.53','5455842']
 mc2017_samples['2017_TTsys_CR1QCDbased'] = [['/pnfs/iihe/cms/store/user/schenara/SYS_RunII_2017/TTTo2L2Nu_TuneCP5CR1_QCDbased_PSweights_13TeV-powheg-pythia8/crab_TTTo2L2Nu_TuneCP5CR1_QCDbased_v14_ext1_v1/200408_071405/0000/','/pnfs/iihe/cms/store/user/schenara/SYS_RunII_2017/TTTo2L2Nu_TuneCP5CR1_QCDbased_PSweights_13TeV-powheg-pythia8/crab_TTTo2L2Nu_TuneCP5CR1_QCDbased_v14_v1/200408_071733/0000/'], 'mc','','2017', '','87.31','41.53','15373428']
+mc2017_samples['2017_TTsys_CR2QCDbased'] = [['/pnfs/iihe/cms/store/user/schenara/SYS_RunII_2017/TTTo2L2Nu_TuneCP5CR2_GluonMove_PSweights_13TeV-powheg-pythia8/crab_TTTo2L2Nu_TuneCP5CR2_GluonMove_v14_v1/200408_071152/0000/','/pnfs/iihe/cms/store/user/schenara/SYS_RunII_2017/TTTo2L2Nu_TuneCP5CR2_GluonMove_PSweights_13TeV-powheg-pythia8/crab_TTTo2L2Nu_TuneCP5CR2_GluonMove_v14_ext1_v1/200408_070748/0000/'], 'mc','','2017', '','87.31','41.53','15155366']
 mc2017_samples['2017_TTsys_CRerdON'] = [['/pnfs/iihe/cms/store/user/schenara/SYS_RunII_2017/TTTo2L2Nu_TuneCP5_erdON_13TeV-powheg-pythia8/crab_TTTo2L2Nu_TuneCP5_erdON_v14_ext1-v1/200408_072222/0000/', '/pnfs/iihe/cms/store/user/schenara/SYS_RunII_2017/TTTo2L2Nu_TuneCP5_erdON_13TeV-powheg-pythia8/crab_TTTo2L2Nu_TuneCP5_erdON_v14_v1/200408_072813/0000/'], 'mc','','2017', '','87.31','41.53','14936580']
 
-mc2017_samples['2017_LFVStVecC'] = [['/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2017/IIHE_Ntuple/ntuple_SMEFTfr_ST_vector_emutc/'], 'mc','','2017', '','0.0512' ,'41.53','500000']
-mc2017_samples['2017_LFVStVecU'] = [['/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2017/IIHE_Ntuple/ntuple_SMEFTfr_ST_vector_emutu/'], 'mc','','2017', '','0.515' ,'41.53','494000']
+mc2017_samples['2017_LFVStVecC'] = [['/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2017/IIHE_Ntuple/ntuple_SMEFTfr_ST_vector_emutc/'], 'mc','','2017', '','0.04' ,'41.53','500000']
+mc2017_samples['2017_LFVStVecU'] = [['/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2017/IIHE_Ntuple/ntuple_SMEFTfr_ST_vector_emutu/'], 'mc','','2017', '','0.452' ,'41.53','494000']
 mc2017_samples['2017_LFVTtVecC'] = [['/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2017/IIHE_Ntuple/ntuple_SMEFTfr_TT_vector_emutc/'], 'mc','','2017', '','0.032'  ,'41.53','500000']
 mc2017_samples['2017_LFVTtVecU'] = [['/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2017/IIHE_Ntuple/ntuple_SMEFTfr_TT_vector_emutu/'], 'mc','','2017', '','0.032','41.53','498000']
+
+mc2017_samples['2017_LFVStScalarC'] = [['/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2017/IIHE_Ntuple/ntuple_SMEFTfr_ST_clequ1_emutc/'], 'mc','','2017', '','0.008' ,'41.53','500000']
+mc2017_samples['2017_LFVStScalarU'] = [['/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2017/IIHE_Ntuple/ntuple_SMEFTfr_ST_clequ1_emutu/'], 'mc','','2017', '','0.102' ,'41.53','500000']
+mc2017_samples['2017_LFVTtScalarC'] = [['/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2017/IIHE_Ntuple/ntuple_SMEFTfr_TT_clequ1_emutc/'], 'mc','','2017', '','0.004'  ,'41.53','500000']
+mc2017_samples['2017_LFVTtScalarU'] = [['/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2017/IIHE_Ntuple/ntuple_SMEFTfr_TT_clequ1_emutu/'], 'mc','','2017', '','0.004','41.53','500000']
+
+mc2017_samples['2017_LFVStTensorC'] = [['/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2017/IIHE_Ntuple/ntuple_SMEFTfr_ST_clequ3_emutc/'], 'mc','','2017', '','0.187' ,'41.53','500000']
+mc2017_samples['2017_LFVStTensorU'] = [['/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2017/IIHE_Ntuple/ntuple_SMEFTfr_ST_clequ3_emutu/'], 'mc','','2017', '','1.9' ,'41.53','500000']
+mc2017_samples['2017_LFVTtTensorC'] = [['/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2017/IIHE_Ntuple/ntuple_SMEFTfr_TT_clequ3_emutc/'], 'mc','','2017', '','0.1876'  ,'41.53','500000']
+mc2017_samples['2017_LFVTtTensorU'] = [['/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2017/IIHE_Ntuple/ntuple_SMEFTfr_TT_clequ3_emutu/'], 'mc','','2017', '','0.1876','41.53','500000']
 
 data2017_samples['2017_B_MuonEG'] = [['/pnfs/iihe/cms/store/user/xgao/samples-20191203/data/2017/MuonEG/crab_MuonEG_runB/191204_020507/0000/'], 'data','MuonEG','2017', 'B','1','1','1']
 data2017_samples['2017_C_MuonEG'] = [['/pnfs/iihe/cms/store/user/xgao/samples-20191203/data/2017/MuonEG/crab_MuonEG_runC/191204_020526/0000/','/pnfs/iihe/cms/store/user/xgao/samples-20191203/data/2017/MuonEG/crab_MuonEG_runC/191204_020526/0001/'], 'data','MuonEG','2017', 'C','1','1','1']

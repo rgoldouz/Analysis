@@ -240,12 +240,10 @@ def stackPlotsError(hists, SignalHists,error, errorRatio, Fnames, ch = "channel"
     y_min=0
     y_max=1.7*dummy.GetMaximum()
     dummy.SetMarkerStyle(20)
-    dummy.SetMarkerSize(1.2)
+    dummy.SetMarkerSize(1.1)
 #Blinding strategy
     if ('BDT' in var or "lep1Pt" in var or "lep2Pt" in var) and reg == 'llB1':
-#       dummy.SetLineColor(0)
-#       dummy.SetFillColor(0)
-#        dummy.SetMarkerColor(0)
+        dummy.SetLineColor(0)
         dummy.SetMarkerSize(0)
     dummy.SetTitle("")
     dummy.GetYaxis().SetTitle('Events')
@@ -311,8 +309,6 @@ def stackPlotsError(hists, SignalHists,error, errorRatio, Fnames, ch = "channel"
     SumofMC = hs.GetStack().Last()
     dummy_ratio = dummy.Clone()
     dummy_ratio.SetTitle("")
-    dummy_ratio.SetMarkerStyle(20)
-    dummy_ratio.SetMarkerSize(1.2)
     dummy_ratio.GetXaxis().SetTitle(varname)
 #    dummy_ratio.GetXaxis().CenterTitle()
     dummy_ratio.GetYaxis().CenterTitle()
@@ -343,11 +339,6 @@ def stackPlotsError(hists, SignalHists,error, errorRatio, Fnames, ch = "channel"
     errorRatio.SetFillStyle(3004)
     errorRatio.Draw("2same")
     canvas.Print('sys/'+ year + '/' + ch +'/'+reg+'/'+var + ".png")
-    print year +" / "+ch+" ("+reg+")"
-    for b in range(dummy_ratio.GetNbinsX()):
-        print str(errorRatio.GetErrorYhigh(b))
-        print str(error.GetErrorYhigh(b))
-        print '********'
 
     del canvas
     gc.collect()
@@ -360,10 +351,9 @@ regions=["ll","llOffZ","llB1", "llBg1"]
 #regions=["ll","llOffZ"]
 channels=["ee", "emu", "mumu"];
 #channels=["emu"];
-#variables=["lep1Pt","lep1Eta","lep1Phi","lep2Pt","lep2Eta","lep2Phi","llM","llPt","llDr","llDphi","jet1Pt","jet1Eta","jet1Phi","njet","nbjet","Met","MetPhi","nVtx","llMZw","BDT"]
+variables=["lep1Pt","lep1Eta","lep1Phi","lep2Pt","lep2Eta","lep2Phi","llM","llPt","llDr","llDphi","jet1Pt","jet1Eta","jet1Phi","njet","nbjet","Met","MetPhi","nVtx","llMZw","BDT"]
 #variables=["lep1Pt","lep1Eta","lep1Phi","lep2Pt","lep2Eta","lep2Phi","llM","llPt","llDr","llDphi","jet1Pt","jet1Eta","jet1Phi","njet","nbjet","Met"]
 #variables=["nbjet","Met","nVtx","llMZw"]
-variables=["lep1Pt"]
 variablesName=["p_{T}(leading lepton)","#eta(leading lepton)","#Phi(leading lepton)","p_{T}(sub-leading lepton)","#eta(sub-leading lepton)","#Phi(sub-leading lepton)","M(ll)","p_{T}(ll)","#Delta R(ll)","#Delta #Phi(ll)","p_{T}(leading jet)","#eta(leading jet)","#Phi(leading jet)","Number of jets","Number of b-tagged jets","MET","#Phi(MET)","Number of vertices", "M(ll) [z window]", "BDT output"]
 sys = ["eleRecoSf", "eleIDSf", "muIdSf", "muIsoSf", "bcTagSF", "udsgTagSF","pu", "prefiring", "jes", "jer"]
 
@@ -686,7 +676,7 @@ for numyear, nameyear in enumerate(year):
                     yvalue.append(content)
                     yvalueRatio.append(content/content)
                     for numsys2, namesys2 in enumerate(sys):
-                        if HistsSysUp[numyear][len(Samples)-3][numch][numreg][numvar][numsys2].Integral()==0 or Hists_copy[numyear][len(Samples)-3][numch][numreg][numvar].GetBinContent(b+1)<=0:
+                        if HistsSysUp[numyear][len(Samples)-3][numch][numreg][numvar][numsys2].Integral()==0 or HistsSysDown[numyear][len(Samples)-3][numch][numreg][numvar][numsys2].Integral()==0 or Hists_copy[numyear][len(Samples)-3][numch][numreg][numvar].GetBinContent(b+1)<=0:
                             continue
                         if HistsSysUp[numyear][len(Samples)-3][numch][numreg][numvar][numsys2].GetBinContent(b+1) - Hists_copy[numyear][len(Samples)-3][numch][numreg][numvar].GetBinContent(b+1)  > 0:
                             errup = errup + (HistsSysUp[numyear][len(Samples)-3][numch][numreg][numvar][numsys2].GetBinContent(b+1) - Hists_copy[numyear][len(Samples)-3][numch][numreg][numvar].GetBinContent(b+1))**2
@@ -723,19 +713,12 @@ for numyear, nameyear in enumerate(year):
                         errdown = errdown + (CRGraph[numyear][numreg-2][numvar].GetErrorYlow(b))**2
                         errdown = errdown + (TuneGraph[numyear][numreg-2][numvar].GetErrorYlow(b))**2
                         errdown = errdown + (hdampGraph[numyear][numreg-2][numvar].GetErrorYlow(b))**2
-#                        print str(pdfGraph[numyear][numreg-1][numvar].GetErrorYlow(b)) + '    '+str(pdfGraph[numyear][numreg-1][numvar].GetErrorYlow(b))
                     yerrup.append(math.sqrt(errup))
                     yerrdown.append(math.sqrt(errdown))
                     yerrupRatio.append(math.sqrt(errup)/content)
                     yerrdownRatio.append(math.sqrt(errdown)/content)
-#                    if namereg=='llBg1':
-#                       print str(b+1) +' ' + nameyear + ' ' + namech + ' ' + namereg + ' ' +namevar + ' error= ' + str(math.sqrt(errup))
                 t3nominal.append(ROOT.TGraphAsymmErrors(len(bincenter),bincenter,yvalue,binwidth,binwidth,yerrdown,yerrup))
                 t3ratio.append(ROOT.TGraphAsymmErrors(len(bincenter),bincenter,yvalueRatio,binwidth,binwidth,yerrdownRatio,yerrupRatio))
-#                if namereg=='llBg1':
-#                    print yerrupRatio
-#                    for i in range(15):
-#                        print t3ratio[numvar].GetEYhigh()[i]
             t2nominal.append(t3nominal)
             t2ratio.append(t3ratio)
         t1nominal.append(t2nominal)

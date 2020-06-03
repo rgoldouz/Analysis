@@ -35,7 +35,7 @@ if data_2018:
 
 
 for key, value in SAMPLES.items():
-    if '2016' not in key:
+    if 'CR2' not in key:
         continue
     year = value[3]
     nf = 72

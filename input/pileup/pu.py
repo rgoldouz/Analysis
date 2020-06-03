@@ -16,6 +16,132 @@ from ROOT import THStack
 import gc
 TGaxis.SetMaxDigits(2)
 
+def puDraw(hists,Fnames,year,can):
+    ratio=[]
+    canvas = ROOT.TCanvas(can,can,50,50,865,780)
+    canvas.SetGrid();
+    canvas.SetBottomMargin(0.17)
+    canvas.cd()
+
+    legend = ROOT.TLegend(0.7,0.65,0.9,0.88)
+    legend.SetBorderSize(0)
+    legend.SetTextFont(42)
+    legend.SetTextSize(0.03)
+
+    pad1=ROOT.TPad("pad1", "pad1", 0, 0.315, 1, 0.99 , 0)#used for the hist plot
+    pad2=ROOT.TPad("pad2", "pad2", 0, 0.0, 1, 0.305 , 0)#used for the ratio plot
+    pad1.Draw()
+    pad2.Draw()
+    pad2.SetGridy()
+    pad2.SetTickx()
+    pad1.SetBottomMargin(0.02)
+    pad1.SetLeftMargin(0.14)
+    pad1.SetRightMargin(0.05)
+    pad2.SetTopMargin(0.1)
+    pad2.SetBottomMargin(0.4)
+    pad2.SetLeftMargin(0.14)
+    pad2.SetRightMargin(0.05)
+    pad2.SetFillStyle(0)
+    pad1.SetFillStyle(0)
+    pad1.cd()
+    pad1.SetLogx(ROOT.kFALSE)
+    pad2.SetLogx(ROOT.kFALSE)
+    pad1.SetLogy(ROOT.kFALSE)
+
+    y_min=0
+    y_max=1.2*hists[0].GetMaximum()
+    hists[0].SetTitle("")
+    hists[0].GetYaxis().SetTitle('Probability')
+    hists[0].GetXaxis().SetLabelSize(0)
+    hists[0].GetYaxis().SetTitleOffset(0.8)
+    hists[0].GetYaxis().SetTitleSize(0.07)
+    hists[0].GetYaxis().SetLabelSize(0.04)
+    hists[0].GetYaxis().SetRangeUser(y_min,y_max)
+    hists[0].Draw("hist")
+    nomhist = hists[0].Clone()
+    for H in range(0,len(hists)):
+        hists[H].SetLineWidth(2)
+        if 'nominal' in Fnames[H]:
+            hists[H].SetLineColor(1)
+            legend.AddEntry(hists[H],'Data','L')
+            nomhist = hists[H].Clone()
+        if 'up' in Fnames[H]:
+            hists[H].SetLineColor(16)
+            hists[H].SetLineStyle(9)
+            legend.AddEntry(hists[H],'Data (+1 #sigma)','L')
+            ratio.append(hists[H].Clone())
+        if 'down' in Fnames[H]:
+            hists[H].SetLineColor(16)
+            hists[H].SetLineStyle(6)
+            legend.AddEntry(hists[H],'Data (-1 #sigma)','L')
+            ratio.append(hists[H].Clone())
+        if 'MC' in Fnames[H]:
+            hists[H].SetLineColor(2)
+            legend.AddEntry(hists[H],'MC','L')
+            ratio.append(hists[H].Clone())
+        hists[H].Draw("histSAME")
+    hists[0].Draw("AXISSAMEY+")
+    hists[0].Draw("AXISSAMEX+")
+
+    legend.Draw("same")
+    Lumi = '137.42'
+    
+    if (year == '2016'):
+        Lumi = '35.92'
+    if (year == '2017'):
+        Lumi = '41.53'
+    if (year == '2018'):
+        Lumi = '59.97'
+    label_cms="CMS Preliminary"
+    Label_cms = ROOT.TLatex(0.2,0.92,label_cms)
+    Label_cms.SetNDC()
+    Label_cms.SetTextFont(61)
+    Label_cms.Draw()
+    Label_lumi = ROOT.TLatex(0.71,0.92,Lumi+" fb^{-1} (13 TeV)")
+    Label_lumi.SetNDC()
+    Label_lumi.SetTextFont(42)
+    Label_lumi.Draw("same")
+    pad1.Update()
+
+    pad2.cd()
+    print ratio
+    for rH in ratio: 
+        rH.SetTitle("")
+        rH.SetMarkerStyle(20)
+        rH.SetMarkerSize(1.2)
+        rH.GetXaxis().SetTitle('True Number of Interactions')
+        rH.GetYaxis().CenterTitle()
+        rH.GetXaxis().SetMoreLogLabels()
+        rH.GetXaxis().SetNoExponent()
+        rH.GetXaxis().SetTitleSize(0.04/0.3)
+        rH.GetYaxis().SetTitleSize(0.04/0.3)
+        rH.GetXaxis().SetTitleFont(42)
+        rH.GetYaxis().SetTitleFont(42)
+        rH.GetXaxis().SetTickLength(0.05)
+        rH.GetYaxis().SetTickLength(0.05)
+        rH.GetXaxis().SetLabelSize(0.115)
+        rH.GetYaxis().SetLabelSize(0.089)
+        rH.GetXaxis().SetLabelOffset(0.02)
+        rH.GetYaxis().SetLabelOffset(0.01)
+        rH.GetYaxis().SetTitleOffset(0.42)
+        rH.GetXaxis().SetTitleOffset(1.1)
+        rH.GetYaxis().SetNdivisions(504)
+        rH.GetYaxis().SetRangeUser(0.5,2)
+        rH.Divide(nomhist)
+        for b in range(rH.GetNbinsX()):
+            rH.SetBinContent(b+1,1/rH.GetBinContent(b+1))
+        rH.SetStats(ROOT.kFALSE)
+        rH.GetYaxis().SetTitle('Data/x')
+        rH.Draw('histSAME')
+        rH.Draw("AXISSAMEY+")
+        rH.Draw("AXISSAMEX+")
+
+
+    canvas.Print(can + ".png")
+    del canvas
+    gc.collect()
+
+
 
 samples = {}
 
@@ -86,6 +212,14 @@ MC2018_value =[
     6.119019e-08, 5.443693e-08, 4.85036e-08, 4.31486e-08, 3.822112e-08
 ]
 
+
+gr2016=[]
+gr2017=[]
+gr2018=[]
+Ngr2016=[]
+Ngr2017=[]
+Ngr2018=[]
+
 weights={}
 for key, value in samples.items():
     if '2016' in key:
@@ -93,6 +227,8 @@ for key, value in samples.items():
         f = ROOT.TFile.Open(value[0])
         h = f.Get('pileup')
         h.Scale(1/h.Integral()) 
+        gr2016.append(h)
+        Ngr2016.append(key)
         for b in range(len(MC2016_bins)):
             W.append(h.GetBinContent(b+1)/MC2016_value[b])
         weights[key] = W
@@ -101,6 +237,8 @@ for key, value in samples.items():
         f = ROOT.TFile.Open(value[0])
         h = f.Get('pileup')
         h.Scale(1/h.Integral())
+        gr2017.append(h)
+        Ngr2017.append(key)
         for b in range(len(MC2017_bins)-1):
             W.append(h.GetBinContent(b+1)/MC2017_value[b])
         weights[key] = W
@@ -109,17 +247,39 @@ for key, value in samples.items():
         f = ROOT.TFile.Open(value[0])
         h = f.Get('pileup')
         h.Scale(1/h.Integral())
+        gr2018.append(h)
+        Ngr2018.append(key)
         for b in range(len(MC2018_bins)-1):
             W.append(h.GetBinContent(b+1)/MC2018_value[b])
         weights[key] = W
 
+hcopy = gr2016[0].Clone()
+for b in range(hcopy.GetNbinsX()):
+    hcopy.SetBinContent(b+1,MC2016_value[b])
+gr2016.append(hcopy)
+Ngr2016.append('MC_2016')
+
+hcopy = gr2017[0].Clone()
+for b in range(hcopy.GetNbinsX()):
+    hcopy.SetBinContent(b+1,MC2017_value[b])
+gr2017.append(hcopy)
+Ngr2017.append('MC_2017')
+
+hcopy = gr2018[0].Clone()
+for b in range(hcopy.GetNbinsX()):
+    hcopy.SetBinContent(b+1,MC2018_value[b])
+gr2018.append(hcopy)
+Ngr2018.append('MC_2018')
+
 for key, value in samples.items():
     print 'double pu' + key + '['+str(len(weights[key])) +']={'
     print weights[key]
-
 print sum(MC2016_value)
 print sum(MC2017_value)
 print sum(MC2018_value)
 
+puDraw(gr2016,Ngr2016,'2016','pu2016')
+puDraw(gr2017,Ngr2017,'2017','pu2017')
+puDraw(gr2018,Ngr2018,'2018','pu2018')
 
 

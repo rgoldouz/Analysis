@@ -38,7 +38,7 @@ cms = '/user/rgoldouz/CMSSW_9_3_4/src/'
 nf =40
 
 for key, value in SAMPLES.items():
-    if 'CR' not in key:
+    if 'LFV' not in key:
         continue
     nf = 72
     for idx, S in enumerate(value[0]):

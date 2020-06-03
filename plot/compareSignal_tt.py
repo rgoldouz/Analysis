@@ -14,7 +14,7 @@ from ROOT import TColor
 from ROOT import TGaxis
 from ROOT import THStack
 import gc
-TGaxis.SetMaxDigits(2)
+#TGaxis.SetMaxDigits(2)
 
 
 def compareHists(hists,Fnames, ch = "channel", reg = "region", var="sample", varname="v"):
@@ -53,7 +53,7 @@ def compareHists(hists,Fnames, ch = "channel", reg = "region", var="sample", var
     hists[0].SetTitle("")
     hists[0].GetYaxis().SetTitle('Fraction')
     hists[0].GetXaxis().SetLabelSize(0.03)
-    hists[0].GetYaxis().SetTitleOffset(0.8)
+    hists[0].GetYaxis().SetTitleOffset(1)
     hists[0].GetYaxis().SetTitleSize(0.05)
     hists[0].GetYaxis().SetLabelSize(0.04)
     hists[0].GetYaxis().SetRangeUser(y_min,y_max)
@@ -79,21 +79,32 @@ def compareHists(hists,Fnames, ch = "channel", reg = "region", var="sample", var
 
 #year=['2016','2017','2018','All']
 year=['2017']
-regions=["ll","llOffZ","llB1", "llBg1", "llMetl30", "llMetg30", "llMetl30Jetg2B1", "llMetl30Jetg2Bg1", "llMetg30Jetg2B1", "llMetg30Jetg2Bg1"]
+regions=["ll","llOffZ","llB1", "llBg1"]
 channels=["ee", "emu", "mumu"];
-variables=["lep1Pt","lep1Eta","lep1Phi","lep2Pt","lep2Eta","lep2Phi","llM","llPt","llDr","llDphi","jet1Pt","jet1Eta","jet1Phi","njet","nbjet","Met","MetPhi","nVtx","llMZw"]
+variables=["BDT","lep1Pt","lep1Eta","lep1Phi","lep2Pt","lep2Eta","lep2Phi","llM","llPt","llDr","llDphi","jet1Pt","jet1Eta","jet1Phi","njet","nbjet","Met","MetPhi","nVtx","llMZw"]
 #variables=["lep1Pt"]
-variablesName=["p_{T}(leading lepton)","#eta(leading lepton)","#Phi(leading lepton)","p_{T}(sub-leading lepton)","#eta(sub-leading lepton)","#Phi(sub-leading lepton)","M(ll)","p_{T}(ll)","#Delta R(ll)","#Delta #Phi(ll)","p_{T}(leading jet)","#eta(leading jet)","#Phi(leading jet)","Number of jets","Number of b-tagged jets","MET","#Phi(MET)","Number of vertices", "M(ll) [z window]"]
+variablesName=["BDT output","p_{T}(leading lepton)","#eta(leading lepton)","#Phi(leading lepton)","p_{T}(sub-leading lepton)","#eta(sub-leading lepton)","#Phi(sub-leading lepton)","M(ll)","p_{T}(ll)","#Delta R(ll)","#Delta #Phi(ll)","p_{T}(leading jet)","#eta(leading jet)","#Phi(leading jet)","Number of jets","Number of b-tagged jets","MET","#Phi(MET)","Number of vertices", "M(ll) [z window]"]
 
 
 
 HistAddress = '/user/rgoldouz/NewAnalysis2020/Analysis/hists/'
 
-Samples = ['TTTo2L2Nu.root', 'LFVVecC.root', 'LFVVecU.root', 'LFVStVecC.root', 'LFVStVecU.root', 'LFVTtVecC.root', 'LFVTtVecU.root']
-SamplesName = ['t#bar{t}', 'LFV-vec [e#mutc]', 'LFV-vec [e#mutu]', 'LFV-vec ST[e#mutc]', 'LFV-vec St[e#mutu]', 'LFV-vec tT[e#mutc]', 'LFV-vec tt[e#mutu]']
+#Samples = ['TTTo2L2Nu.root', 'LFVVecC.root', 'LFVVecU.root', 'LFVStVecC.root', 'LFVStVecU.root', 'LFVTtVecC.root', 'LFVTtVecU.root']
+#SamplesName = ['t#bar{t}', 'LFV-vec [e#mutc]', 'LFV-vec [e#mutu]', 'LFV-vec ST[e#mutc]', 'LFV-vec St[e#mutu]', 'LFV-vec tT[e#mutc]', 'LFV-vec tt[e#mutu]']
 
-colors =  [ROOT.kRed-4,ROOT.kOrange-6, ROOT.kCyan-6,ROOT.kOrange-6,ROOT.kCyan-6,ROOT.kOrange-6, ROOT.kCyan-6]
-Style =[1,1,1,7,7,3,3]
+#Samples = ['TTTo2L2Nu.root', 'LFVVecU.root', 'LFVScalarU.root','LFVTensorU.root']
+#SamplesName = ['t#bar{t}', 'LFV-Vector [e#mutu]',  'LFV-Scalar [e#mutu]',  'LFV-Tensor [e#mutu]']
+
+#Samples = ['TTTo2L2Nu.root', 'LFVVecC.root', 'LFVScalarC.root','LFVTensorC.root']
+#SamplesName = ['t#bar{t}', 'LFV-Vector [e#mutc]',  'LFV-Scalar [e#mutc]',  'LFV-Tensor [e#mutc]']
+
+Samples = ['TTTo2L2Nu.root', 'LFVVecU.root', 'LFVScalarU.root','LFVTensorU.root', 'LFVVecC.root', 'LFVScalarC.root','LFVTensorC.root']
+SamplesName = ['t#bar{t}', 'LFV-Vector [e#mutu]',  'LFV-Scalar [e#mutu]',  'LFV-Tensor [e#mutu]', 'LFV-Vector [e#mutc]',  'LFV-Scalar [e#mutc]',  'LFV-Tensor [e#mutc]']
+
+#colors =  [ROOT.kRed-4,ROOT.kOrange-6, ROOT.kCyan-6,ROOT.kOrange-6,ROOT.kCyan-6,ROOT.kOrange-6, ROOT.kCyan-6]
+#Style =[1,1,1,7,7,3,3]
+colors =  [ROOT.kRed-4,1,4,8,1,4,8]
+Style =[1,1,1,1,2,2,2]
 
 Hists = []
 for numyear, nameyear in enumerate(year):
@@ -111,6 +122,7 @@ for numyear, nameyear in enumerate(year):
                     h.SetFillColor(colors[f])
                     h.SetLineColor(colors[f])
                     h.SetLineStyle(Style[f])
+                    h.SetLineWidth(2)
                     l3.append(h)
                 l2.append(l3)
             l1.append(l2)
@@ -125,3 +137,6 @@ for numreg, namereg in enumerate(regions):
             HH.append(Hists[0][f][1][numreg][numvar])
             HHname.append(SamplesName[f])
         compareHists(HH,HHname, 'emu', namereg,namevar,variablesName[numvar])
+
+
+

@@ -836,6 +836,7 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
       sysUpWeights[6] = wPU.PU_2018(mc_trueNumInteractions,"up");
       sysDownWeights[6] = wPU.PU_2018(mc_trueNumInteractions,"down");
     }
+
 //lumi xs weights
     if (data == "mc") weight_Lumi = (1000*xs*lumi)/Nevent;
 

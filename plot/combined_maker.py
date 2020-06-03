@@ -27,12 +27,12 @@ variables=["BDT"]
 sys = ["eleRecoSf", "eleIDSf", "muIdSf", "muIsoSf", "bcTagSF", "udsgTagSF","pu", "prefiring", "jes", "jer"]
 HistAddress = '/user/rgoldouz/NewAnalysis2020/Analysis/hists/'
 
-Samples = ['data.root','WJetsToLNu.root','others.root', 'DY.root', 'TTTo2L2Nu.root', 'ST_tW.root', 'LFVVecC.root', 'LFVVecU.root']
+Samples = ['data.root','WJetsToLNu.root','others.root', 'DY.root', 'TTTo2L2Nu.root', 'ST_tW.root', 'LFVVecC.root', 'LFVVecU.root', 'LFVScalarC.root', 'LFVScalarU.root', 'LFVTensorC.root', 'LFVTensorU.root']
 SamplesName = ['Data','Jets','Others', 'DY', 't#bar{t}', 'tW' , 'LFV-vec [c_{e#mutc}=5]', 'LFV-vec [c_{e#mutu}=2]']
-SamplesNameCombined = ['data_obs','Jets','Others', 'DY', 'tt', 'tW',  'LfvVectorEmutc', 'LfvVectorEmutu']
-NormalizationErr = [0, 0.5, 0.5, 0.3, 0.05, 0.1, 0,0]
+SamplesNameCombined = ['data_obs','Jets','Others', 'DY', 'tt', 'tW',  'LfvVectorEmutc', 'LfvVectorEmutu', 'LfvScalarEmutc', 'LfvScalarEmutu', 'LfvTensorEmutc', 'LfvTensorEmutu']
+NormalizationErr = [0, 0.5, 0.5, 0.3, 0.05, 0.1, 0,0,0,0,0,0]
 
-colors =  [ROOT.kBlack,ROOT.kYellow,ROOT.kGreen,ROOT.kBlue-3,ROOT.kRed-4,ROOT.kOrange-3, ROOT.kOrange-6, ROOT.kCyan-6]
+colors =  [ROOT.kBlack,ROOT.kYellow,ROOT.kGreen,ROOT.kBlue-3,ROOT.kRed-4,ROOT.kOrange-3, ROOT.kOrange-6, ROOT.kCyan-6, ROOT.kOrange-6, ROOT.kCyan-6, ROOT.kOrange-6, ROOT.kCyan-6]
 
 Hists = []
 HistsSysUp = []
