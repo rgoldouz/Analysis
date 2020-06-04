@@ -1,0 +1,26 @@
+max 1 number of categories 
+jmax 5 number of samples minus one
+kmax * number of nuisance parameters
+------------
+shapes * * All_llB1.root $PROCESS $PROCESS_$SYSTEMATIC
+------------
+bin                                          LFVScalarU_All_llB1
+observation                                  501153.0
+------------
+bin                                          LFVScalarU_All_llB1      LFVScalarU_All_llB1      LFVScalarU_All_llB1      LFVScalarU_All_llB1      LFVScalarU_All_llB1      LFVScalarU_All_llB1      
+process                                      0                        1                        2                        3                        4                        5                        
+process                                      LfvScalarEmutu           Jets                     Others                   DY                       tt                       tW                       
+rate                                         3459.71532315            540.11123687             2195.81603969            4501.95077372            448528.323614            47040.4865966            
+------------
+lumi                     lnN                 1.025                    1.025                    1.025                    1.025                    1.025                    1.025                    
+tt_norm                  lnN                 -                        -                        -                        -                        1.05                     -                        
+eleRecoSf                shape               1                        1                        1                        1                        1                        1                        
+eleIDSf                  shape               1                        1                        1                        1                        1                        1                        
+muIdSf                   shape               1                        1                        1                        1                        1                        1                        
+muIsoSf                  shape               1                        1                        1                        1                        1                        1                        
+bcTagSF                  shape               1                        1                        1                        1                        1                        1                        
+udsgTagSF                shape               1                        1                        1                        1                        1                        1                        
+pu                       shape               1                        1                        1                        1                        1                        1                        
+prefiring                shape               1                        1                        1                        1                        1                        1                        
+jes                      shape               1                        1                        1                        1                        1                        1                        
+jer                      shape               1                        1                        1                        1                        1                        1                        
