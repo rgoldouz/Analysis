@@ -338,7 +338,7 @@ for numyear, nameyear in enumerate(year):
                     else:
                         HH.append(Hists[numyear][f][numch][numreg][numvar])
 
-#stackPlots(HH, HHsignal, SamplesName, namech, namereg, nameyear,namevar,variablesName[numvar])
+                stackPlots(HH, HHsignal, SamplesName, namech, namereg, nameyear,namevar,variablesName[numvar])
 
 le = '\\documentclass{article}' + "\n"
 le += '\\usepackage{rotating}' + "\n"
