@@ -18,7 +18,11 @@ import argparse
 TGaxis.SetMaxDigits(2)
 
 def cutFlowTable(hists, samples, regions, ch, year,caption='2017', nsig=6):
-    mcSum = list(0 for i in xrange(0,len(regions))) 
+    mcSum = list(0 for i in xrange(0,len(regions)))
+    if not ch==1:
+        showData = True
+    else:
+        showData = False
 #    table = '\\begin{sidewaystable*}' + "\n"
     table = '\\begin{table*}' + "\n"
     table += '\\centering' + "\n"
@@ -43,14 +47,17 @@ def cutFlowTable(hists, samples, regions, ch, year,caption='2017', nsig=6):
         table += (' & ' + str(round(r,2)))
     table += '\\\\' + "\n"
     table += '\\hline' + "\n"
-    table += 'Data '
-    for idr, r in enumerate(regions):
-        table += (' & ' + str(hists[year][0][ch][idr][2].Integral()))
-    table += '\\\\' + "\n"
-    table += '\\hline' + "\n"
-    table += 'Data$/$Pred. '
-    for idr, r in enumerate(mcSum):
-        table += (' & ' + str(round(hists[year][0][ch][idr][2].Integral()/r,2)))
+    if showData:
+      table += 'Data '
+      for idr, r in enumerate(regions):
+          table += (' & ' + str(hists[year][0][ch][idr][2].Integral()))
+      table += '\\\\' + "\n"
+      table += '\\hline' + "\n"
+      table += 'Data$/$Pred. '
+      for idr, r in enumerate(mcSum):
+          if r==0:
+             r=0.1
+          table += (' & ' + str(round(hists[year][0][ch][idr][2].Integral()/r,2)))
     table += '\\\\' + "\n"
     table += '\\hline' + "\n"
     table += '\\end{tabular}}' + "\n"
@@ -74,6 +81,11 @@ def stackPlots(hists, SignalHists, Fnames, ch = "channel", reg = "region", year=
         hs.Add(hists[num])
 
     dummy = hists[0].Clone()
+    if ('emul' not in ch) or ('B' not in reg):
+        showData = True
+    else:
+        showData = False
+        dummy.Reset("ICE")
 
     
     canvas = ROOT.TCanvas(year+ch+reg+var,year+ch+reg+var,50,50,865,780)
@@ -107,7 +119,7 @@ def stackPlots(hists, SignalHists, Fnames, ch = "channel", reg = "region", year=
     pad1.SetLogy(ROOT.kFALSE)
 
     y_min=0
-    y_max=1.6*dummy.GetMaximum()
+    y_max=1.6*hists[0].GetMaximum()
     dummy.SetMarkerStyle(20)
     dummy.SetMarkerSize(1.2)
     dummy.SetTitle("")
@@ -149,15 +161,15 @@ def stackPlots(hists, SignalHists, Fnames, ch = "channel", reg = "region", year=
     Label_channel.SetTextFont(42)
     Label_channel.Draw("same")
 
-
-    legend.AddEntry(dummy,Fnames[0],'ep')
+    if showData:
+       legend.AddEntry(dummy,Fnames[0],'ep')
     for num in range(1,len(hists)):
         legend.AddEntry(hists[num],Fnames[num],'F')
     for H in range(len(SignalHists)):
         legend.AddEntry(SignalHists[H], Fnames[len(hists)+H],'L')
     legend.Draw("same")
 
-    if (hs.GetStack().Last().Integral()>0):
+    if (showData) and (hs.GetStack().Last().Integral()>0):
         Label_DM = ROOT.TLatex(0.2,0.75,"Data/MC = " + str(round(hists[0].Integral()/hs.GetStack().Last().Integral(),2)))
         Label_DM.SetNDC()
         Label_DM.SetTextFont(42)
@@ -193,6 +205,8 @@ def stackPlots(hists, SignalHists, Fnames, ch = "channel", reg = "region", year=
     dummy_ratio.Divide(SumofMC)
     dummy_ratio.SetStats(ROOT.kFALSE)
     dummy_ratio.GetYaxis().SetTitle('Data/Pred.')
+    if not showData:
+        dummy_ratio.Reset("ICE")
     dummy_ratio.Draw()
     dummy_ratio.Draw("AXISSAMEY+")
     dummy_ratio.Draw("AXISSAMEX+")
@@ -237,6 +251,7 @@ def compareHists(hists,Fnames, ch = "channel", reg = "region", var="sample", var
     hists[0].SetTitle("")
     hists[0].GetYaxis().SetTitle('Fraction')
     hists[0].GetXaxis().SetLabelSize(0.03)
+    hists[0].GetXaxis().SetNoExponent()
     hists[0].GetYaxis().SetTitleOffset(0.8)
     hists[0].GetYaxis().SetTitleSize(0.05)
     hists[0].GetYaxis().SetLabelSize(0.04)
@@ -263,7 +278,7 @@ def compareHists(hists,Fnames, ch = "channel", reg = "region", var="sample", var
 
 #year=['2016','2017','2018','All']
 year=['2017']
-regions=["lll","lllOffZ","lllBleq1","lllB1", "lllBgeq2", "lllMetl20", "lllMetg20", "lllMetl20Jetgeq1Bleq1", "lllMetl20Jetgeq1B1", "lllMetl20Jet1B1", "lllMetl20Jetgeq2Bleq1", "lllMetl20Jetgeq2B1", "lllMetl20Jetgeq2Bgeq2", "lllMetg20Jetgeq1Bleq1", "lllMetg20Jetgeq1B1", "lllMetg20Jet1B1", "lllMetg20Jetgeq2Bleq1", "lllMetg20Jetgeq2B1", "lllMetg20Jetgeq2Bgeq2"]
+regions=["lll","lllOnZ","lllOffZ","lllBleq1","lllB1", "lllBgeq2", "lllMetl20", "lllMetg20", "lllMetl20Jetgeq1Bleq1", "lllMetl20Jetgeq1B1", "lllMetl20Jet1B1", "lllMetl20Jetgeq2Bleq1", "lllMetl20Jetgeq2B1", "lllMetl20Jetgeq2Bgeq2", "lllMetl20Jet2B1", "lllMetg20Jetgeq1Bleq1", "lllMetg20Jetgeq1B1", "lllMetg20Jet1B1", "lllMetg20Jetgeq2Bleq1", "lllMetg20Jetgeq2B1", "lllMetg20Jetgeq2Bgeq2", "lllMetg20Jet2B1"]
 channels=["eee", "emul", "mumumu"];
 variables=["lep1Pt","lep1Eta","lep1Phi","lep2Pt","lep2Eta","lep2Phi","lep3Pt","lep3Eta","lep3Phi",
            "LFVePt","LFVeEta","LFVePhi","LFVmuPt","LFVmuEta","LFVmuPhi","balPt","balEta","balPhi","Topmass",
@@ -323,7 +338,7 @@ for numyear, nameyear in enumerate(year):
                     else:
                         HH.append(Hists[numyear][f][numch][numreg][numvar])
 
-                stackPlots(HH, HHsignal, SamplesName, namech, namereg, nameyear,namevar,variablesName[numvar])
+#stackPlots(HH, HHsignal, SamplesName, namech, namereg, nameyear,namevar,variablesName[numvar])
 
 le = '\\documentclass{article}' + "\n"
 le += '\\usepackage{rotating}' + "\n"

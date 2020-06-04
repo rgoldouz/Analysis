@@ -208,6 +208,9 @@ This removes all the jobs submitted by user jingyan.
 condor_rm 4698914.0
 
 This removes the job with a certain ID.
+
+You can also manually submit jobs through the following command:
+condor_submit Jobs/submit01.sub executable=Jobs/2017_LFVStVecC_0_0.sh
 ```
 
 More on Condor can be found at http://information-technology.web.cern.ch/services/fe/lxbatch/howto/quickstart-guide-htcondor
