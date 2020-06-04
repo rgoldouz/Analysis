@@ -302,8 +302,8 @@ for numyear, nameyear in enumerate(year):
             if f==0:
                 continue
             for numsys, namesys in enumerate(sys):
-                HistsSysUp[numyear][f][0][numreg][0][numsys].SetName(SamplesNameCombined[f] + '_' + namesys + '_' + 'Up')
-                HistsSysDown[numyear][f][0][numreg][0][numsys].SetName(SamplesNameCombined[f] + '_' + namesys + '_' + 'Down')
+                HistsSysUp[numyear][f][0][numreg][0][numsys].SetName(SamplesNameCombined[f] + '_' + namesys + 'Up')
+                HistsSysDown[numyear][f][0][numreg][0][numsys].SetName(SamplesNameCombined[f] + '_' + namesys + 'Down')
                 HistsSysUp[numyear][f][0][numreg][0][numsys].Write()
                 HistsSysDown[numyear][f][0][numreg][0][numsys].Write()
         for g in range(len(Gttsys)):
@@ -318,3 +318,34 @@ for numyear, nameyear in enumerate(year):
             hdown.Write()
         hfile.Write()
         hfile.Close()
+
+
+SignalSamples = ['LFVVecC', 'LFVVecU', 'LFVScalarC', 'LFVScalarU', 'LFVTensorC', 'LFVTensorU']
+Samples = ['data.root','WJetsToLNu.root','others.root', 'DY.root', 'TTTo2L2Nu.root', 'ST_tW.root', 'LFVVecC.root', 'LFVVecU.root', 'LFVScalarC.root', 'LFVScalarU.root', 'LFVTensorC.root', 'LFVTensorU.root']
+
+for namesig in SignalSamples:
+    for numyear, nameyear in enumerate(year):
+        for numreg, namereg in enumerate(regions):
+            cardName = namesig+'_'+nameyear+'_' + namereg
+            Sid= Samples.index(namesig + '.root')
+            T1 = 'max 1 number of categories \n' +\
+                 'jmax 5 number of samples minus one\n' +\
+                 'kmax * number of nuisance parameters\n' +\
+                 '------------\n'+\
+                 'shapes * * '  + nameyear+'_'+namereg+'.root' + ' $PROCESS $PROCESS_$SYSTEMATIC\n' +\
+                 '------------\n'+\
+                 'bin'.ljust(45) + cardName + '\n'+\
+                 'observation'.ljust(45) + str(Hists[numyear][0][0][numreg][0].Integral()) +'\n'+\
+                 '------------\n'+\
+                 'bin'.ljust(45) + cardName.ljust(25) + cardName.ljust(25) + cardName.ljust(25) + cardName.ljust(25) + cardName.ljust(25) + cardName.ljust(25) +'\n'+\
+                 'process'.ljust(45) +'0'.ljust(25) + '1'.ljust(25) + '2'.ljust(25) + '3'.ljust(25) + '4'.ljust(25) + '5'.ljust(25) +'\n'+\
+                 'process'.ljust(45) +SamplesNameCombined[Sid].ljust(25) + SamplesNameCombined[1].ljust(25) + SamplesNameCombined[2].ljust(25) +\
+                 SamplesNameCombined[3].ljust(25) + SamplesNameCombined[4].ljust(25) + SamplesNameCombined[5].ljust(25)+'\n'+\
+                 'rate'.ljust(45)+ str(Hists[numyear][Sid][0][numreg][0].Integral()).ljust(25) + str(Hists[numyear][1][0][numreg][0].Integral()).ljust(25) + str(Hists[numyear][2][0][numreg][0].Integral()).ljust(25)+\
+                 str(Hists[numyear][3][0][numreg][0].Integral()).ljust(25) + str(Hists[numyear][4][0][numreg][0].Integral()).ljust(25) + str(Hists[numyear][5][0][numreg][0].Integral()).ljust(25) + '\n'+\
+                 '------------\n'+\
+                 'lumi'.ljust(25)+'lnN'.ljust(20) + '1.025'.ljust(25) + '1.025'.ljust(25) + '1.025'.ljust(25) + '1.025'.ljust(25) + '1.025'.ljust(25) + '1.025'.ljust(25) +'\n'+\
+                 'tt_norm'.ljust(25)+'lnN'.ljust(20) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '1.05'.ljust(25) + '-'.ljust(25) +'\n'
+            for b in sys:
+                T1 = T1 +  b.ljust(25)  +'shape'.ljust(20)  + '1'.ljust(25) + '1'.ljust(25) + '1'.ljust(25) + '1'.ljust(25) + '1'.ljust(25) + '1'.ljust(25) +'\n'
+            open('CombinedFiles/' + cardName +'.txt', 'wt').write(T1)
