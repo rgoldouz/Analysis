@@ -14,10 +14,15 @@ from ROOT import TColor
 from ROOT import TGaxis
 from ROOT import THStack
 import gc
+import argparse
 TGaxis.SetMaxDigits(2)
 
-def cutFlowTable(hists, samples, regions, ch, year,caption='2016', nsig=6):
-    mcSum = list(0 for i in xrange(0,len(regions))) 
+def cutFlowTable(hists, samples, regions, ch, year,caption='2017', nsig=6):
+    mcSum = list(0 for i in xrange(0,len(regions)))
+    if not ch==1:
+        showData = True
+    else:
+        showData = False
 #    table = '\\begin{sidewaystable*}' + "\n"
     table = '\\begin{table*}' + "\n"
     table += '\\centering' + "\n"
@@ -42,14 +47,17 @@ def cutFlowTable(hists, samples, regions, ch, year,caption='2016', nsig=6):
         table += (' & ' + str(round(r,2)))
     table += '\\\\' + "\n"
     table += '\\hline' + "\n"
-    table += 'Data '
-    for idr, r in enumerate(regions):
-        table += (' & ' + str(hists[year][0][ch][idr][2].Integral()))
-    table += '\\\\' + "\n"
-    table += '\\hline' + "\n"
-    table += 'Data$/$Pred. '
-    for idr, r in enumerate(mcSum):
-        table += (' & ' + str(round(hists[year][0][ch][idr][2].Integral()/r,2)))
+    if showData:
+      table += 'Data '
+      for idr, r in enumerate(regions):
+          table += (' & ' + str(hists[year][0][ch][idr][2].Integral()))
+      table += '\\\\' + "\n"
+      table += '\\hline' + "\n"
+      table += 'Data$/$Pred. '
+      for idr, r in enumerate(mcSum):
+          if r==0:
+             r=0.1
+          table += (' & ' + str(round(hists[year][0][ch][idr][2].Integral()/r,2)))
     table += '\\\\' + "\n"
     table += '\\hline' + "\n"
     table += '\\end{tabular}}' + "\n"
@@ -57,7 +65,7 @@ def cutFlowTable(hists, samples, regions, ch, year,caption='2016', nsig=6):
 #    table += '\\end{sidewaystable*}' + "\n"
     print table
 
-def stackPlots(hists, SignalHists, Fnames, ch = "channel", reg = "region", year='2016', var="sample", varname="v"):
+def stackPlots(hists, SignalHists, Fnames, ch = "channel", reg = "region", year='2017', var="sample", varname="v"):
     if not os.path.exists(year):
        os.makedirs(year)
     if not os.path.exists(year + '/' + ch):
@@ -73,6 +81,11 @@ def stackPlots(hists, SignalHists, Fnames, ch = "channel", reg = "region", year=
         hs.Add(hists[num])
 
     dummy = hists[0].Clone()
+    if ('emul' not in ch) or ('B' not in reg):
+        showData = True
+    else:
+        showData = False
+        dummy.Reset("ICE")
 
     
     canvas = ROOT.TCanvas(year+ch+reg+var,year+ch+reg+var,50,50,865,780)
@@ -106,7 +119,7 @@ def stackPlots(hists, SignalHists, Fnames, ch = "channel", reg = "region", year=
     pad1.SetLogy(ROOT.kFALSE)
 
     y_min=0
-    y_max=1.6*dummy.GetMaximum()
+    y_max=1.6*hists[0].GetMaximum()
     dummy.SetMarkerStyle(20)
     dummy.SetMarkerSize(1.2)
     dummy.SetTitle("")
@@ -148,15 +161,15 @@ def stackPlots(hists, SignalHists, Fnames, ch = "channel", reg = "region", year=
     Label_channel.SetTextFont(42)
     Label_channel.Draw("same")
 
-
-    legend.AddEntry(dummy,Fnames[0],'ep')
+    if showData:
+       legend.AddEntry(dummy,Fnames[0],'ep')
     for num in range(1,len(hists)):
         legend.AddEntry(hists[num],Fnames[num],'F')
     for H in range(len(SignalHists)):
         legend.AddEntry(SignalHists[H], Fnames[len(hists)+H],'L')
     legend.Draw("same")
 
-    if (hs.GetStack().Last().Integral()>0):
+    if (showData) and (hs.GetStack().Last().Integral()>0):
         Label_DM = ROOT.TLatex(0.2,0.75,"Data/MC = " + str(round(hists[0].Integral()/hs.GetStack().Last().Integral(),2)))
         Label_DM.SetNDC()
         Label_DM.SetTextFont(42)
@@ -192,6 +205,8 @@ def stackPlots(hists, SignalHists, Fnames, ch = "channel", reg = "region", year=
     dummy_ratio.Divide(SumofMC)
     dummy_ratio.SetStats(ROOT.kFALSE)
     dummy_ratio.GetYaxis().SetTitle('Data/Pred.')
+    if not showData:
+        dummy_ratio.Reset("ICE")
     dummy_ratio.Draw()
     dummy_ratio.Draw("AXISSAMEY+")
     dummy_ratio.Draw("AXISSAMEX+")
@@ -236,6 +251,7 @@ def compareHists(hists,Fnames, ch = "channel", reg = "region", var="sample", var
     hists[0].SetTitle("")
     hists[0].GetYaxis().SetTitle('Fraction')
     hists[0].GetXaxis().SetLabelSize(0.03)
+    hists[0].GetXaxis().SetNoExponent()
     hists[0].GetYaxis().SetTitleOffset(0.8)
     hists[0].GetYaxis().SetTitleSize(0.05)
     hists[0].GetYaxis().SetLabelSize(0.04)
@@ -260,21 +276,31 @@ def compareHists(hists,Fnames, ch = "channel", reg = "region", var="sample", var
     del canvas
     gc.collect()
 
-year=['2016','2017','2018','All']
-#year=['2016']
-regions=["ll","llOffZ","llB1", "llBg1", "llMetl30", "llMetg30", "llMetl30Jetg2B1", "llMetl30Jetg2Bg1", "llMetg30Jetg2B1", "llMetg30Jetg2Bg1"]
-channels=["ee", "emu", "mumu"];
-variables=["lep1Pt","lep1Eta","lep1Phi","lep2Pt","lep2Eta","lep2Phi","llM","llPt","llDr","llDphi","jet1Pt","jet1Eta","jet1Phi","njet","nbjet","Met","MetPhi","nVtx","llMZw"]
+#year=['2016','2017','2018','All']
+year=['2017']
+regions=["lll","lllOnZ","lllOffZ","lllBleq1","lllB1", "lllBgeq2", "lllMetl20", "lllMetg20", "lllMetl20Jetgeq1Bleq1", "lllMetl20Jetgeq1B1", "lllMetl20Jet1B1", "lllMetl20Jetgeq2Bleq1", "lllMetl20Jetgeq2B1", "lllMetl20Jetgeq2Bgeq2", "lllMetl20Jet2B1", "lllMetg20Jetgeq1Bleq1", "lllMetg20Jetgeq1B1", "lllMetg20Jet1B1", "lllMetg20Jetgeq2Bleq1", "lllMetg20Jetgeq2B1", "lllMetg20Jetgeq2Bgeq2", "lllMetg20Jet2B1"]
+channels=["eee", "emul", "mumumu"];
+variables=["lep1Pt","lep1Eta","lep1Phi","lep2Pt","lep2Eta","lep2Phi","lep3Pt","lep3Eta","lep3Phi",
+           "LFVePt","LFVeEta","LFVePhi","LFVmuPt","LFVmuEta","LFVmuPhi","balPt","balEta","balPhi","Topmass",
+           "llM","llPt","llDr","llDphi","jet1Pt","jet1Eta","jet1Phi","njet","nbjet","Met","MetPhi","nVtx","llMZw","LFVTopmass"]
 #variables=["lep1Pt"]
-variablesName=["p_{T}(leading lepton)","#eta(leading lepton)","#Phi(leading lepton)","p_{T}(sub-leading lepton)","#eta(sub-leading lepton)","#Phi(sub-leading lepton)","M(ll)","p_{T}(ll)","#Delta R(ll)","#Delta #Phi(ll)","p_{T}(leading jet)","#eta(leading jet)","#Phi(leading jet)","Number of jets","Number of b-tagged jets","MET","#Phi(MET)","Number of vertices", "M(ll) [z window]"]
+variablesName=["Leading lepton p_{T} [GeV]","Leading lepton #eta","Leading lepton #varphi","2nd-Leading lepton p_{T} [GeV]","2nd-Leading lepton #eta","2nd-Leading lepton #varphi","3rd-Leading lepton p_{T} [GeV]","3rd-Leading lepton #eta","3rd-Leading lepton #varphi","cLFV electron p_{T} [GeV]","cLFV electron #eta","cLFV electron #varphi","cLFV muon p_{T} [GeV]","cLFV muon #eta","cLFV muon #varphi","Bachelor lepton p_{T} [GeV]","Bachelor lepton #eta","Bachelor lepton #varphi","Standard top mass [GeV]","M(ll) [GeV]","p_{T}(ll) [GeV]","#Delta R(ll)","#Delta #varphi(ll)","Leading jet p_{T} [GeV]","Leading jet #eta","Leading jet #varphi","Number of jets","Number of b-tagged jets","MET [GeV]","#varphi(MET)","Number of vertices", "M(ll) (z window) [GeV]", "cLFV top mass [GeV]"]
 
 
+# set up an argument parser
+parser = argparse.ArgumentParser()
 
-HistAddress = '/user/rgoldouz/NewAnalysis2020/Analysis/hists/'
+parser.add_argument('--v', dest='VERBOSE', default=True)
+parser.add_argument('--l', dest = 'LOCATION', default= '/afs/cern.ch/user/a/asparker/public/LFVTopCode_MyFork/TopLFV/hists/')
 
-Samples = ['data.root','WJetsToLNu.root','others.root', 'DY.root', 'TTTo2L2Nu.root', 'ST_tW.root', 'LFVVecC.root', 'LFVVecU.root']
-SamplesName = ['Data','Jets','Others', 'DY', 't#bar{t}', 'tW' , 'LFV-vec [c_{e#mutc}=5]', 'LFV-vec [c_{e#mutu}=2]']
-SamplesNameLatex = ['Data','Jets','Others', 'DY', 'tt', 'tW',  'LFV-vector(emutc)', 'LFV-vector(emutu)']
+ARGS = parser.parse_args()
+
+verbose = ARGS.VERBOSE
+HistAddress = ARGS.LOCATION
+
+Samples = ['data.root','TTV.root','VV.root', 'TTbar.root', 'others.root', 'SMEFTfr_ST_vector_emutu.root', 'SMEFTfr_TT_vector_emutu.root']
+SamplesName = ['data','TTV','VV', 'TTbar', 'others', 'ST_vector_emutu', 'TT_vector_emutu']
+SamplesNameLatex = ['data','TTV','VV', 'TTbar', 'others', 'ST_vector_emutu', 'TT_vector_emutu']
 
 colors =  [ROOT.kBlack,ROOT.kYellow,ROOT.kGreen,ROOT.kBlue-3,ROOT.kRed-4,ROOT.kOrange-3, ROOT.kOrange-6, ROOT.kCyan-6]
 
@@ -285,6 +311,7 @@ for numyear, nameyear in enumerate(year):
     for f in range(len(Samples)):
         l1=[]
         Files.append(ROOT.TFile.Open(HistAddress + nameyear+ '_' + Samples[f]))
+        print HistAddress + nameyear+ '_' + Samples[f]
         for numch, namech in enumerate(channels):
             l2=[]
             for numreg, namereg in enumerate(regions):
@@ -306,12 +333,12 @@ for numyear, nameyear in enumerate(year):
                 HH=[]
                 HHsignal=[]
                 for f in range(len(Samples)):
-                    if 'LFV' in Samples[f]:
+                    if 'SMEFTfr' in Samples[f]:
                         HHsignal.append(Hists[numyear][f][numch][numreg][numvar])
                     else:
                         HH.append(Hists[numyear][f][numch][numreg][numvar])
 
-#                stackPlots(HH, HHsignal, SamplesName, namech, namereg, nameyear,namevar,variablesName[numvar])
+                stackPlots(HH, HHsignal, SamplesName, namech, namereg, nameyear,namevar,variablesName[numvar])
 
 le = '\\documentclass{article}' + "\n"
 le += '\\usepackage{rotating}' + "\n"
@@ -330,7 +357,7 @@ for numreg, namereg in enumerate(regions):
         HH=[]
         HHname=[]
         for f in range(len(Samples)):
-            if 'LFV' in Samples[f] or 'TT' in Samples[f]:
-                HH.append(Hists[1][f][1][numreg][numvar])
+            if 'SMEFTfr' in Samples[f] or 'TTbar' in Samples[f]:
+                HH.append(Hists[0][f][1][numreg][numvar])
                 HHname.append(SamplesName[f])
-        compareHists(HH,HHname, 'emu', namereg,namevar,variablesName[numvar])
+        compareHists(HH,HHname, 'emul', namereg,namevar,variablesName[numvar])
