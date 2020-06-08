@@ -276,6 +276,7 @@ Gttsys.append(TuneGraph)
 Gttsys.append(hdampGraph)
 ttsys =  ['pdf','QS','ISR','FSR','CR','Tune','hdamp']
 
+statName={}
 
 if not os.path.exists('CombinedFiles'):
     os.makedirs('CombinedFiles')
@@ -297,16 +298,33 @@ for numyear, nameyear in enumerate(year):
             hup = Hists[numyear][4][0][numreg][0].Clone()
             hdown = Hists[numyear][4][0][numreg][0].Clone()
             for b in range(hup.GetNbinsX()):
-                print nameyear + namereg + ttsys[g] + str(hup.GetBinContent(b+1)) + '  ' + str(Gttsys[g][numyear][numreg][0].GetErrorYhigh(b)) + '  ' + str(Gttsys[g][numyear][numreg][0].GetErrorYlow(b))
+#                print nameyear + namereg + ttsys[g] + str(hup.GetBinContent(b+1)) + '  ' + str(Gttsys[g][numyear][numreg][0].GetErrorYhigh(b)) + '  ' + str(Gttsys[g][numyear][numreg][0].GetErrorYlow(b))
                 hup.SetBinContent(b+1,hup.GetBinContent(b+1) + Gttsys[g][numyear][numreg][0].GetErrorYhigh(b))
                 hdown.SetBinContent(b+1,hdown.GetBinContent(b+1) - Gttsys[g][numyear][numreg][0].GetErrorYlow(b))
-            hup.SetName(SamplesNameCombined[4] + '_' + ttsys[g] + 'Up')
-            hdown.SetName(SamplesNameCombined[4] + '_' + ttsys[g] + 'Down')
+            hup.SetName(SamplesNameCombined[4] + '_tt_' + ttsys[g] + 'Up')
+            hdown.SetName(SamplesNameCombined[4] + '_tt_' + ttsys[g] + 'Down')
             hup.Write()
             hdown.Write()
+#add MC stat error
+        for f in range(len(Samples)):
+            if f==0:
+                continue
+            stat=[]
+            for b in range(Hists[numyear][f][0][numreg][0].GetNbinsX()):
+                if Hists[numyear][f][0][numreg][0].GetBinContent(b+1)==0:
+                    continue
+                HstatUp = Hists[numyear][f][0][numreg][0].Clone()
+                HstatUp.SetBinContent(b+1,HstatUp.GetBinContent(b+1) + HstatUp.GetBinError(b+1))
+                HstatUp.SetName(SamplesNameCombined[f]+ '_' + SamplesNameCombined[f]+'StatBin' +str(b+1)+ 'Up')
+                HstatUp.Write()
+                HstatDown = Hists[numyear][f][0][numreg][0].Clone()
+                HstatDown.SetBinContent(b+1,HstatDown.GetBinContent(b+1) + HstatDown.GetBinError(b+1))
+                HstatDown.SetName(SamplesNameCombined[f]+ '_' + SamplesNameCombined[f]+'StatBin' +str(b+1)+ 'Down')
+                HstatDown.Write()
+                stat.append(SamplesNameCombined[f]+'StatBin' +str(b+1))
+            statName[nameyear + SamplesNameCombined[f]]=stat
         hfile.Write()
         hfile.Close()
-
 
 SignalSamples = ['LFVVecC', 'LFVVecU', 'LFVScalarC', 'LFVScalarU', 'LFVTensorC', 'LFVTensorU']
 
@@ -332,13 +350,41 @@ for namesig in SignalSamples:
                  str(Hists[numyear][3][0][numreg][0].Integral()).ljust(25) + str(Hists[numyear][4][0][numreg][0].Integral()).ljust(25) + str(Hists[numyear][5][0][numreg][0].Integral()).ljust(25) + '\n'+\
                  '------------\n'+\
                  'lumi'.ljust(25)+'lnN'.ljust(20) + '1.025'.ljust(25) + '1.025'.ljust(25) + '1.025'.ljust(25) + '1.025'.ljust(25) + '1.025'.ljust(25) + '1.025'.ljust(25) +'\n'+\
-                 'jets_norm'.ljust(25)+'lnN'.ljust(20) + '-'.ljust(25) + '1.5'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) +'\n'+\
-                 'other_norm'.ljust(25)+'lnN'.ljust(20) + '-'.ljust(25) + '-'.ljust(25) + '1.5'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) +'\n'+\
+                 'Jets_norm'.ljust(25)+'lnN'.ljust(20) + '-'.ljust(25) + '1.5'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) +'\n'+\
+                 'Other_norm'.ljust(25)+'lnN'.ljust(20) + '-'.ljust(25) + '-'.ljust(25) + '1.5'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) +'\n'+\
                  'DY_norm'.ljust(25)+'lnN'.ljust(20) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '1.5'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) +'\n'+\
                  'tt_norm'.ljust(25)+'lnN'.ljust(20) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '1.05'.ljust(25) + '-'.ljust(25) +'\n'+\
                  'tW_norm'.ljust(25)+'lnN'.ljust(20) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '1.1'.ljust(25) +'\n'
             for b in sys:
                 T1 = T1 +  b.ljust(25)  +'shape'.ljust(20)  + '1'.ljust(25) + '1'.ljust(25) + '1'.ljust(25) + '1'.ljust(25) + '1'.ljust(25) + '1'.ljust(25) +'\n'
             for b in ttsys:
-                T1 = T1 +  b.ljust(25)  +'shape'.ljust(20)  + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '1'.ljust(25) + '-'.ljust(25) +'\n'
+                bpb= 'tt_' + b
+                T1 = T1 +  bpb.ljust(25)  +'shape'.ljust(20)  + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '1'.ljust(25) + '-'.ljust(25) +'\n'
+            for key, value in statName.items():
+                if nameyear in key and namesig in key:
+                    for e in value:
+                        T1 = T1 +  e.ljust(25)  +'shape'.ljust(20)  + '1'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) +'\n'
+                if nameyear in key and 'Jets' in key:
+                    for e in value:
+                        T1 = T1 +  e.ljust(25)  +'shape'.ljust(20)  + '-'.ljust(25) + '1'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) +'\n'
+                if nameyear in key and 'Other' in key:
+                    for e in value:
+                        T1 = T1 +  e.ljust(25)  +'shape'.ljust(20)  + '-'.ljust(25) + '-'.ljust(25) + '1'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) +'\n'
+                if nameyear in key and 'DY' in key:
+                    for e in value:
+                        T1 = T1 +  e.ljust(25)  +'shape'.ljust(20)  + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '1'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) +'\n'
+                if nameyear in key and 'tt' in key:
+                    for e in value:
+                        T1 = T1 +  e.ljust(25)  +'shape'.ljust(20)  + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '1'.ljust(25) + '-'.ljust(25) +'\n'
+                if nameyear in key and 'tW' in key:
+                    for e in value:
+                        T1 = T1 +  e.ljust(25)  +'shape'.ljust(20)  + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '1'.ljust(25) +'\n'
+
             open('CombinedFiles/' + cardName +'.txt', 'wt').write(T1)
+
+
+
+
+
+
+
