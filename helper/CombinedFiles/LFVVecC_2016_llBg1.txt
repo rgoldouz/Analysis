@@ -13,7 +13,11 @@ process                                      LfvVectorEmutc           Jets      
 rate                                         57.420192674             0.0                      126.095759516            45.2499611378            61353.3512282            1749.86301374            
 ------------
 lumi                     lnN                 1.025                    1.025                    1.025                    1.025                    1.025                    1.025                    
+jets_norm                lnN                 -                        1.5                      -                        -                        -                        -                        
+other_norm               lnN                 -                        -                        1.5                      -                        -                        -                        
+DY_norm                  lnN                 -                        -                        -                        1.5                      -                        -                        
 tt_norm                  lnN                 -                        -                        -                        -                        1.05                     -                        
+tW_norm                  lnN                 -                        -                        -                        -                        -                        1.1                      
 eleRecoSf                shape               1                        1                        1                        1                        1                        1                        
 eleIDSf                  shape               1                        1                        1                        1                        1                        1                        
 muIdSf                   shape               1                        1                        1                        1                        1                        1                        
@@ -24,3 +28,10 @@ pu                       shape               1                        1         
 prefiring                shape               1                        1                        1                        1                        1                        1                        
 jes                      shape               1                        1                        1                        1                        1                        1                        
 jer                      shape               1                        1                        1                        1                        1                        1                        
+pdf                      shape               -                        -                        -                        -                        1                        -                        
+QS                       shape               -                        -                        -                        -                        1                        -                        
+ISR                      shape               -                        -                        -                        -                        1                        -                        
+FSR                      shape               -                        -                        -                        -                        1                        -                        
+CR                       shape               -                        -                        -                        -                        1                        -                        
+Tune                     shape               -                        -                        -                        -                        1                        -                        
+hdamp                    shape               -                        -                        -                        -                        1                        -                        

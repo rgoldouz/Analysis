@@ -83,29 +83,22 @@ def compareError(histsup,histsdown, sys, ch = "channel", reg = "region", year='2
     canvas.SetGrid();
     canvas.cd()
 
-    legend = ROOT.TLegend(0.1,0.3,0.85,0.8)
+    legend = ROOT.TLegend(0.35,0.7,0.9,0.88)
     legend.SetBorderSize(0)
     legend.SetTextFont(42)
-    legend.SetTextSize(0.19)
+    legend.SetTextSize(0.035)
+    legend.SetNColumns(3);
 
-    pad1=ROOT.TPad("pad1", "pad1", 0, 0., 0.1, 0.99 , 0)#used for the hist plot
-    pad2=ROOT.TPad("pad2", "pad2", 0.13, 0.0, 1, 1 , 0)#used for the ratio plot
-    pad1.Draw()
+    pad2=ROOT.TPad("pad2", "pad2", 0.0, 0.0, 1, 1 , 0)#used for the ratio plot
     pad2.Draw()
 #    pad2.SetGridy()
 #    pad2.SetGridx()
     pad2.SetTickx()
-    pad1.SetBottomMargin(0.1)
-    pad1.SetLeftMargin(0.01)
-    pad1.SetRightMargin(0.01)
     pad2.SetBottomMargin(0.1)
     pad2.SetLeftMargin(0.11)
     pad2.SetRightMargin(0.1)
     pad2.SetFillStyle(0)
-    pad1.SetFillStyle(0)
-    pad1.SetLogx(ROOT.kFALSE)
     pad2.SetLogx(ROOT.kFALSE)
-    pad1.SetLogy(ROOT.kFALSE)
 
     pad2.cd()
     maxi=0
@@ -113,7 +106,7 @@ def compareError(histsup,histsdown, sys, ch = "channel", reg = "region", year='2
         histsup[n].SetLineColor(n+1)
         histsup[n].SetLineWidth(2)
         histsup[n].SetFillColor(0)
-        legend.AddEntry(histsup[n],sys[n],'F')
+        legend.AddEntry(histsup[n],sys[n],'L')
         if(histsup[n].GetMaximum()>maxi):
             maxi=G.GetMaximum()
         histsdown[n].SetLineColor(n+1)
@@ -145,7 +138,7 @@ def compareError(histsup,histsdown, sys, ch = "channel", reg = "region", year='2
     histsup[0].GetYaxis().SetTitleOffset(1)
     histsup[0].GetYaxis().SetNdivisions(804)
     histsup[0].GetXaxis().SetNdivisions(808)   
-    histsup[0].GetYaxis().SetRangeUser(-1.5*maxi,1.5*maxi)
+    histsup[0].GetYaxis().SetRangeUser(-1.4*maxi,2*maxi)
     histsup[0].Draw('hist')
     for n,G in enumerate(histsup):
         histsup[n].Draw('samehist')
@@ -154,14 +147,14 @@ def compareError(histsup,histsdown, sys, ch = "channel", reg = "region", year='2
     histsdown[0].Draw('samehist')
     histsup[0].Draw("AXISSAMEY+")
     histsup[0].Draw("AXISSAMEX+")
-    Lumi = '137.42'
+    Lumi = '137.19'
     if (year == '2016'):
         Lumi = '35.92'
     if (year == '2017'):
         Lumi = '41.53'
     if (year == '2018'):
-        Lumi = '59.97'
-    label_cms="CMS Preliminary"
+        Lumi = '59.74'
+    label_cms="CMS Simulation Preliminary"
     Label_cms = ROOT.TLatex(0.22,0.92,label_cms)
     Label_cms.SetTextSize(0.035)
     Label_cms.SetNDC()
@@ -172,12 +165,16 @@ def compareError(histsup,histsdown, sys, ch = "channel", reg = "region", year='2
     Label_lumi.SetNDC()
     Label_lumi.SetTextFont(42)
     Label_lumi.Draw("same")
-    Label_channel = ROOT.TLatex(0.2,0.85,year +" / "+ch+" ("+reg+")")
+    Label_channel = ROOT.TLatex(0.15,0.8,year)
     Label_channel.SetNDC()
-    Label_channel.SetTextSize(0.035)
     Label_channel.SetTextFont(42)
-    Label_channel.Draw("same") 
-    pad1.cd()
+    Label_channel.Draw("same")
+
+    Label_channel2 = ROOT.TLatex(0.15,0.75,ch+" ("+reg+")")
+    Label_channel2.SetNDC()
+    Label_channel2.SetTextFont(42)
+    Label_channel2.Draw("same")
+
     legend.Draw("same")
     canvas.Print('sys/'+ year + '/' + ch +'/'+reg+'/sys'+ prefix +'_'+var + ".png")
     del canvas
@@ -212,10 +209,11 @@ def stackPlotsError(hists, SignalHists,error, errorRatio, Fnames, ch = "channel"
     canvas.SetBottomMargin(0.17)
     canvas.cd()
 
-    legend = ROOT.TLegend(0.7,0.55,0.9,0.88)
+    legend = ROOT.TLegend(0.4,0.6,0.9,0.88)
     legend.SetBorderSize(0)
     legend.SetTextFont(42)
-    legend.SetTextSize(0.03)
+    legend.SetTextSize(0.04)
+    legend.SetNColumns(2);
 
     pad1=ROOT.TPad("pad1", "pad1", 0, 0.315, 1, 0.99 , 0)#used for the hist plot
     pad2=ROOT.TPad("pad2", "pad2", 0, 0.0, 1, 0.305 , 0)#used for the ratio plot
@@ -268,14 +266,13 @@ def stackPlotsError(hists, SignalHists,error, errorRatio, Fnames, ch = "channel"
     error.Draw("2same")
     dummy.Draw("AXISSAMEY+")
     dummy.Draw("AXISSAMEX+")    
-
-    Lumi = '137.42'
+    Lumi = '137.19'
     if (year == '2016'):
         Lumi = '35.92'
     if (year == '2017'):
         Lumi = '41.53'
     if (year == '2018'):
-        Lumi = '59.97'
+        Lumi = '59.74'
     label_cms="CMS Preliminary"
     Label_cms = ROOT.TLatex(0.2,0.92,label_cms)
     Label_cms.SetNDC()
@@ -285,21 +282,27 @@ def stackPlotsError(hists, SignalHists,error, errorRatio, Fnames, ch = "channel"
     Label_lumi.SetNDC()
     Label_lumi.SetTextFont(42)
     Label_lumi.Draw("same")
-    Label_channel = ROOT.TLatex(0.2,0.8,year +" / "+ch+" ("+reg+")")
+    Label_channel = ROOT.TLatex(0.17,0.8,year)
     Label_channel.SetNDC()
     Label_channel.SetTextFont(42)
     Label_channel.Draw("same")
 
+    Label_channel2 = ROOT.TLatex(0.17,0.75,ch+" ("+reg+")")
+    Label_channel2.SetNDC()
+    Label_channel2.SetTextFont(42)
+    Label_channel2.Draw("same")
+
     legend.AddEntry(dummy,Fnames[0],'ep')
     for num in range(1,len(hists)):
         legend.AddEntry(hists[num],Fnames[num],'F')
-    legend.AddEntry(error,'Stat. #oplus syst. ','F')
     for H in range(len(SignalHists)):
         legend.AddEntry(SignalHists[H], Fnames[len(hists)+H],'L')
+    legend.AddEntry(None,'','')
+    legend.AddEntry(error,'Stat. #oplus syst. ','F')
     legend.Draw("same")
 
     if (hs.GetStack().Last().Integral()>0):
-        Label_DM = ROOT.TLatex(0.2,0.75,"Data/MC = " + str(round(hists[0].Integral()/hs.GetStack().Last().Integral(),2)))
+        Label_DM = ROOT.TLatex(0.17,0.7,"Data/MC = " + str(round(hists[0].Integral()/hs.GetStack().Last().Integral(),2)))
         Label_DM.SetNDC()
         Label_DM.SetTextFont(42)
         Label_DM.Draw("same")
@@ -344,16 +347,13 @@ def stackPlotsError(hists, SignalHists,error, errorRatio, Fnames, ch = "channel"
     gc.collect()
 
 year=['2016','2017','2018','All']
-#year=['2018']
+#year=['2017']
 LumiErr = [0.025, 0.023, 0.025, 0.018]
-#year=['2016']
 regions=["ll","llOffZ","llB1", "llBg1"]
-#regions=["ll","llOffZ"]
 channels=["ee", "emu", "mumu"];
 #channels=["emu"];
 variables=["lep1Pt","lep1Eta","lep1Phi","lep2Pt","lep2Eta","lep2Phi","llM","llPt","llDr","llDphi","jet1Pt","jet1Eta","jet1Phi","njet","nbjet","Met","MetPhi","nVtx","llMZw","BDT"]
-#variables=["lep1Pt","lep1Eta","lep1Phi","lep2Pt","lep2Eta","lep2Phi","llM","llPt","llDr","llDphi","jet1Pt","jet1Eta","jet1Phi","njet","nbjet","Met"]
-#variables=["nbjet","Met","nVtx","llMZw"]
+#variables=["jet1Eta"]
 variablesName=["p_{T}(leading lepton)","#eta(leading lepton)","#Phi(leading lepton)","p_{T}(sub-leading lepton)","#eta(sub-leading lepton)","#Phi(sub-leading lepton)","M(ll)","p_{T}(ll)","#Delta R(ll)","#Delta #Phi(ll)","p_{T}(leading jet)","#eta(leading jet)","#Phi(leading jet)","Number of jets","Number of b-tagged jets","MET","#Phi(MET)","Number of vertices", "M(ll) [z window]", "BDT output"]
 sys = ["eleRecoSf", "eleIDSf", "muIdSf", "muIsoSf", "bcTagSF", "udsgTagSF","pu", "prefiring", "jes", "jer"]
 
@@ -623,10 +623,13 @@ for numyear, nameyear in enumerate(year):
                 hdown = Hists[numyear][4][1][numreg][numvar].Clone()
                 for b in range(hup.GetNbinsX()):
                     rb = 0
+                    constant = 1
                     if hup.GetBinContent(b+1)>0:
                         rb = 100/hup.GetBinContent(b+1)
-                    hup.SetBinContent(b+1, 0 + Gttsys[g][numyear][numreg-2][numvar].GetErrorYhigh(b)*rb)
-                    hdown.SetBinContent(b+1,0 - Gttsys[g][numyear][numreg-2][numvar].GetErrorYlow(b)*rb)
+                    if hup.GetBinContent(b+1)<10:
+                        constant = 0
+                    hup.SetBinContent(b+1, 0 + Gttsys[g][numyear][numreg-2][numvar].GetErrorYhigh(b)*rb*constant)
+                    hdown.SetBinContent(b+1,0 - Gttsys[g][numyear][numreg-2][numvar].GetErrorYlow(b)*rb*constant)
                 glistup.append(hup)
                 glistdown.append(hdown)
             compareError(glistup,glistdown, ttSys, 'emu', namereg, nameyear,namevar,variablesName[numvar], 'ttTheory')        

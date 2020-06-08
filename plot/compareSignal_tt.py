@@ -37,10 +37,10 @@ def compareHists(hists,Fnames, ch = "channel", reg = "region", var="sample", var
     canvas.SetBottomMargin(0.17)
     canvas.cd()
 
-    legend = ROOT.TLegend(0.6,0.7,0.85,0.88)
+    legend = ROOT.TLegend(0.56,0.6,0.85,0.88)
     legend.SetBorderSize(0)
     legend.SetTextFont(42)
-    legend.SetTextSize(0.03)
+    legend.SetTextSize(0.038)
 
     pad1=ROOT.TPad("pad1", "pad1", 0.05, 0.05, 1, 0.99 , 0)#used for the hist plot
     pad1.Draw()
@@ -49,7 +49,7 @@ def compareHists(hists,Fnames, ch = "channel", reg = "region", var="sample", var
     pad1.SetLogy(ROOT.kFALSE)
 
     y_min=0
-    y_max=1.2* max(hists[0].GetMaximum(), hists[1].GetMaximum(), hists[2].GetMaximum())
+    y_max=1.4* max(hists[0].GetMaximum(), hists[1].GetMaximum(), hists[2].GetMaximum())
     hists[0].SetTitle("")
     hists[0].GetYaxis().SetTitle('Fraction')
     hists[0].GetXaxis().SetLabelSize(0.03)

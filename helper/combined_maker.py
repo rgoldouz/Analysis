@@ -136,24 +136,36 @@ for numyear, nameyear in enumerate(year):
             QscaleHists=[]
             for numsys in range(9):
                 h=sysfile.Get('reweightingSys/emu' + '_' + namereg + '_' + namevar+ '_QscalePDF_'+str(numsys))
+                h.SetBinContent(h.GetXaxis().GetNbins(), h.GetBinContent(h.GetXaxis().GetNbins()) + h.GetBinContent(h.GetXaxis().GetNbins()+1))
                 QscaleHists.append(h)
-                del h
-                gc.collect()
+#                del h
+#                gc.collect()
             for numsys in range(9,110):
                 h=sysfile.Get('reweightingSys/emu' +'_' + namereg + '_' + namevar+ '_QscalePDF_'+str(numsys))
+                h.SetBinContent(h.GetXaxis().GetNbins(), h.GetBinContent(h.GetXaxis().GetNbins()) + h.GetBinContent(h.GetXaxis().GetNbins()+1))
                 pdfHists.append(h)
-                del h
-                gc.collect()
+#                del h
+#                gc.collect()
             hISRup = sysfile.Get('reweightingSys/emu' + '_' + namereg + '_' + namevar+ '_PS_8')
+            hISRup.SetBinContent(hISRup.GetXaxis().GetNbins(), hISRup.GetBinContent(hISRup.GetXaxis().GetNbins()) + hISRup.GetBinContent(hISRup.GetXaxis().GetNbins()+1))
             hISRdown = sysfile.Get('reweightingSys/emu' + '_' + namereg + '_' + namevar+ '_PS_6')
+            hISRdown .SetBinContent(hISRdown.GetXaxis().GetNbins(), hISRdown.GetBinContent(hISRdown.GetXaxis().GetNbins()) + hISRdown.GetBinContent(hISRdown.GetXaxis().GetNbins()+1))
             hFSRup = sysfile.Get('reweightingSys/emu' + '_' + namereg + '_' + namevar+ '_PS_9')
+            hFSRup.SetBinContent(hFSRup.GetXaxis().GetNbins(), hFSRup.GetBinContent(hFSRup.GetXaxis().GetNbins()) + hFSRup.GetBinContent(hFSRup.GetXaxis().GetNbins()+1))
             hFSRdown = sysfile.Get('reweightingSys/emu' + '_' + namereg + '_' + namevar+ '_PS_7')
+            hFSRdown .SetBinContent(hFSRdown.GetXaxis().GetNbins(), hFSRdown.GetBinContent(hFSRdown.GetXaxis().GetNbins()) + hFSRdown.GetBinContent(hFSRdown.GetXaxis().GetNbins()+1))
             hCR1 = CR1file.Get('emu' + '_' + namereg + '_' + namevar)
+            hCR1.SetBinContent(hCR1.GetXaxis().GetNbins(), hCR1.GetBinContent(hCR1.GetXaxis().GetNbins()) + hCR1.GetBinContent(hCR1.GetXaxis().GetNbins()+1))
             herd = erdfile.Get('emu' + '_' + namereg + '_' + namevar)
+            herd.SetBinContent(herd.GetXaxis().GetNbins(), herd.GetBinContent(herd.GetXaxis().GetNbins()) + herd.GetBinContent(herd.GetXaxis().GetNbins()+1))
             hTuneCP5up = TuneCP5upfile.Get('emu' + '_' + namereg + '_' + namevar)
+            hTuneCP5up .SetBinContent(hTuneCP5up.GetXaxis().GetNbins(), hTuneCP5up.GetBinContent(hTuneCP5up.GetXaxis().GetNbins()) + hTuneCP5up.GetBinContent(hTuneCP5up.GetXaxis().GetNbins()+1))
             hTuneCP5down = TuneCP5downfile.Get('emu' + '_' + namereg + '_' + namevar)
+            hTuneCP5down .SetBinContent(hTuneCP5down.GetXaxis().GetNbins(), hTuneCP5down.GetBinContent(hTuneCP5down.GetXaxis().GetNbins()) + hTuneCP5down.GetBinContent(hTuneCP5down.GetXaxis().GetNbins()+1))
             hhdampup = hdampupfile.Get('emu' + '_' + namereg + '_' + namevar)
+            hhdampup .SetBinContent(hhdampup.GetXaxis().GetNbins(), hhdampup.GetBinContent(hhdampup.GetXaxis().GetNbins()) + hhdampup.GetBinContent(hhdampup.GetXaxis().GetNbins()+1))
             hhdampdown = hdampdownfile.Get('emu' + '_' + namereg + '_' + namevar)
+            hhdampdown .SetBinContent(hhdampdown.GetXaxis().GetNbins(), hhdampdown.GetBinContent(hhdampdown.GetXaxis().GetNbins()) + hhdampdown.GetBinContent(hhdampdown.GetXaxis().GetNbins()+1))
             binwidth= array( 'd' )
             bincenter= array( 'd' )
             yvalue= array( 'd' )
@@ -176,41 +188,41 @@ for numyear, nameyear in enumerate(year):
                 PDF=0
                 binwidth.append(QscaleHists[0].GetBinWidth(b+1)/2)
                 bincenter.append(QscaleHists[0].GetBinCenter(b+1))
-                yvalue.append(QscaleHists[0].GetBinContent(b+1))
+                yvalue.append(0)
                 nomRatio = 1
 #                if QscaleHists[0].GetBinContent(b+1) > 0:
 #                    nomRatio = 100/QscaleHists[0].GetBinContent(b+1)
                 for numsys in range(9):
-                    if numsys==0 or numsys==5 or numsys==7: 
+                    if numsys==0 or numsys==5 or numsys==7:
                         continue
                     QS[numsys] = QscaleHists[numsys].GetBinContent(b+1) - QscaleHists[0].GetBinContent(b+1)
-                yerrupQscale.append((abs(max(QS)))*nomRatio) 
+                yerrupQscale.append((abs(max(QS)))*nomRatio)
                 yerrdownQscale.append((abs(min(QS)))*nomRatio)
                 for numsys in range(9,110):
                     PDF = PDF + (pdfHists[numsys-9].GetBinContent(b+1) - QscaleHists[0].GetBinContent(b+1))**2
                 yerrupPDF.append((math.sqrt(PDF))*nomRatio)
                 yerrdownPDF.append((math.sqrt(PDF))*nomRatio)
-                yerrupISR.append((abs(max(hISRup.GetBinContent(b+1)- QscaleHists[0].GetBinContent(b+1) , hISRdown.GetBinContent(b+1)- QscaleHists[0].GetBinContent(b+1))))*nomRatio)
-                yerrdownISR.append((abs(min(hISRup.GetBinContent(b+1)- QscaleHists[0].GetBinContent(b+1) , hISRdown.GetBinContent(b+1)- QscaleHists[0].GetBinContent(b+1))))*nomRatio)
-                yerrupFSR.append((abs(max(hFSRup.GetBinContent(b+1)- QscaleHists[0].GetBinContent(b+1) , hFSRdown.GetBinContent(b+1)- QscaleHists[0].GetBinContent(b+1))))*nomRatio)
-                yerrdownFSR.append((abs(min(hFSRup.GetBinContent(b+1)- QscaleHists[0].GetBinContent(b+1) , hFSRdown.GetBinContent(b+1)- QscaleHists[0].GetBinContent(b+1))))*nomRatio)        
-                yerrupCR.append((abs(max(herd.GetBinContent(b+1)- QscaleHists[0].GetBinContent(b+1) , hCR1.GetBinContent(b+1)- QscaleHists[0].GetBinContent(b+1))))*nomRatio)
-                yerrdownCR.append((abs(min(herd.GetBinContent(b+1)- QscaleHists[0].GetBinContent(b+1) , hCR1.GetBinContent(b+1)- QscaleHists[0].GetBinContent(b+1))))*nomRatio)
-                yerrupTune.append((abs(max(hTuneCP5up.GetBinContent(b+1)- QscaleHists[0].GetBinContent(b+1) , hTuneCP5down.GetBinContent(b+1)- QscaleHists[0].GetBinContent(b+1))))*nomRatio)
-                yerrdownTune.append((abs(min(hTuneCP5up.GetBinContent(b+1)- QscaleHists[0].GetBinContent(b+1) , hTuneCP5down.GetBinContent(b+1)- QscaleHists[0].GetBinContent(b+1))))*nomRatio)
-                yerruphdamp.append((abs(max(hhdampup.GetBinContent(b+1)- QscaleHists[0].GetBinContent(b+1) , hhdampdown.GetBinContent(b+1)- QscaleHists[0].GetBinContent(b+1))))*nomRatio)
-                yerrdownhdamp.append((abs(min(hhdampup.GetBinContent(b+1)- QscaleHists[0].GetBinContent(b+1) , hhdampdown.GetBinContent(b+1)- QscaleHists[0].GetBinContent(b+1))))*nomRatio)
-                del QS
-                del PDF
-                del nomRatio
-                gc.collect()
-            t2Qscale.append(ROOT.TGraphAsymmErrors(len(bincenter),bincenter,yvalue,binwidth,binwidth,yerrupQscale,yerrdownQscale))
-            t2Pdf.append(ROOT.TGraphAsymmErrors(len(bincenter),bincenter,yvalue,binwidth,binwidth,yerrupPDF,yerrdownPDF))
-            t2ISR.append(ROOT.TGraphAsymmErrors(len(bincenter),bincenter,yvalue,binwidth,binwidth,yerrupISR,yerrdownISR))
-            t2FSR.append(ROOT.TGraphAsymmErrors(len(bincenter),bincenter,yvalue,binwidth,binwidth,yerrupFSR,yerrdownFSR))
-            t2CR.append(ROOT.TGraphAsymmErrors(len(bincenter),bincenter,yvalue,binwidth,binwidth,yerrupCR,yerrdownCR))
-            t2Tune.append(ROOT.TGraphAsymmErrors(len(bincenter),bincenter,yvalue,binwidth,binwidth,yerrupTune,yerrdownTune))
-            t2hdamp.append(ROOT.TGraphAsymmErrors(len(bincenter),bincenter,yvalue,binwidth,binwidth,yerruphdamp,yerrdownhdamp))
+                yerrupISR.append((abs(max(hISRup.GetBinContent(b+1)- QscaleHists[0].GetBinContent(b+1) , hISRdown.GetBinContent(b+1)- QscaleHists[0].GetBinContent(b+1),0)))*nomRatio)
+                yerrdownISR.append((abs(min(hISRup.GetBinContent(b+1)- QscaleHists[0].GetBinContent(b+1) , hISRdown.GetBinContent(b+1)- QscaleHists[0].GetBinContent(b+1),0)))*nomRatio)
+                yerrupFSR.append((abs(max(hFSRup.GetBinContent(b+1)- QscaleHists[0].GetBinContent(b+1) , hFSRdown.GetBinContent(b+1)- QscaleHists[0].GetBinContent(b+1,0),0)))*nomRatio)
+                yerrdownFSR.append((abs(min(hFSRup.GetBinContent(b+1)- QscaleHists[0].GetBinContent(b+1) , hFSRdown.GetBinContent(b+1)- QscaleHists[0].GetBinContent(b+1),0)))*nomRatio)
+                yerrupCR.append((abs(max(herd.GetBinContent(b+1)- QscaleHists[0].GetBinContent(b+1) , hCR1.GetBinContent(b+1)- QscaleHists[0].GetBinContent(b+1),0)))*nomRatio)
+                yerrdownCR.append((abs(min(herd.GetBinContent(b+1)- QscaleHists[0].GetBinContent(b+1) , hCR1.GetBinContent(b+1)- QscaleHists[0].GetBinContent(b+1),0)))*nomRatio)
+                yerrupTune.append((abs(max(hTuneCP5up.GetBinContent(b+1)- QscaleHists[0].GetBinContent(b+1) , hTuneCP5down.GetBinContent(b+1)- QscaleHists[0].GetBinContent(b+1),0)))*nomRatio)
+                yerrdownTune.append((abs(min(hTuneCP5up.GetBinContent(b+1)- QscaleHists[0].GetBinContent(b+1) , hTuneCP5down.GetBinContent(b+1)- QscaleHists[0].GetBinContent(b+1),0)))*nomRatio)
+                yerruphdamp.append((abs(max(hhdampup.GetBinContent(b+1)- QscaleHists[0].GetBinContent(b+1) , hhdampdown.GetBinContent(b+1)- QscaleHists[0].GetBinContent(b+1),0)))*nomRatio)
+                yerrdownhdamp.append((abs(min(hhdampup.GetBinContent(b+1)- QscaleHists[0].GetBinContent(b+1) , hhdampdown.GetBinContent(b+1)- QscaleHists[0].GetBinContent(b+1),0)))*nomRatio)
+#                del QS
+#                del PDF
+#                del nomRatio
+#                gc.collect()
+            t2Qscale.append(ROOT.TGraphAsymmErrors(len(bincenter),bincenter,yvalue,binwidth,binwidth,yerrdownQscale,yerrupQscale))
+            t2Pdf.append(ROOT.TGraphAsymmErrors(len(bincenter),bincenter,yvalue,binwidth,binwidth,yerrdownPDF,yerrupPDF))
+            t2ISR.append(ROOT.TGraphAsymmErrors(len(bincenter),bincenter,yvalue,binwidth,binwidth,yerrdownISR,yerrupISR))
+            t2FSR.append(ROOT.TGraphAsymmErrors(len(bincenter),bincenter,yvalue,binwidth,binwidth,yerrdownFSR,yerrupFSR))
+            t2CR.append(ROOT.TGraphAsymmErrors(len(bincenter),bincenter,yvalue,binwidth,binwidth,yerrdownCR,yerrupCR))
+            t2Tune.append(ROOT.TGraphAsymmErrors(len(bincenter),bincenter,yvalue,binwidth,binwidth,yerrdownTune,yerrupTune))
+            t2hdamp.append(ROOT.TGraphAsymmErrors(len(bincenter),bincenter,yvalue,binwidth,binwidth,yerrdownhdamp,yerruphdamp))
             del binwidth
             del bincenter
             del yvalue
@@ -230,7 +242,7 @@ for numyear, nameyear in enumerate(year):
         t1ISR.append(t2ISR)
         t1FSR.append(t2FSR)
         t1CR.append(t2CR)
-        t1Tune.append(t2Tune) 
+        t1Tune.append(t2Tune)
         t1hdamp.append(t2hdamp)
     pdfGraph.append(t1Pdf)
     qscaleGraph.append(t1Qscale)
@@ -254,7 +266,6 @@ for numyear, nameyear in enumerate(year):
     del hdampupfile
     del hdampdownfile
     gc.collect()
-
 Gttsys = []
 Gttsys.append(pdfGraph)
 Gttsys.append(qscaleGraph)
@@ -264,30 +275,6 @@ Gttsys.append(CRGraph)
 Gttsys.append(TuneGraph)
 Gttsys.append(hdampGraph)
 ttsys =  ['pdf','QS','ISR','FSR','CR','Tune','hdamp']
-#for numyear, nameyear in enumerate(year):
-#    for numreg, namereg in enumerate(regions):
-#        if numreg<2:
-#            continue
-#        for numvar, namevar in enumerate(variables):
-#            print nameyear+namereg+namevar
-##            draw(pdfGraph[numyear][numreg-2][numvar], 'pdf', 'emu', namereg, nameyear,namevar,variablesName[numvar])
-##            draw(qscaleGraph[numyear][numreg-2][numvar], 'qs', 'emu', namereg, nameyear,namevar,variablesName[numvar])
-##            draw(ISRGraph[numyear][numreg-2][numvar], 'isr', 'emu', namereg, nameyear,namevar,variablesName[numvar])
-##            draw(FSRGraph[numyear][numreg-2][numvar], 'fsr', 'emu', namereg, nameyear,namevar,variablesName[numvar])
-##            draw(CRGraph[numyear][numreg-2][numvar], 'cr', 'emu', namereg, nameyear,namevar,variablesName[numvar])
-##            draw(TuneGraph[numyear][numreg-2][numvar], 'tune', 'emu', namereg, nameyear,namevar,variablesName[numvar])
-##            draw(hdampGraph[numyear][numreg-2][numvar], 'hdamp', 'emu', namereg, nameyear,namevar,variablesName[numvar])
-#            glist = []    
-#            glist.append(pdfGraph[numyear][numreg-2][numvar])           
-#            glist.append(qscaleGraph[numyear][numreg-2][numvar])
-#            glist.append(ISRGraph[numyear][numreg-2][numvar])
-#            glist.append(FSRGraph[numyear][numreg-2][numvar])
-#            glist.append(CRGraph[numyear][numreg-2][numvar])
-#            glist.append(TuneGraph[numyear][numreg-2][numvar])
-#            glist.append(hdampGraph[numyear][numreg-2][numvar])
-#            compareError(glist, ttSys, 'emu', namereg, nameyear,namevar,variablesName[numvar])        
-#            del glist
-#            gc.collect()
 
 
 if not os.path.exists('CombinedFiles'):
@@ -310,10 +297,11 @@ for numyear, nameyear in enumerate(year):
             hup = Hists[numyear][4][0][numreg][0].Clone()
             hdown = Hists[numyear][4][0][numreg][0].Clone()
             for b in range(hup.GetNbinsX()):
+                print nameyear + namereg + ttsys[g] + str(hup.GetBinContent(b+1)) + '  ' + str(Gttsys[g][numyear][numreg][0].GetErrorYhigh(b)) + '  ' + str(Gttsys[g][numyear][numreg][0].GetErrorYlow(b))
                 hup.SetBinContent(b+1,hup.GetBinContent(b+1) + Gttsys[g][numyear][numreg][0].GetErrorYhigh(b))
                 hdown.SetBinContent(b+1,hdown.GetBinContent(b+1) - Gttsys[g][numyear][numreg][0].GetErrorYlow(b))
-            hup.SetName(SamplesNameCombined[4] + '_' + ttsys[g] + '_' + 'Up')
-            hdown.SetName(SamplesNameCombined[4] + '_' + ttsys[g] + '_' + 'Down')
+            hup.SetName(SamplesNameCombined[4] + '_' + ttsys[g] + 'Up')
+            hdown.SetName(SamplesNameCombined[4] + '_' + ttsys[g] + 'Down')
             hup.Write()
             hdown.Write()
         hfile.Write()
@@ -321,7 +309,6 @@ for numyear, nameyear in enumerate(year):
 
 
 SignalSamples = ['LFVVecC', 'LFVVecU', 'LFVScalarC', 'LFVScalarU', 'LFVTensorC', 'LFVTensorU']
-Samples = ['data.root','WJetsToLNu.root','others.root', 'DY.root', 'TTTo2L2Nu.root', 'ST_tW.root', 'LFVVecC.root', 'LFVVecU.root', 'LFVScalarC.root', 'LFVScalarU.root', 'LFVTensorC.root', 'LFVTensorU.root']
 
 for namesig in SignalSamples:
     for numyear, nameyear in enumerate(year):
@@ -345,7 +332,13 @@ for namesig in SignalSamples:
                  str(Hists[numyear][3][0][numreg][0].Integral()).ljust(25) + str(Hists[numyear][4][0][numreg][0].Integral()).ljust(25) + str(Hists[numyear][5][0][numreg][0].Integral()).ljust(25) + '\n'+\
                  '------------\n'+\
                  'lumi'.ljust(25)+'lnN'.ljust(20) + '1.025'.ljust(25) + '1.025'.ljust(25) + '1.025'.ljust(25) + '1.025'.ljust(25) + '1.025'.ljust(25) + '1.025'.ljust(25) +'\n'+\
-                 'tt_norm'.ljust(25)+'lnN'.ljust(20) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '1.05'.ljust(25) + '-'.ljust(25) +'\n'
+                 'jets_norm'.ljust(25)+'lnN'.ljust(20) + '-'.ljust(25) + '1.5'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) +'\n'+\
+                 'other_norm'.ljust(25)+'lnN'.ljust(20) + '-'.ljust(25) + '-'.ljust(25) + '1.5'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) +'\n'+\
+                 'DY_norm'.ljust(25)+'lnN'.ljust(20) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '1.5'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) +'\n'+\
+                 'tt_norm'.ljust(25)+'lnN'.ljust(20) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '1.05'.ljust(25) + '-'.ljust(25) +'\n'+\
+                 'tW_norm'.ljust(25)+'lnN'.ljust(20) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '1.1'.ljust(25) +'\n'
             for b in sys:
                 T1 = T1 +  b.ljust(25)  +'shape'.ljust(20)  + '1'.ljust(25) + '1'.ljust(25) + '1'.ljust(25) + '1'.ljust(25) + '1'.ljust(25) + '1'.ljust(25) +'\n'
+            for b in ttsys:
+                T1 = T1 +  b.ljust(25)  +'shape'.ljust(20)  + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '1'.ljust(25) + '-'.ljust(25) +'\n'
             open('CombinedFiles/' + cardName +'.txt', 'wt').write(T1)
