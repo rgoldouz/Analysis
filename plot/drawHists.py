@@ -17,7 +17,7 @@ import gc
 import argparse
 TGaxis.SetMaxDigits(2)
 
-def cutFlowTable(hists, samples, regions, ch, year,caption='2017', nsig=6):
+def cutFlowTable(hists, samples, regions, ch, year,caption='2017', nsig=5):
     mcSum = list(0 for i in xrange(0,len(regions)))
     if not ch==1:
         showData = True
@@ -28,38 +28,51 @@ def cutFlowTable(hists, samples, regions, ch, year,caption='2017', nsig=6):
     table += '\\centering' + "\n"
     table += '\\caption{' + caption +"}\n"
     table += '\\resizebox{\\textwidth}{!}{ \n'
-    table += '\\begin{tabular}{|l|l|l|l|l|l|l|l|l|l|l|}' + "\n"
+    table += '\\begin{tabular}{|l|' + ''.join([('' if ('Metl' in c) or ('geq' in c) or ('leq' in c) or ('lllB1' in c) else 'l|') for c in regions]).strip() +'}' + "\n"
     table += '\\hline' + "\n"
-    table += 'Samples & ' + ' & '.join(regions) + '\\\\' + "\n"
+    table += 'Samples ' + ''.join([('' if ('Metl' in c) or ('geq' in c) or ('leq' in c) or ('lllB1' in c) else ' & '+c) for c in regions]).strip() + '\\\\' + "\n"
     table += '\\hline' + "\n"
+
     for ids, s in enumerate(samples):
         if ids==0:
             continue
-        table += s 
         for idr, r in enumerate(regions):
-            table += (' & ' + str(round(hists[year][ids][ch][idr][2].Integral(),2)))
             if ids<nsig:
-                mcSum[idr] += hists[year][ids][ch][idr][2].Integral()
+               mcSum[idr] += hists[year][ids][ch][idr][2].Integral()
+
+    for ids, s in enumerate(samples):
+        if ids==0:
+            continue
+        table += s
+        for idr, r in enumerate(regions):
+            if ('Metl' not in r) and ('geq' not in r) and ('leq' not in r) and ('lllB1' not in r):
+               if ids<nsig:
+                  table += (' & ' + str(round(hists[year][ids][ch][idr][2].Integral(),2)) + '[' + str(round((100*hists[year][ids][ch][idr][2].Integral()/mcSum[idr]),2)) + '\%]')
+               else:
+                  table += (' & ' + str(round(hists[year][ids][ch][idr][2].Integral(),2)) )
         table += '\\\\' + "\n"    
     table += '\\hline' + "\n"
     table += 'Prediction '
     for idr, r in enumerate(mcSum):
-        table += (' & ' + str(round(r,2)))
+        if ('Metl' not in regions[idr]) and ('geq' not in regions[idr]) and ('leq' not in regions[idr]) and ('lllB1' not in regions[idr]):
+           table += (' & ' + str(round(r,2)))
     table += '\\\\' + "\n"
     table += '\\hline' + "\n"
     if showData:
       table += 'Data '
       for idr, r in enumerate(regions):
-          table += (' & ' + str(hists[year][0][ch][idr][2].Integral()))
+          if ('Metl' not in regions[idr]) and ('geq' not in regions[idr]) and ('leq' not in regions[idr]) and ('lllB1' not in regions[idr]):
+             table += (' & ' + str(hists[year][0][ch][idr][2].Integral()))
       table += '\\\\' + "\n"
       table += '\\hline' + "\n"
       table += 'Data$/$Pred. '
       for idr, r in enumerate(mcSum):
           if r==0:
              r=0.1
-          table += (' & ' + str(round(hists[year][0][ch][idr][2].Integral()/r,2)))
-    table += '\\\\' + "\n"
-    table += '\\hline' + "\n"
+          if ('Metl' not in regions[idr]) and ('geq' not in regions[idr]) and ('leq' not in regions[idr]) and ('lllB1' not in regions[idr]):
+             table += (' & ' + str(round(hists[year][0][ch][idr][2].Integral()/r,2)))
+      table += '\\\\' + "\n"
+      table += '\\hline' + "\n"
     table += '\\end{tabular}}' + "\n"
     table += '\\end{table*}' + "\n"
 #    table += '\\end{sidewaystable*}' + "\n"
@@ -300,7 +313,7 @@ HistAddress = ARGS.LOCATION
 
 Samples = ['data.root','TTV.root','VV.root', 'TTbar.root', 'others.root', 'SMEFTfr_ST_vector_emutu.root', 'SMEFTfr_TT_vector_emutu.root']
 SamplesName = ['data','TTV','VV', 'TTbar', 'others', 'ST_vector_emutu', 'TT_vector_emutu']
-SamplesNameLatex = ['data','TTV','VV', 'TTbar', 'others', 'ST_vector_emutu', 'TT_vector_emutu']
+SamplesNameLatex = ['data','TTV','VV', 'TTbar', 'others', 'ST\_vector\_emutu', 'TT\_vector\_emutu']
 
 colors =  [ROOT.kBlack,ROOT.kYellow,ROOT.kGreen,ROOT.kBlue-3,ROOT.kRed-4,ROOT.kOrange-3, ROOT.kOrange-6, ROOT.kCyan-6]
 
@@ -338,7 +351,7 @@ for numyear, nameyear in enumerate(year):
                     else:
                         HH.append(Hists[numyear][f][numch][numreg][numvar])
 
-                stackPlots(HH, HHsignal, SamplesName, namech, namereg, nameyear,namevar,variablesName[numvar])
+#                stackPlots(HH, HHsignal, SamplesName, namech, namereg, nameyear,namevar,variablesName[numvar])
 
 le = '\\documentclass{article}' + "\n"
 le += '\\usepackage{rotating}' + "\n"
@@ -348,7 +361,7 @@ le += '\\begin{document}' + "\n"
 print le
 for numyear, nameyear in enumerate(year):
     for numch, namech in enumerate(channels):
-        cutFlowTable(Hists, SamplesNameLatex, regions, numch, numyear, nameyear + ' ' + namech, 6 )
+        cutFlowTable(Hists, SamplesNameLatex, regions, numch, numyear, nameyear + ' ' + namech, 5 )
 print '\\end{document}' + "\n"
 
 
@@ -360,4 +373,4 @@ for numreg, namereg in enumerate(regions):
             if 'SMEFTfr' in Samples[f] or 'TTbar' in Samples[f]:
                 HH.append(Hists[0][f][1][numreg][numvar])
                 HHname.append(SamplesName[f])
-        compareHists(HH,HHname, 'emul', namereg,namevar,variablesName[numvar])
+#        compareHists(HH,HHname, 'emul', namereg,namevar,variablesName[numvar])
