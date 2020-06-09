@@ -162,7 +162,7 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
   typedef vector<Dim1> Dim2;
   typedef vector<Dim2> Dim3;
 
-  std::vector<TString> regions{"lll","lllOnZ","lllOffZ","lllBleq1","lllB1", "lllBgeq2", "lllMetl20", "lllMetg20", "lllMetl20Jetgeq1Bleq1", "lllMetl20Jetgeq1B1", "lllMetl20Jet1B1", "lllMetl20Jetgeq2Bleq1", "lllMetl20Jetgeq2B1", "lllMetl20Jetgeq2Bgeq2", "lllMetl20Jet2B1", "lllMetg20Jetgeq1Bleq1", "lllMetg20Jetgeq1B1", "lllMetg20Jet1B1", "lllMetg20Jetgeq2Bleq1", "lllMetg20Jetgeq2B1", "lllMetg20Jetgeq2Bgeq2", "lllMetg20Jet2B1"};
+  std::vector<TString> regions{"lll","lllOnZ","lllOffZ","lllBleq1","lllB1", "lllBgeq2", "lllMetl20", "lllMetg20", "lllMetl20Jetgeq1Bleq1", "lllMetl20Jetgeq1B1", "lllMetl20Jet1B1", "lllMetl20Jetgeq2Bleq1", "lllMetl20Jetgeq2B1", "lllMetl20Jetgeq2Bgeq2", "lllMetl20Jet2B1", "lllMetg20Jetgeq1Bleq1", "lllMetg20Jetgeq1B1", "lllMetg20Jet1B1", "lllMetg20Jetgeq2Bleq1", "lllMetg20Jetgeq2B1", "lllMetg20Jetgeq2Bgeq2", "lllMetg20Jet2B1","application_lllMetg20Jet2B1", "measurement_lllMetg20Jet2B1" , "signal_lllMetg20Jet2B1" };
   std::vector<TString> channels{"eee", "emul", "mumumu"};
   std::vector<TString> vars   {"lep1Pt","lep1Eta","lep1Phi","lep2Pt","lep2Eta","lep2Phi","lep3Pt","lep3Eta","lep3Phi",
         "LFVePt","LFVeEta","LFVePhi","LFVmuPt","LFVmuEta","LFVmuPhi","balPt","balEta","balPhi","Topmass",
@@ -907,7 +907,7 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     Hists[ch][1][30]->Fill(pv_n,weight_lep);
     Hists[ch][1][31]->Fill(((*selectedLeptons_copy)[0]->p4_ + (*selectedLeptons_copy)[1]->p4_).M(),weight_lep);
     Hists[ch][1][32]->Fill(LFVTopmass,weight_lep);
-    continue;
+    //continue;
     }
     //Off Z
     
@@ -1619,6 +1619,128 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     Hists[ch][21][31]->Fill(((*selectedLeptons_copy)[0]->p4_ + (*selectedLeptons_copy)[1]->p4_).M(),weight_lepB);
     Hists[ch][21][32]->Fill(LFVTopmass,weight_lepB);
     }
+
+
+    /// Measurement and application regions for region 19 () 
+    /// region 22 == ttbar signal=  nbjet==1 && MET_FinalCollection_Pt>20 && selectedJets->size()>=2
+    ///= signal in the non-prompt lepton bkg estimate
+    /// 22 = application = signal cuts + ch = 0 (eee channel)
+    /// 23 = measurement = OnZ + signal cuts + ch != 0 
+    /// 24 = signal signal cuts + ch != 0 
+    /// Working here 
+
+    if(nbjet==1 && MET_FinalCollection_Pt>20 && selectedJets->size()==2 && ch == 0 ){
+    Hists[ch][22][0]->Fill((*selectedLeptons)[0]->pt_,weight_lepB);
+    Hists[ch][22][1]->Fill((*selectedLeptons)[0]->eta_,weight_lepB);
+    Hists[ch][22][2]->Fill((*selectedLeptons)[0]->phi_,weight_lepB);
+    Hists[ch][22][3]->Fill((*selectedLeptons)[1]->pt_,weight_lepB);
+    Hists[ch][22][4]->Fill((*selectedLeptons)[1]->eta_,weight_lepB);
+    Hists[ch][22][5]->Fill((*selectedLeptons)[1]->phi_,weight_lepB);
+    Hists[ch][22][6]->Fill((*selectedLeptons)[2]->pt_,weight_lepB);
+    Hists[ch][22][7]->Fill((*selectedLeptons)[2]->eta_,weight_lepB);
+    Hists[ch][22][8]->Fill((*selectedLeptons)[2]->phi_,weight_lepB);
+    Hists[ch][22][9]->Fill((*selectedLeptons_copy)[0]->pt_,weight_lepB);
+    Hists[ch][22][10]->Fill((*selectedLeptons_copy)[0]->eta_,weight_lepB);
+    Hists[ch][22][11]->Fill((*selectedLeptons_copy)[0]->phi_,weight_lepB);
+    Hists[ch][22][12]->Fill((*selectedLeptons_copy)[1]->pt_,weight_lepB);
+    Hists[ch][22][13]->Fill((*selectedLeptons_copy)[1]->eta_,weight_lepB);
+    Hists[ch][22][14]->Fill((*selectedLeptons_copy)[1]->phi_,weight_lepB);
+    Hists[ch][22][15]->Fill((*selectedLeptons_copy)[2]->pt_,weight_lepB);
+    Hists[ch][22][16]->Fill((*selectedLeptons_copy)[2]->eta_,weight_lepB);
+    Hists[ch][22][17]->Fill((*selectedLeptons_copy)[2]->phi_,weight_lepB);
+    Hists[ch][22][18]->Fill(Topmass,weight_lepB);
+    Hists[ch][22][19]->Fill(((*selectedLeptons_copy)[0]->p4_ + (*selectedLeptons_copy)[1]->p4_).M(),weight_lepB);
+    Hists[ch][22][20]->Fill(((*selectedLeptons_copy)[0]->p4_ + (*selectedLeptons_copy)[1]->p4_).Pt(),weight_lepB);
+    Hists[ch][22][21]->Fill(deltaR((*selectedLeptons_copy)[0]->eta_,(*selectedLeptons_copy)[0]->phi_,(*selectedLeptons_copy)[1]->eta_,(*selectedLeptons_copy)[1]->phi_),weight_lepB);
+    Hists[ch][22][22]->Fill(deltaPhi((*selectedLeptons_copy)[0]->phi_,(*selectedLeptons_copy)[1]->phi_),weight_lepB);
+    if(selectedJets->size()>0) Hists[ch][22][23]->Fill((*selectedJets_copy)[0]->pt_,weight_lepB);
+    if(selectedJets->size()>0) Hists[ch][22][24]->Fill((*selectedJets_copy)[0]->eta_,weight_lepB);
+    if(selectedJets->size()>0) Hists[ch][22][25]->Fill((*selectedJets_copy)[0]->phi_,weight_lepB);
+    Hists[ch][22][26]->Fill(selectedJets->size(),weight_lepB);
+    Hists[ch][22][27]->Fill(nbjet,weight_lepB);
+    Hists[ch][22][28]->Fill(MET_FinalCollection_Pt,weight_lepB);
+    Hists[ch][22][29]->Fill(MET_FinalCollection_phi,weight_lepB);
+    Hists[ch][22][30]->Fill(pv_n,weight_lepB);
+    Hists[ch][22][31]->Fill(((*selectedLeptons_copy)[0]->p4_ + (*selectedLeptons_copy)[1]->p4_).M(),weight_lepB);
+    Hists[ch][22][32]->Fill(LFVTopmass,weight_lepB);
+    }
+
+
+    if(nbjet==1 && MET_FinalCollection_Pt>20 && selectedJets->size()==2 && OnZ && ch != 0){
+    Hists[ch][23][0]->Fill((*selectedLeptons)[0]->pt_,weight_lepB);
+    Hists[ch][23][1]->Fill((*selectedLeptons)[0]->eta_,weight_lepB);
+    Hists[ch][23][2]->Fill((*selectedLeptons)[0]->phi_,weight_lepB);
+    Hists[ch][23][3]->Fill((*selectedLeptons)[1]->pt_,weight_lepB);
+    Hists[ch][23][4]->Fill((*selectedLeptons)[1]->eta_,weight_lepB);
+    Hists[ch][23][5]->Fill((*selectedLeptons)[1]->phi_,weight_lepB);
+    Hists[ch][23][6]->Fill((*selectedLeptons)[2]->pt_,weight_lepB);
+    Hists[ch][23][7]->Fill((*selectedLeptons)[2]->eta_,weight_lepB);
+    Hists[ch][23][8]->Fill((*selectedLeptons)[2]->phi_,weight_lepB);
+    Hists[ch][23][9]->Fill((*selectedLeptons_copy)[0]->pt_,weight_lepB);
+    Hists[ch][23][10]->Fill((*selectedLeptons_copy)[0]->eta_,weight_lepB);
+    Hists[ch][23][11]->Fill((*selectedLeptons_copy)[0]->phi_,weight_lepB);
+    Hists[ch][23][12]->Fill((*selectedLeptons_copy)[1]->pt_,weight_lepB);
+    Hists[ch][23][13]->Fill((*selectedLeptons_copy)[1]->eta_,weight_lepB);
+    Hists[ch][23][14]->Fill((*selectedLeptons_copy)[1]->phi_,weight_lepB);
+    Hists[ch][23][15]->Fill((*selectedLeptons_copy)[2]->pt_,weight_lepB);
+    Hists[ch][23][16]->Fill((*selectedLeptons_copy)[2]->eta_,weight_lepB);
+    Hists[ch][23][17]->Fill((*selectedLeptons_copy)[2]->phi_,weight_lepB);
+    Hists[ch][23][18]->Fill(Topmass,weight_lepB);
+    Hists[ch][23][19]->Fill(((*selectedLeptons_copy)[0]->p4_ + (*selectedLeptons_copy)[1]->p4_).M(),weight_lepB);
+    Hists[ch][23][20]->Fill(((*selectedLeptons_copy)[0]->p4_ + (*selectedLeptons_copy)[1]->p4_).Pt(),weight_lepB);
+    Hists[ch][23][21]->Fill(deltaR((*selectedLeptons_copy)[0]->eta_,(*selectedLeptons_copy)[0]->phi_,(*selectedLeptons_copy)[1]->eta_,(*selectedLeptons_copy)[1]->phi_),weight_lepB);
+    Hists[ch][23][22]->Fill(deltaPhi((*selectedLeptons_copy)[0]->phi_,(*selectedLeptons_copy)[1]->phi_),weight_lepB);
+    if(selectedJets->size()>0) Hists[ch][23][23]->Fill((*selectedJets_copy)[0]->pt_,weight_lepB);
+    if(selectedJets->size()>0) Hists[ch][23][24]->Fill((*selectedJets_copy)[0]->eta_,weight_lepB);
+    if(selectedJets->size()>0) Hists[ch][23][25]->Fill((*selectedJets_copy)[0]->phi_,weight_lepB);
+    Hists[ch][23][26]->Fill(selectedJets->size(),weight_lepB);
+    Hists[ch][23][27]->Fill(nbjet,weight_lepB);
+    Hists[ch][23][28]->Fill(MET_FinalCollection_Pt,weight_lepB);
+    Hists[ch][23][29]->Fill(MET_FinalCollection_phi,weight_lepB);
+    Hists[ch][23][30]->Fill(pv_n,weight_lepB);
+    Hists[ch][23][31]->Fill(((*selectedLeptons_copy)[0]->p4_ + (*selectedLeptons_copy)[1]->p4_).M(),weight_lepB);
+    Hists[ch][23][32]->Fill(LFVTopmass,weight_lepB);
+    }
+
+
+    if(nbjet==1 && MET_FinalCollection_Pt>20 && selectedJets->size()==2 && ch != 0  ){
+    Hists[ch][24][0]->Fill((*selectedLeptons)[0]->pt_,weight_lepB);
+    Hists[ch][24][1]->Fill((*selectedLeptons)[0]->eta_,weight_lepB);
+    Hists[ch][24][2]->Fill((*selectedLeptons)[0]->phi_,weight_lepB);
+    Hists[ch][24][3]->Fill((*selectedLeptons)[1]->pt_,weight_lepB);
+    Hists[ch][24][4]->Fill((*selectedLeptons)[1]->eta_,weight_lepB);
+    Hists[ch][24][5]->Fill((*selectedLeptons)[1]->phi_,weight_lepB);
+    Hists[ch][24][6]->Fill((*selectedLeptons)[2]->pt_,weight_lepB);
+    Hists[ch][24][7]->Fill((*selectedLeptons)[2]->eta_,weight_lepB);
+    Hists[ch][24][8]->Fill((*selectedLeptons)[2]->phi_,weight_lepB);
+    Hists[ch][24][9]->Fill((*selectedLeptons_copy)[0]->pt_,weight_lepB);
+    Hists[ch][24][10]->Fill((*selectedLeptons_copy)[0]->eta_,weight_lepB);
+    Hists[ch][24][11]->Fill((*selectedLeptons_copy)[0]->phi_,weight_lepB);
+    Hists[ch][24][12]->Fill((*selectedLeptons_copy)[1]->pt_,weight_lepB);
+    Hists[ch][24][13]->Fill((*selectedLeptons_copy)[1]->eta_,weight_lepB);
+    Hists[ch][24][14]->Fill((*selectedLeptons_copy)[1]->phi_,weight_lepB);
+    Hists[ch][24][15]->Fill((*selectedLeptons_copy)[2]->pt_,weight_lepB);
+    Hists[ch][24][16]->Fill((*selectedLeptons_copy)[2]->eta_,weight_lepB);
+    Hists[ch][24][17]->Fill((*selectedLeptons_copy)[2]->phi_,weight_lepB);
+    Hists[ch][24][18]->Fill(Topmass,weight_lepB);
+    Hists[ch][24][19]->Fill(((*selectedLeptons_copy)[0]->p4_ + (*selectedLeptons_copy)[1]->p4_).M(),weight_lepB);
+    Hists[ch][24][20]->Fill(((*selectedLeptons_copy)[0]->p4_ + (*selectedLeptons_copy)[1]->p4_).Pt(),weight_lepB);
+    Hists[ch][24][21]->Fill(deltaR((*selectedLeptons_copy)[0]->eta_,(*selectedLeptons_copy)[0]->phi_,(*selectedLeptons_copy)[1]->eta_,(*selectedLeptons_copy)[1]->phi_),weight_lepB);
+    Hists[ch][24][22]->Fill(deltaPhi((*selectedLeptons_copy)[0]->phi_,(*selectedLeptons_copy)[1]->phi_),weight_lepB);
+    if(selectedJets->size()>0) Hists[ch][24][23]->Fill((*selectedJets_copy)[0]->pt_,weight_lepB);
+    if(selectedJets->size()>0) Hists[ch][24][24]->Fill((*selectedJets_copy)[0]->eta_,weight_lepB);
+    if(selectedJets->size()>0) Hists[ch][24][25]->Fill((*selectedJets_copy)[0]->phi_,weight_lepB);
+    Hists[ch][24][26]->Fill(selectedJets->size(),weight_lepB);
+    Hists[ch][24][27]->Fill(nbjet,weight_lepB);
+    Hists[ch][24][28]->Fill(MET_FinalCollection_Pt,weight_lepB);
+    Hists[ch][24][29]->Fill(MET_FinalCollection_phi,weight_lepB);
+    Hists[ch][24][30]->Fill(pv_n,weight_lepB);
+    Hists[ch][24][31]->Fill(((*selectedLeptons_copy)[0]->p4_ + (*selectedLeptons_copy)[1]->p4_).M(),weight_lepB);
+    Hists[ch][24][32]->Fill(LFVTopmass,weight_lepB);
+    }
+
+
+
 
     for (int l=0;l<selectedLeptons->size();l++){
       delete (*selectedLeptons)[l];
