@@ -350,22 +350,15 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
   TTree tree_out("analysis","main analysis") ;
 
 //    cout<<"ev_event"<<"   "<<"sf_Ele_Reco"<<"   "<<"sf_Ele_ID"<<"      "<<"sf_Mu_ID"<<"   "<<"sf_Mu_ISO"<<"   "<<"sf_trigger"<<"   "<<"PU weight"<<endl;
-  
-  ///select tight leptons for signal region
-  std::vector<lepton_candidate*> *selectedLeptons;// selectedLeptons =  SR , signal region
+  std::vector<lepton_candidate*> *selectedLeptons;
   std::vector<lepton_candidate*> *selectedLeptons_copy;
-
-  // below collections are for computing the Fake Factors to estimate non-prompt lepton background from data
-  /// data is divided int 3 orthogonal regions:
-  /// measurement region is enriched in bkg, measure the FFs there
-  /// apply them in the application region (looser letpon selection) and use that to translate to signal region
-
-  // select loose leptons for Application Region e.g. they fail tight but meet loose selection criteria
-  std::vector<lepton_candidate*> *selectedLeptonsAR; // AR is for Application Region
+  std::vector<lepton_candidate*> *selectedLeptonsAR;
   std::vector<lepton_candidate*> *selectedLeptonsAR_copy;
-  // select background enriched leptons for Measurement region e.g. they pass OnZ requirement
-  std::vector<lepton_candidate*> *selectedLeptonsMR; // MR is Measurement Region
+  std::vector<lepton_candidate*> *selectedLeptonsMR;
   std::vector<lepton_candidate*> *selectedLeptonsMR_copy;
+
+  std::vector<lepton_candidate*> *antiselectedLeptonsMR;
+  std::vector<lepton_candidate*> *antiselectedLeptonsMR_copy;
 
   std::vector<jet_candidate*> *selectedJets;
   std::vector<jet_candidate*> *selectedJets_copy;
@@ -408,7 +401,6 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
   float LFVTopmassMR=0;
   float TopmassAR=0;
   float LFVTopmassAR=0;
-
   float mT=172;
   bool OnZ=false;//Opposite Sign&&Same Flavor (OSSF) pair present in event
 
@@ -574,44 +566,54 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     if(!metFilterPass) continue;
 
 // lepton selection
-  selectedLeptons = new std::vector<lepton_candidate*>();//typlical ordered by pT
-  selectedLeptons_copy = new std::vector<lepton_candidate*>();// ordered by [e, mu , bachelor lepton ]
+///select tight leptons for signal region    
+selectedLeptons = new std::vector<lepton_candidate*>();//typlical ordered by pT
+selectedLeptons_copy = new std::vector<lepton_candidate*>();// ordered by [e, mu , bachelor lepton ]
 
-  selectedLeptonsAR = new std::vector<lepton_candidate*>();//typlical ordered by pT                                                                          
-  selectedLeptonsAR_copy = new std::vector<lepton_candidate*>();// ordered by [e, mu , bachelor lepton ] 
+selectedLeptonsMR = new std::vector<lepton_candidate*>();//typlical ordered by pT
+selectedLeptonsMR_copy = new std::vector<lepton_candidate*>();// ordered by [e, mu , bachelor lepton ]
 
-  selectedLeptonsMR = new std::vector<lepton_candidate*>();//typlical ordered by pT                                                                          
-  selectedLeptonsMR_copy = new std::vector<lepton_candidate*>();// ordered by [e, mu , bachelor lepton ] 
+antiselectedLeptonsMR = new std::vector<lepton_candidate*>();//typlical ordered by pT
+antiselectedLeptonsMR_copy = new std::vector<lepton_candidate*>();// ordered by [e, mu , bachelor lepton ]
+
+
+selectedLeptonsAR = new std::vector<lepton_candidate*>();//typlical ordered by pT
+selectedLeptonsAR_copy = new std::vector<lepton_candidate*>();// ordered by [e, mu , bachelor lepton ]
 
 // electron
     for (int l=0;l<gsf_pt->size();l++){
       elePt = (*gsf_ecalTrkEnergyPostCorr)[l]*sin(2.*atan(exp(-1.*(*gsf_eta)[l]))) ;
-      if(elePt <27 || abs((*gsf_eta)[l]) > 2.4 || (abs((*gsf_sc_eta)[l])> 1.4442 && (abs((*gsf_sc_eta)[l])< 1.566))) continue;
-        /// tight lepton candidate
-      if(  (*gsf_VID_cutBasedElectronID_Fall17_94X_V2_tight)[l] ){
+      if(elePt <15 || abs((*gsf_eta)[l]) > 2.4 || (abs((*gsf_sc_eta)[l])> 1.4442 && (abs((*gsf_sc_eta)[l])< 1.566))) continue;
+ 
+      if(elePt >15){
+        if(  (*gsf_VID_cutBasedElectronID_Fall17_94X_V2_loose)[l] ){
+        selectedLeptonsAR->push_back(new lepton_candidate(elePt,(*gsf_eta)[l],(*gsf_phi)[l],(*gsf_charge)[l],l,1));
+        selectedLeptonsAR_copy->push_back(new lepton_candidate(elePt,(*gsf_eta)[l],(*gsf_phi)[l],(*gsf_charge)[l],l,1));
+        }
+      }
 
-	selectedLeptons->push_back(new lepton_candidate(elePt,(*gsf_eta)[l],(*gsf_phi)[l],(*gsf_charge)[l],l,1));
-	selectedLeptons_copy->push_back(new lepton_candidate(elePt,(*gsf_eta)[l],(*gsf_phi)[l],(*gsf_charge)[l],l,1));        
 
+      if(  (*gsf_VID_cutBasedElectronID_Fall17_94X_V2_loose)[l] ){ 
+        if( (*gsf_VID_cutBasedElectronID_Fall17_94X_V2_tight)[l] && elePt >15){
+        selectedLeptonsMR->push_back(new lepton_candidate(elePt,(*gsf_eta)[l],(*gsf_phi)[l],(*gsf_charge)[l],l,1));
+        selectedLeptonsMR_copy->push_back(new lepton_candidate(elePt,(*gsf_eta)[l],(*gsf_phi)[l],(*gsf_charge)[l],l,1));
+       
 
         }
-       
-        if(  (*gsf_VID_cutBasedElectronID_Fall17_94X_V2_loose)[l] ){
-	  selectedLeptonsAR->push_back(new lepton_candidate(elePt,(*gsf_eta)[l],(*gsf_phi)[l],(*gsf_charge)[l],l,1));
-	  selectedLeptonsAR_copy->push_back(new lepton_candidate(elePt,(*gsf_eta)[l],(*gsf_phi)[l],(*gsf_charge)[l],l,1));
-	  
-	  /// will distinguish by charge of leptons to be orthogonal to AR and SR                                                                                                                                                                                                 
-	  selectedLeptonsMR->push_back(new lepton_candidate(elePt,(*gsf_eta)[l],(*gsf_phi)[l],(*gsf_charge)[l],l,1));
-	  selectedLeptonsMR_copy->push_back(new lepton_candidate(elePt,(*gsf_eta)[l],(*gsf_phi)[l],(*gsf_charge)[l],l,1));
+        else if ( !(*gsf_VID_cutBasedElectronID_Fall17_94X_V2_tight)[l] && elePt >15){
+        antiselectedLeptonsMR->push_back(new lepton_candidate(elePt,(*gsf_eta)[l],(*gsf_phi)[l],(*gsf_charge)[l],l,1));
+        antiselectedLeptonsMR_copy->push_back(new lepton_candidate(elePt,(*gsf_eta)[l],(*gsf_phi)[l],(*gsf_charge)[l],l,1));
+
+        }
+
+      }
+      
 
 
-
-
-        } 
-       
-   
-   
-   
+      if((*gsf_VID_cutBasedElectronID_Fall17_94X_V2_tight)[l] && elePt > 27  ){
+      selectedLeptons->push_back(new lepton_candidate(elePt,(*gsf_eta)[l],(*gsf_phi)[l],(*gsf_charge)[l],l,1));
+      selectedLeptons_copy->push_back(new lepton_candidate(elePt,(*gsf_eta)[l],(*gsf_phi)[l],(*gsf_charge)[l],l,1));
+      }
       if (data == "mc") sf_Ele_Reco = sf_Ele_Reco * scale_factor(&sf_Ele_Reco_H ,(*gsf_sc_eta)[l],(*gsf_pt)[l],"");
       if (data == "mc") sf_Ele_ID = sf_Ele_ID * scale_factor(&sf_Ele_ID_H ,(*gsf_sc_eta)[l],(*gsf_pt)[l],"");
     }
@@ -624,24 +626,31 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
          if ((*mu_mc_index)[l]!=-1 && abs((*mc_pdgId)[(*mu_mc_index)[l]]) == 13) muPtSFRochester = rc.kSpreadMC((*mu_gt_charge)[l], (*mu_gt_pt)[l],(*mu_gt_eta)[l],(*mu_gt_phi)[l], (*mc_pt)[(*mu_mc_index)[l]],0, 0);
          if ((*mu_mc_index)[l]<0) muPtSFRochester = rc.kSmearMC((*mu_gt_charge)[l], (*mu_gt_pt)[l],(*mu_gt_eta)[l],(*mu_gt_phi)[l], (*mu_trackerLayersWithMeasurement)[l] , gRandom->Rndm(),0, 0);
       }
-      if(muPtSFRochester * (*mu_gt_pt)[l] <27 || abs((*mu_gt_eta)[l]) > 2.4) continue;
-     
+      if(muPtSFRochester * (*mu_gt_pt)[l] <15 || abs((*mu_gt_eta)[l]) > 2.4) continue;
 
-      if((*mu_isLooseMuon)[l]){
-	selectedLeptonsAR->push_back(new lepton_candidate(muPtSFRochester * (*mu_gt_pt)[l],(*mu_gt_eta)[l],(*mu_gt_phi)[l],(*mu_gt_charge)[l],l,10));
-	selectedLeptonsAR_copy->push_back(new lepton_candidate(muPtSFRochester * (*mu_gt_pt)[l],(*mu_gt_eta)[l],(*mu_gt_phi)[l],(*mu_gt_charge)[l],l,10));
 
-	selectedLeptonsMR->push_back(new lepton_candidate(muPtSFRochester * (*mu_gt_pt)[l],(*mu_gt_eta)[l],(*mu_gt_phi)[l],(*mu_gt_charge)[l],l,10));
-	selectedLeptonsMR_copy->push_back(new lepton_candidate(muPtSFRochester * (*mu_gt_pt)[l],(*mu_gt_eta)[l],(*mu_gt_phi)[l],(*mu_gt_charge)[l],l,10));
+      if((*mu_isLooseMuon)[l]    ){
+        if(muPtSFRochester * (*mu_gt_pt)[l] >15  ){ //&& (*mu_pfIsoDbCorrected04)[l] > 0.15
+          selectedLeptonsAR->push_back(new lepton_candidate(muPtSFRochester * (*mu_gt_pt)[l],(*mu_gt_eta)[l],(*mu_gt_phi)[l],(*mu_gt_charge)[l],l,10));
+          selectedLeptonsAR_copy->push_back(new lepton_candidate(muPtSFRochester * (*mu_gt_pt)[l],(*mu_gt_eta)[l],(*mu_gt_phi)[l],(*mu_gt_charge)[l],l,10));
+        
+       
+          selectedLeptonsMR->push_back(new lepton_candidate(muPtSFRochester * (*mu_gt_pt)[l],(*mu_gt_eta)[l],(*mu_gt_phi)[l],(*mu_gt_charge)[l],l,10));
+          selectedLeptonsMR_copy->push_back(new lepton_candidate(muPtSFRochester * (*mu_gt_pt)[l],(*mu_gt_eta)[l],(*mu_gt_phi)[l],(*mu_gt_charge)[l],l,10));
+          if (!(*mu_isTightMuon)[l]){
+            antiselectedLeptonsMR->push_back(new lepton_candidate(muPtSFRochester * (*mu_gt_pt)[l],(*mu_gt_eta)[l],(*mu_gt_phi)[l],(*mu_gt_charge)[l],l,10));
+            antiselectedLeptonsMR_copy->push_back(new lepton_candidate(muPtSFRochester * (*mu_gt_pt)[l],(*mu_gt_eta)[l],(*mu_gt_phi)[l],(*mu_gt_charge)[l],l,10));
 
+          }
+
+        }
       }
-      if(!(*mu_isTightMuon)[l]) continue;
 
-      if((*mu_pfIsoDbCorrected04)[l] > 0.15) continue; 
+      if((*mu_isTightMuon)[l] && (*mu_pfIsoDbCorrected04)[l] < 0.15 && (muPtSFRochester * (*mu_gt_pt)[l] >27)  ) {
+        selectedLeptons->push_back(new lepton_candidate(muPtSFRochester * (*mu_gt_pt)[l],(*mu_gt_eta)[l],(*mu_gt_phi)[l],(*mu_gt_charge)[l],l,10));
+        selectedLeptons_copy->push_back(new lepton_candidate(muPtSFRochester * (*mu_gt_pt)[l],(*mu_gt_eta)[l],(*mu_gt_phi)[l],(*mu_gt_charge)[l],l,10));
+      }
 
-      selectedLeptons->push_back(new lepton_candidate(muPtSFRochester * (*mu_gt_pt)[l],(*mu_gt_eta)[l],(*mu_gt_phi)[l],(*mu_gt_charge)[l],l,10));
-      selectedLeptons_copy->push_back(new lepton_candidate(muPtSFRochester * (*mu_gt_pt)[l],(*mu_gt_eta)[l],(*mu_gt_phi)[l],(*mu_gt_charge)[l],l,10));
-      //}
       if (data == "mc" && year == "2016") sf_Mu_ID = sf_Mu_ID * scale_factor(&sf_Mu_ID_H, (*mu_gt_eta)[l], (*mu_gt_pt)[l],"");
       if (data == "mc" && year == "2016") sf_Mu_ISO = sf_Mu_ISO * scale_factor(&sf_Mu_ISO_H, (*mu_gt_eta)[l], (*mu_gt_pt)[l],"");
       if (data == "mc" && year != "2016") sf_Mu_ID = sf_Mu_ID * scale_factor(&sf_Mu_ID_H, (*mu_gt_pt)[l], abs((*mu_gt_eta)[l]),"");
@@ -649,32 +658,20 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
 
     }
     sort(selectedLeptons->begin(), selectedLeptons->end(), ComparePtLep);
+    //sort(selectedLeptonsAR->begin(), selectedLeptonsAR->end(), ComparePtLep);
+    //sort(selectedLeptonsMR->begin(), selectedLeptonsMR->end(), ComparePtLep);
+    //sort(antiselectedLeptonsMR->begin(), antiselectedLeptonsMR->end(), ComparePtLep);
+
+
 // trilepton selection
-//cout<<ev_event<<"  "<<triggerPass<<"  "<<metFilterPass<<"  "<<selectedLeptons->size()<<endl;
-
-
-    /// split data into 3 orthogonal regions
-    /// signal, application, measurement
-  
-    
-  
-    /// below definition is for signal region 
-    /// at least 3 selected leptons
-    /// Pt of highest Pt lepton is > 27 GeV
-    /// lepton charges must not add to 1
-
-    /// Application region is loose muons
-    /// at least 2 selected leptons and 1 AR lepton
-
-
-    /// Measurement region is background enriched
-    /// to-do: try charge of leptons does NOT add to 1
-    /// there are more  than 3 leptons (signal has exactly 3)
-    //// to-do: try non-isolated muons . Ask why we don't isolate electrons.
-
-
+    cout<<"#################################"<<endl;    
+    cout<<" # of SR selected leptons     :  "<<selectedLeptons->size()<<endl;
+    cout<<" # of MR selected leptons     :  "<<selectedLeptonsMR->size()<<endl;
+    cout<<" # of MR antiselected leptons :  "<<antiselectedLeptonsMR->size()<<endl;
+    cout<<" # of AR selected leptons     :  "<<selectedLeptonsAR->size()<<endl;
 
     if(selectedLeptons->size()!=3 ||
+      ((*selectedLeptons)[0]->pt_ <27) ||
       (abs((*selectedLeptons)[0]->charge_ + (*selectedLeptons)[1]->charge_ + (*selectedLeptons)[2]->charge_) != 1)) {
 //      ((*selectedLeptons)[0]->lep_ + (*selectedLeptons)[1]->lep_ != 11 && ((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M()<106 && ((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M()>76) ||
 //      ((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M()<20) {
@@ -691,8 +688,8 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
       continue;
     }
 
-    // Measurement region, more than 3 leptons
-    if(selectedLeptonsMR->size()<=3 ){
+/*
+    if((abs((*selectedLeptonsMR)[0]->charge_ + (*selectedLeptonsMR)[1]->charge_ + (*selectedLeptonsMR)[2]->charge_) == 1) ){
        //   (abs((*selectedLeptonsMR)[0]->charge_ + (*selectedLeptonsMR)[1]->charge_ + (*selectedLeptonsMR)[2]->charge_) != 1)) {
 
       for (int l=0;l<selectedLeptonsMR->size();l++){
@@ -709,7 +706,7 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     }
 
     // Application  region, at least 3 leptons and 2 passing tight selection fro signal region                                                               
-    if(selectedLeptonsAR->size() <3 || selectedLeptons->size()!=2 ){
+    if( (selectedLeptonsAR->size() < 3 ) || (selectedLeptons->size()!=2 ))  {
       //   (abs((*selectedLeptonsMR)[0]->charge_ + (*selectedLeptonsMR)[1]->charge_ + (*selectedLeptonsMR)[2]->charge_) != 1)) {                             
 
       for (int l=0;l<selectedLeptonsAR->size();l++){
@@ -725,11 +722,11 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
       continue;
     }
 
-
-
+*/
     if ((*selectedLeptons)[0]->lep_ + (*selectedLeptons)[1]->lep_ + (*selectedLeptons)[2]->lep_ == 3) ch = 0;//eee channel SR
-    if ((*selectedLeptonsAR)[0]->lep_ + (*selectedLeptonsAR)[1]->lep_ + (*selectedLeptonsAR)[2]->lep_ == 3) chAR = 0;//eee channel AR                       
-    if ((*selectedLeptonsMR)[0]->lep_ + (*selectedLeptonsMR)[1]->lep_ + (*selectedLeptonsMR)[2]->lep_ == 3) chMR = 0;//eee channel MR                     
+    //if ((*selectedLeptonsAR)[0]->lep_ + (*selectedLeptonsAR)[1]->lep_ + (*selectedLeptonsAR)[2]->lep_ == 3) chAR = 0;//eee channel AR                       
+    //if ((*selectedLeptonsMR)[0]->lep_ + (*selectedLeptonsMR)[1]->lep_ + (*selectedLeptonsMR)[2]->lep_ == 3) chMR = 0;//eee channel MR                     
+
 
 
 
@@ -751,59 +748,53 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
             ch1 = 3; //emumu subchannel with +-- charge
         }
       }
-
-
+/*
     if ((*selectedLeptonsAR)[0]->lep_ + (*selectedLeptonsAR)[1]->lep_ + (*selectedLeptonsAR)[2]->lep_ == 12) {
       chAR = 1;//emul channel                                                                                                                                 
       if ((*selectedLeptonsAR)[0]->charge_ + (*selectedLeptonsAR)[1]->charge_ + (*selectedLeptonsAR)[2]->charge_ ==1){
-	ch1AR = 0; //eemu subchannel with ++- charge                                                                                                        
+        ch1AR = 0; //eemu subchannel with ++- charge                                                                                                        
       }
       else{
-	ch1AR = 1; //eemu subchannel with +-- charge                                                                                                        
+        ch1AR = 1; //eemu subchannel with +-- charge                                                                                                        
       }
     }
     if ((*selectedLeptonsAR)[0]->lep_ + (*selectedLeptonsAR)[1]->lep_ + (*selectedLeptonsAR)[2]->lep_ == 21) {
       chAR = 1;
       if ((*selectedLeptonsAR)[0]->charge_ + (*selectedLeptonsAR)[1]->charge_ + (*selectedLeptonsAR)[2]->charge_ ==1){
-	ch1AR = 2; //emumu subchannel with ++- charge                                                                                                       
+        ch1AR = 2; //emumu subchannel with ++- charge                                                                                                       
       }
       else{
-	ch1AR = 3; //emumu subchannel with +-- charge                                                                                                       
+        ch1AR = 3; //emumu subchannel with +-- charge                                                                                                       
       }
     }
 
     if ((*selectedLeptonsMR)[0]->lep_ + (*selectedLeptonsMR)[1]->lep_ + (*selectedLeptonsMR)[2]->lep_ == 12) {
       chMR = 1;//emul channel                                                                                                                                 
       if ((*selectedLeptonsMR)[0]->charge_ + (*selectedLeptonsMR)[1]->charge_ + (*selectedLeptonsMR)[2]->charge_ ==1){
-	ch1MR = 0; //eemu subchannel with ++- charge                                                                                                        
+        ch1MR = 0; //eemu subchannel with ++- charge                                                                                                        
       }
       else{
-	ch1MR = 1; //eemu subchannel with +-- charge                                                                                                        
+        ch1MR = 1; //eemu subchannel with +-- charge                                                                                                        
       }
     }
     if ((*selectedLeptonsMR)[0]->lep_ + (*selectedLeptonsMR)[1]->lep_ + (*selectedLeptonsMR)[2]->lep_ == 21) {
       chMR = 1;
       if ((*selectedLeptonsMR)[0]->charge_ + (*selectedLeptonsMR)[1]->charge_ + (*selectedLeptonsMR)[2]->charge_ ==1){
-	ch1MR = 2; //emumu subchannel with ++- charge                                                                                                       
+        ch1MR = 2; //emumu subchannel with ++- charge                                                                                                       
       }
       else{
-	ch1MR = 3; //emumu subchannel with +-- charge                                                                                                       
+        ch1MR = 3; //emumu subchannel with +-- charge                                                                                                       
       }
     }
 
-
-
-
+*/
 
     if ((*selectedLeptons)[0]->lep_ + (*selectedLeptons)[1]->lep_ + (*selectedLeptons)[2]->lep_ == 30) ch = 2; //mumumu channel
-    if ((*selectedLeptonsAR)[0]->lep_ + (*selectedLeptonsAR)[1]->lep_ + (*selectedLeptonsAR)[2]->lep_ == 30) chAR = 2; //mumumu channel                      
-    if ((*selectedLeptonsMR)[0]->lep_ + (*selectedLeptonsMR)[1]->lep_ + (*selectedLeptonsMR)[2]->lep_ == 30) chMR = 2; //mumumu channel                     
+    //if ((*selectedLeptonsAR)[0]->lep_ + (*selectedLeptonsAR)[1]->lep_ + (*selectedLeptonsAR)[2]->lep_ == 30) chAR = 2; //mumumu channel                      
+    //if ((*selectedLeptonsMR)[0]->lep_ + (*selectedLeptonsMR)[1]->lep_ + (*selectedLeptonsMR)[2]->lep_ == 30) chMR = 2; //mumumu channel                     
 
 
     if(ch ==0 && !triggerPassEE) continue;
-    if(chAR ==0 && !triggerPassEE) continue;
-    if(chMR ==0 && !triggerPassEE) continue; /// to-do: check if I should be applying triggers to AR and MR
-
     //if(ch ==1 && !triggerPassEMu) continue;
     // For now we use ee+emu+mumu trigger for emul channel
     if(ch ==1){
@@ -834,7 +825,7 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
               (*selectedLeptons_copy)[1]->setbalep();
           }
       }
-      else if(ch1==2){
+      if(ch1==2){
           if ((*selectedLeptons_copy)[0]->charge_<0){
               compete=true;
           }
@@ -847,7 +838,7 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
               (*selectedLeptons_copy)[1]->setbalep();
           }
       }
-      else if(ch1==3){
+      if(ch1==3){
           if ((*selectedLeptons_copy)[0]->charge_>0){
               compete=true;
           }
@@ -862,131 +853,9 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
       }
     }
 
-    if(chAR ==1){
-      sort(selectedLeptonsAR_copy->begin(), selectedLeptonsAR_copy->end(), CompareFlavourLep);
-      if(ch1AR==0){
-	if ((*selectedLeptonsAR_copy)[2]->charge_<0){
-	  competeA=true;// compete=true means that we have two pairs of leptons of Opposite sign&&Opposite flavour (OSOF), we need to make a decision based on kinematic reconstruction                                                                                                                                   
-	}
-	else if ((*selectedLeptonsAR_copy)[1]->charge_<0){
-	  competeA=false;
-	  (*selectedLeptonsAR_copy)[0]->setbalep();// This lepton is set as "Bachelor Lepton" meaning it comes from standard top                                                                                                                                                                                           
-	}
-	else {
-	  competeA=false;
-	  (*selectedLeptonsAR_copy)[1]->setbalep();
-	}
-      }
-      if(ch1AR==1){
-	if ((*selectedLeptonsAR_copy)[2]->charge_>0){
-	  competeA=true;
-	}
-	else if ((*selectedLeptonsAR_copy)[1]->charge_>0){
-	  competeA=false;
-	  (*selectedLeptonsAR_copy)[0]->setbalep();
-	}
-	else {
-	  competeA=false;
-	  (*selectedLeptonsAR_copy)[1]->setbalep();
-	}
-      }
-      else if(ch1AR==2){
-	if ((*selectedLeptonsAR_copy)[0]->charge_<0){
-	  competeA=true;
-	}
-	else if ((*selectedLeptonsAR_copy)[1]->charge_<0){
-	  competeA=false;
-	  (*selectedLeptonsAR_copy)[2]->setbalep();
-	}
-	else {
-	  competeA=false;
-	  (*selectedLeptonsAR_copy)[1]->setbalep();
-	}
-      }
-      else if(ch1AR==3){
-	if ((*selectedLeptonsAR_copy)[0]->charge_>0){
-	  competeA=true;
-	}
-	else if ((*selectedLeptonsAR_copy)[1]->charge_>0){
-	  competeA=false;
-	  (*selectedLeptonsAR_copy)[2]->setbalep();
-	}
-	else {
-	  competeA=false;
-	  (*selectedLeptonsAR_copy)[1]->setbalep();
-	}
-      }
-    }
-
-
-
-
-    if(chMR ==1){
-      sort(selectedLeptonsMR_copy->begin(), selectedLeptonsMR_copy->end(), CompareFlavourLep);
-      if(ch1MR==0){
-	if ((*selectedLeptonsMR_copy)[2]->charge_<0){
-	  competeM=true;// compete=true means that we have two pairs of leptons of Opposite sign&&Opposite flavour (OSOF), we need to make a decision based on kinematic reconstruction                                                                                                                                   
-	}
-	else if ((*selectedLeptonsMR_copy)[1]->charge_<0){
-	  competeM=false;
-	  (*selectedLeptonsMR_copy)[0]->setbalep();// This lepton is set as "Bachelor Lepton" meaning it comes from standMRd top                                                                                                                                                                                           
-	}
-	else {
-	  competeM=false;
-	  (*selectedLeptonsMR_copy)[1]->setbalep();
-	}
-      }
-      if(ch1MR==1){
-	if ((*selectedLeptonsMR_copy)[2]->charge_>0){
-	  competeM=true;
-	}
-	else if ((*selectedLeptonsMR_copy)[1]->charge_>0){
-	  competeM=false;
-	  (*selectedLeptonsMR_copy)[0]->setbalep();
-	}
-	else {
-	  competeM=false;
-	  (*selectedLeptonsMR_copy)[1]->setbalep();
-	}
-      }
-      else if(ch1MR==2){
-	if ((*selectedLeptonsMR_copy)[0]->charge_<0){
-	  competeM=true;
-	}
-	else if ((*selectedLeptonsMR_copy)[1]->charge_<0){
-	  competeM=false;
-	  (*selectedLeptonsMR_copy)[2]->setbalep();
-	}
-	else {
-	  competeM=false;
-	  (*selectedLeptonsMR_copy)[1]->setbalep();
-	}
-      }
-      else if(ch1MR==3){
-	if ((*selectedLeptonsMR_copy)[0]->charge_>0){
-	  competeM=true;
-	}
-	else if ((*selectedLeptonsMR_copy)[1]->charge_>0){
-	  competeM=false;
-	  (*selectedLeptonsMR_copy)[2]->setbalep();
-	}
-	else {
-	  competeM=false;
-	  (*selectedLeptonsMR_copy)[1]->setbalep();
-	}
-      }
-    }
-
-
 
 
     if(ch ==2 && !triggerPassMuMu) continue;
-    if(chAR ==2 && !triggerPassMuMu) continue;
-    if(chMR ==2 && !triggerPassMuMu) continue;
-
-
-
-
 //jets
     selectedJets = new std::vector<jet_candidate*>();
     selectedJets_copy = new std::vector<jet_candidate*>();
@@ -1096,92 +965,7 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     }
       
     sort(selectedLeptons_copy->begin(), selectedLeptons_copy->end(), CompareBaLep);
-    sort(selectedLeptons_copy->begin(), selectedLeptons_copy->begin()+2, CompareFlavourLep);// [e,mu,ba-le
-    //Two OSOFs ? let's competeA                                                                                                                                                                                    
-    if(competeA&&selectedJets_copy->size()>0){
-      (*selectedJets_copy)[0]->setbajet();
-      if (ch1==0||ch1==1){
-	t1=getTopmass((*selectedLeptonsAR_copy)[0],(*selectedJets_copy)[0],MET_FinalCollection_Pt,MET_FinalCollection_phi);
-	t2=getTopmass((*selectedLeptonsAR_copy)[1],(*selectedJets_copy)[0],MET_FinalCollection_Pt,MET_FinalCollection_phi);
-	t3=getLFVTopmass((*selectedLeptonsAR_copy)[0],(*selectedLeptonsAR_copy)[2],selectedJets_copy);
-	t4=getLFVTopmass((*selectedLeptonsAR_copy)[1],(*selectedLeptonsAR_copy)[2],selectedJets_copy);
-	if (t1<0&&t2<0) continue;
-	if (abs(t1-mT)>abs(t2-mT)){// the one gives the better standard top mass wins                                                                                                                            
-	  TopmassAR=t2;
-	  LFVTopmassAR=t3;
-	  (*selectedLeptonsAR_copy)[1]->setbalep();
-	}
-	else{
-	  TopmassAR=t1;
-	  LFVTopmassAR=t4;
-	  (*selectedLeptonsAR_copy)[0]->setbalep();
-	}
-      }
-      else{
-	t1=getTopmass((*selectedLeptonsAR_copy)[1],(*selectedJets_copy)[0],MET_FinalCollection_Pt,MET_FinalCollection_phi);
-	t2=getTopmass((*selectedLeptonsAR_copy)[2],(*selectedJets_copy)[0],MET_FinalCollection_Pt,MET_FinalCollection_phi);
-	t3=getLFVTopmass((*selectedLeptonsAR_copy)[1],(*selectedLeptonsAR_copy)[0],selectedJets_copy);
-	t4=getLFVTopmass((*selectedLeptonsAR_copy)[2],(*selectedLeptonsAR_copy)[0],selectedJets_copy);
-	if (t1<0&&t2<0) continue;
-	if (abs(t1-mT)>abs(t2-mT)){
-	  TopmassAR=t2;
-	  LFVTopmassAR=t3;
-	  (*selectedLeptonsAR_copy)[2]->setbalep();
-	}
-	else{
-	  TopmassAR=t1;
-	  LFVTopmassAR=t4;
-	  (*selectedLeptonsAR_copy)[1]->setbalep();
-	}
-      }
-    }
-
-    sort(selectedLeptonsAR_copy->begin(), selectedLeptonsAR_copy->end(), CompareBaLep);
-    sort(selectedLeptonsAR_copy->begin(), selectedLeptonsAR_copy->begin()+2, CompareFlavourLep);// [e,mu,ba-le        
-
-    //Two OSOFs ? let's competeM                                                                                                                                                                                    
-    if(competeM&&selectedJets_copy->size()>0){
-      (*selectedJets_copy)[0]->setbajet();
-      if (ch1==0||ch1==1){
-	t1=getTopmass((*selectedLeptonsMR_copy)[0],(*selectedJets_copy)[0],MET_FinalCollection_Pt,MET_FinalCollection_phi);
-	t2=getTopmass((*selectedLeptonsMR_copy)[1],(*selectedJets_copy)[0],MET_FinalCollection_Pt,MET_FinalCollection_phi);
-	t3=getLFVTopmass((*selectedLeptonsMR_copy)[0],(*selectedLeptonsMR_copy)[2],selectedJets_copy);
-	t4=getLFVTopmass((*selectedLeptonsMR_copy)[1],(*selectedLeptonsMR_copy)[2],selectedJets_copy);
-	if (t1<0&&t2<0) continue;
-	if (abs(t1-mT)>abs(t2-mT)){// the one gives the better standard top mass wins                                                                                                                            
-	  TopmassMR=t2;
-	  LFVTopmassMR=t3;
-	  (*selectedLeptonsMR_copy)[1]->setbalep();
-	}
-	else{
-	  TopmassMR=t1;
-	  LFVTopmassMR=t4;
-	  (*selectedLeptonsMR_copy)[0]->setbalep();
-	}
-      }
-      else{
-	t1=getTopmass((*selectedLeptonsMR_copy)[1],(*selectedJets_copy)[0],MET_FinalCollection_Pt,MET_FinalCollection_phi);
-	t2=getTopmass((*selectedLeptonsMR_copy)[2],(*selectedJets_copy)[0],MET_FinalCollection_Pt,MET_FinalCollection_phi);
-	t3=getLFVTopmass((*selectedLeptonsMR_copy)[1],(*selectedLeptonsMR_copy)[0],selectedJets_copy);
-	t4=getLFVTopmass((*selectedLeptonsMR_copy)[2],(*selectedLeptonsMR_copy)[0],selectedJets_copy);
-	if (t1<0&&t2<0) continue;
-	if (abs(t1-mT)>abs(t2-mT)){
-	  TopmassMR=t2;
-	  LFVTopmassMR=t3;
-	  (*selectedLeptonsMR_copy)[2]->setbalep();
-	}
-	else{
-	  TopmassMR=t1;
-	  LFVTopmassMR=t4;
-	  (*selectedLeptonsMR_copy)[1]->setbalep();
-	}
-      }
-    }
-
-    sort(selectedLeptonsMR_copy->begin(), selectedLeptonsMR_copy->end(), CompareBaLep);
-    sort(selectedLeptonsMR_copy->begin(), selectedLeptonsMR_copy->begin()+2, CompareFlavourLep);// [e,mu,ba-le                                                                                                         
-
-
+    sort(selectedLeptons_copy->begin(), selectedLeptons_copy->begin()+2, CompareFlavourLep);// [e,mu,ba-lep]
     
 //    if(ch==1){//debug
 //    cout<<endl<<"ch1 = "<<ch1<<endl;
@@ -1298,7 +1082,7 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     Hists[ch][1][30]->Fill(pv_n,weight_lep);
     Hists[ch][1][31]->Fill(((*selectedLeptons_copy)[0]->p4_ + (*selectedLeptons_copy)[1]->p4_).M(),weight_lep);
     Hists[ch][1][32]->Fill(LFVTopmass,weight_lep);
-    //continue;
+    continue;
     }
     //Off Z
     
@@ -2010,128 +1794,6 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     Hists[ch][21][31]->Fill(((*selectedLeptons_copy)[0]->p4_ + (*selectedLeptons_copy)[1]->p4_).M(),weight_lepB);
     Hists[ch][21][32]->Fill(LFVTopmass,weight_lepB);
     }
-
-
-    /// Measurement and application regions for region 19 () 
-    /// region 22 == ttbar signal=  nbjet==1 && MET_FinalCollection_Pt>20 && selectedJets->size()>=2
-    ///= signal in the non-prompt lepton bkg estimate
-    /// 22 = application = signal cuts + ch = 0 (eee channel)
-    /// 23 = measurement = OnZ + signal cuts + ch != 0 
-    /// 24 = signal signal cuts + ch != 0 
-    /// Working here 
-
-    if(nbjet==1 && MET_FinalCollection_Pt>20 && selectedJets->size()==2 && !OnZ ){
-    Hists[ch][22][0]->Fill((*selectedLeptonsAR)[0]->pt_,weight_lepB);
-    Hists[ch][22][1]->Fill((*selectedLeptonsAR)[0]->eta_,weight_lepB);
-    Hists[ch][22][2]->Fill((*selectedLeptonsAR)[0]->phi_,weight_lepB);
-    Hists[ch][22][3]->Fill((*selectedLeptonsAR)[1]->pt_,weight_lepB);
-    Hists[ch][22][4]->Fill((*selectedLeptonsAR)[1]->eta_,weight_lepB);
-    Hists[ch][22][5]->Fill((*selectedLeptonsAR)[1]->phi_,weight_lepB);
-    Hists[ch][22][6]->Fill((*selectedLeptonsAR)[2]->pt_,weight_lepB);
-    Hists[ch][22][7]->Fill((*selectedLeptonsAR)[2]->eta_,weight_lepB);
-    Hists[ch][22][8]->Fill((*selectedLeptonsAR)[2]->phi_,weight_lepB);
-    Hists[ch][22][9]->Fill((*selectedLeptonsAR_copy)[0]->pt_,weight_lepB);
-    Hists[ch][22][10]->Fill((*selectedLeptonsAR_copy)[0]->eta_,weight_lepB);
-    Hists[ch][22][11]->Fill((*selectedLeptonsAR_copy)[0]->phi_,weight_lepB);
-    Hists[ch][22][12]->Fill((*selectedLeptonsAR_copy)[1]->pt_,weight_lepB);
-    Hists[ch][22][13]->Fill((*selectedLeptonsAR_copy)[1]->eta_,weight_lepB);
-    Hists[ch][22][14]->Fill((*selectedLeptonsAR_copy)[1]->phi_,weight_lepB);
-    Hists[ch][22][15]->Fill((*selectedLeptonsAR_copy)[2]->pt_,weight_lepB);
-    Hists[ch][22][16]->Fill((*selectedLeptonsAR_copy)[2]->eta_,weight_lepB);
-    Hists[ch][22][17]->Fill((*selectedLeptonsAR_copy)[2]->phi_,weight_lepB);
-    Hists[ch][22][18]->Fill(TopmassAR,weight_lepB);// to-do: probably need to fix this per SR , MR and AR
-    Hists[ch][22][19]->Fill(((*selectedLeptonsAR_copy)[0]->p4_ + (*selectedLeptonsAR_copy)[1]->p4_).M(),weight_lepB);
-    Hists[ch][22][20]->Fill(((*selectedLeptonsAR_copy)[0]->p4_ + (*selectedLeptonsAR_copy)[1]->p4_).Pt(),weight_lepB);
-    Hists[ch][22][21]->Fill(deltaR((*selectedLeptonsAR_copy)[0]->eta_,(*selectedLeptonsAR_copy)[0]->phi_,(*selectedLeptonsAR_copy)[1]->eta_,(*selectedLeptonsAR_copy)[1]->phi_),weight_lepB);
-    Hists[ch][22][22]->Fill(deltaPhi((*selectedLeptonsAR_copy)[0]->phi_,(*selectedLeptonsAR_copy)[1]->phi_),weight_lepB);
-    if(selectedJets->size()>0) Hists[ch][22][23]->Fill((*selectedJets_copy)[0]->pt_,weight_lepB);
-    if(selectedJets->size()>0) Hists[ch][22][24]->Fill((*selectedJets_copy)[0]->eta_,weight_lepB);
-    if(selectedJets->size()>0) Hists[ch][22][25]->Fill((*selectedJets_copy)[0]->phi_,weight_lepB);
-    Hists[ch][22][26]->Fill(selectedJets->size(),weight_lepB);
-    Hists[ch][22][27]->Fill(nbjet,weight_lepB);
-    Hists[ch][22][28]->Fill(MET_FinalCollection_Pt,weight_lepB);
-    Hists[ch][22][29]->Fill(MET_FinalCollection_phi,weight_lepB);
-    Hists[ch][22][30]->Fill(pv_n,weight_lepB);
-    Hists[ch][22][31]->Fill(((*selectedLeptonsAR_copy)[0]->p4_ + (*selectedLeptonsAR_copy)[1]->p4_).M(),weight_lepB);
-    Hists[ch][22][32]->Fill(LFVTopmassAR,weight_lepB);
-    }
-
-
-    if(nbjet==1 && MET_FinalCollection_Pt>20 && selectedJets->size()==2 && OnZ ){
-    Hists[ch][23][0]->Fill((*selectedLeptonsMR)[0]->pt_,weight_lepB);
-    Hists[ch][23][1]->Fill((*selectedLeptonsMR)[0]->eta_,weight_lepB);
-    Hists[ch][23][2]->Fill((*selectedLeptonsMR)[0]->phi_,weight_lepB);
-    Hists[ch][23][3]->Fill((*selectedLeptonsMR)[1]->pt_,weight_lepB);
-    Hists[ch][23][4]->Fill((*selectedLeptonsMR)[1]->eta_,weight_lepB);
-    Hists[ch][23][5]->Fill((*selectedLeptonsMR)[1]->phi_,weight_lepB);
-    Hists[ch][23][6]->Fill((*selectedLeptonsMR)[2]->pt_,weight_lepB);
-    Hists[ch][23][7]->Fill((*selectedLeptonsMR)[2]->eta_,weight_lepB);
-    Hists[ch][23][8]->Fill((*selectedLeptonsMR)[2]->phi_,weight_lepB);
-    Hists[ch][23][9]->Fill((*selectedLeptonsMR_copy)[0]->pt_,weight_lepB);
-    Hists[ch][23][10]->Fill((*selectedLeptonsMR_copy)[0]->eta_,weight_lepB);
-    Hists[ch][23][11]->Fill((*selectedLeptonsMR_copy)[0]->phi_,weight_lepB);
-    Hists[ch][23][12]->Fill((*selectedLeptonsMR_copy)[1]->pt_,weight_lepB);
-    Hists[ch][23][13]->Fill((*selectedLeptonsMR_copy)[1]->eta_,weight_lepB);
-    Hists[ch][23][14]->Fill((*selectedLeptonsMR_copy)[1]->phi_,weight_lepB);
-    Hists[ch][23][15]->Fill((*selectedLeptonsMR_copy)[2]->pt_,weight_lepB);
-    Hists[ch][23][16]->Fill((*selectedLeptonsMR_copy)[2]->eta_,weight_lepB);
-    Hists[ch][23][17]->Fill((*selectedLeptonsMR_copy)[2]->phi_,weight_lepB);
-    Hists[ch][23][18]->Fill(TopmassMR,weight_lepB);
-    Hists[ch][23][19]->Fill(((*selectedLeptonsMR_copy)[0]->p4_ + (*selectedLeptonsMR_copy)[1]->p4_).M(),weight_lepB);
-    Hists[ch][23][20]->Fill(((*selectedLeptonsMR_copy)[0]->p4_ + (*selectedLeptonsMR_copy)[1]->p4_).Pt(),weight_lepB);
-    Hists[ch][23][21]->Fill(deltaR((*selectedLeptonsMR_copy)[0]->eta_,(*selectedLeptonsMR_copy)[0]->phi_,(*selectedLeptonsMR_copy)[1]->eta_,(*selectedLeptonsMR_copy)[1]->phi_),weight_lepB);
-    Hists[ch][23][22]->Fill(deltaPhi((*selectedLeptonsMR_copy)[0]->phi_,(*selectedLeptonsMR_copy)[1]->phi_),weight_lepB);
-    if(selectedJets->size()>0) Hists[ch][23][23]->Fill((*selectedJets_copy)[0]->pt_,weight_lepB);
-    if(selectedJets->size()>0) Hists[ch][23][24]->Fill((*selectedJets_copy)[0]->eta_,weight_lepB);
-    if(selectedJets->size()>0) Hists[ch][23][25]->Fill((*selectedJets_copy)[0]->phi_,weight_lepB);
-    Hists[ch][23][26]->Fill(selectedJets->size(),weight_lepB);
-    Hists[ch][23][27]->Fill(nbjet,weight_lepB);
-    Hists[ch][23][28]->Fill(MET_FinalCollection_Pt,weight_lepB);
-    Hists[ch][23][29]->Fill(MET_FinalCollection_phi,weight_lepB);
-    Hists[ch][23][30]->Fill(pv_n,weight_lepB);
-    Hists[ch][23][31]->Fill(((*selectedLeptonsMR_copy)[0]->p4_ + (*selectedLeptonsMR_copy)[1]->p4_).M(),weight_lepB);
-    Hists[ch][23][32]->Fill(LFVTopmassMR,weight_lepB);
-    }
-
-
-    if(nbjet==1 && MET_FinalCollection_Pt>20 && selectedJets->size()==2 && !OnZ ){
-    Hists[ch][24][0]->Fill((*selectedLeptons)[0]->pt_,weight_lepB);
-    Hists[ch][24][1]->Fill((*selectedLeptons)[0]->eta_,weight_lepB);
-    Hists[ch][24][2]->Fill((*selectedLeptons)[0]->phi_,weight_lepB);
-    Hists[ch][24][3]->Fill((*selectedLeptons)[1]->pt_,weight_lepB);
-    Hists[ch][24][4]->Fill((*selectedLeptons)[1]->eta_,weight_lepB);
-    Hists[ch][24][5]->Fill((*selectedLeptons)[1]->phi_,weight_lepB);
-    Hists[ch][24][6]->Fill((*selectedLeptons)[2]->pt_,weight_lepB);
-    Hists[ch][24][7]->Fill((*selectedLeptons)[2]->eta_,weight_lepB);
-    Hists[ch][24][8]->Fill((*selectedLeptons)[2]->phi_,weight_lepB);
-    Hists[ch][24][9]->Fill((*selectedLeptons_copy)[0]->pt_,weight_lepB);
-    Hists[ch][24][10]->Fill((*selectedLeptons_copy)[0]->eta_,weight_lepB);
-    Hists[ch][24][11]->Fill((*selectedLeptons_copy)[0]->phi_,weight_lepB);
-    Hists[ch][24][12]->Fill((*selectedLeptons_copy)[1]->pt_,weight_lepB);
-    Hists[ch][24][13]->Fill((*selectedLeptons_copy)[1]->eta_,weight_lepB);
-    Hists[ch][24][14]->Fill((*selectedLeptons_copy)[1]->phi_,weight_lepB);
-    Hists[ch][24][15]->Fill((*selectedLeptons_copy)[2]->pt_,weight_lepB);
-    Hists[ch][24][16]->Fill((*selectedLeptons_copy)[2]->eta_,weight_lepB);
-    Hists[ch][24][17]->Fill((*selectedLeptons_copy)[2]->phi_,weight_lepB);
-    Hists[ch][24][18]->Fill(Topmass,weight_lepB);
-    Hists[ch][24][19]->Fill(((*selectedLeptons_copy)[0]->p4_ + (*selectedLeptons_copy)[1]->p4_).M(),weight_lepB);
-    Hists[ch][24][20]->Fill(((*selectedLeptons_copy)[0]->p4_ + (*selectedLeptons_copy)[1]->p4_).Pt(),weight_lepB);
-    Hists[ch][24][21]->Fill(deltaR((*selectedLeptons_copy)[0]->eta_,(*selectedLeptons_copy)[0]->phi_,(*selectedLeptons_copy)[1]->eta_,(*selectedLeptons_copy)[1]->phi_),weight_lepB);
-    Hists[ch][24][22]->Fill(deltaPhi((*selectedLeptons_copy)[0]->phi_,(*selectedLeptons_copy)[1]->phi_),weight_lepB);
-    if(selectedJets->size()>0) Hists[ch][24][23]->Fill((*selectedJets_copy)[0]->pt_,weight_lepB);
-    if(selectedJets->size()>0) Hists[ch][24][24]->Fill((*selectedJets_copy)[0]->eta_,weight_lepB);
-    if(selectedJets->size()>0) Hists[ch][24][25]->Fill((*selectedJets_copy)[0]->phi_,weight_lepB);
-    Hists[ch][24][26]->Fill(selectedJets->size(),weight_lepB);
-    Hists[ch][24][27]->Fill(nbjet,weight_lepB);
-    Hists[ch][24][28]->Fill(MET_FinalCollection_Pt,weight_lepB);
-    Hists[ch][24][29]->Fill(MET_FinalCollection_phi,weight_lepB);
-    Hists[ch][24][30]->Fill(pv_n,weight_lepB);
-    Hists[ch][24][31]->Fill(((*selectedLeptons_copy)[0]->p4_ + (*selectedLeptons_copy)[1]->p4_).M(),weight_lepB);
-    Hists[ch][24][32]->Fill(LFVTopmass,weight_lepB);
-    }
-
-
-
 
     for (int l=0;l<selectedLeptons->size();l++){
       delete (*selectedLeptons)[l];
