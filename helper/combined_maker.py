@@ -322,7 +322,7 @@ for numyear, nameyear in enumerate(year):
                 HstatDown.SetName(SamplesNameCombined[f]+ '_' + SamplesNameCombined[f]+'StatBin' +str(b+1)+ 'Down')
                 HstatDown.Write()
                 stat.append(SamplesNameCombined[f]+'StatBin' +str(b+1))
-            statName[nameyear + SamplesNameCombined[f]]=stat
+            statName[nameyear + namereg + SamplesNameCombined[f]]=stat
         hfile.Write()
         hfile.Close()
 
@@ -361,22 +361,22 @@ for namesig in SignalSamples:
                 bpb= 'tt_' + b
                 T1 = T1 +  bpb.ljust(25)  +'shape'.ljust(20)  + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '1'.ljust(25) + '-'.ljust(25) +'\n'
             for key, value in statName.items():
-                if nameyear in key and namesig in key:
+                if namereg in key and nameyear in key and namesig in key:
                     for e in value:
                         T1 = T1 +  e.ljust(25)  +'shape'.ljust(20)  + '1'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) +'\n'
-                if nameyear in key and 'Jets' in key:
+                if namereg in key and nameyear in key and 'Jets' in key:
                     for e in value:
                         T1 = T1 +  e.ljust(25)  +'shape'.ljust(20)  + '-'.ljust(25) + '1'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) +'\n'
-                if nameyear in key and 'Other' in key:
+                if namereg in key and nameyear in key and 'Other' in key:
                     for e in value:
                         T1 = T1 +  e.ljust(25)  +'shape'.ljust(20)  + '-'.ljust(25) + '-'.ljust(25) + '1'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) +'\n'
-                if nameyear in key and 'DY' in key:
+                if namereg in key and nameyear in key and 'DY' in key:
                     for e in value:
                         T1 = T1 +  e.ljust(25)  +'shape'.ljust(20)  + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '1'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) +'\n'
-                if nameyear in key and 'tt' in key:
+                if namereg in key and nameyear in key and 'tt' in key:
                     for e in value:
                         T1 = T1 +  e.ljust(25)  +'shape'.ljust(20)  + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '1'.ljust(25) + '-'.ljust(25) +'\n'
-                if nameyear in key and 'tW' in key:
+                if namereg in key and nameyear in key and 'tW' in key:
                     for e in value:
                         T1 = T1 +  e.ljust(25)  +'shape'.ljust(20)  + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '1'.ljust(25) +'\n'
 
