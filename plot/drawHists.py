@@ -17,7 +17,7 @@ import gc
 import argparse
 TGaxis.SetMaxDigits(2)
 
-def cutFlowTable(hists, samples, regions, ch, year,caption='2017', nsig=5):
+def cutFlowTable(hists, samples, regions, ch, year,caption='2017', nsig=6):
     mcSum = list(0 for i in xrange(0,len(regions)))
     if not ch==1:
         showData = True
@@ -28,9 +28,9 @@ def cutFlowTable(hists, samples, regions, ch, year,caption='2017', nsig=5):
     table += '\\centering' + "\n"
     table += '\\caption{' + caption +"}\n"
     table += '\\resizebox{\\textwidth}{!}{ \n'
-    table += '\\begin{tabular}{|l|' + ''.join([('' if ('Metl' in c) or ('geq' in c) or ('leq' in c) or ('lllB1' in c) else 'l|') for c in regions]).strip() +'}' + "\n"
+    table += '\\begin{tabular}{|l|' + ''.join([('' if ('Metl' in c) or ('geqX' in c) or ('leq' in c) or ('lllB' in c) else 'l|') for c in regions]).strip() +'}' + "\n"
     table += '\\hline' + "\n"
-    table += 'Samples ' + ''.join([('' if ('Metl' in c) or ('geq' in c) or ('leq' in c) or ('lllB1' in c) else ' & '+c) for c in regions]).strip() + '\\\\' + "\n"
+    table += 'Samples ' + ''.join([('' if ('Metl' in c) or ('geqX' in c) or ('leq' in c) or ('lllB' in c) else ' & '+c) for c in regions]).strip() + '\\\\' + "\n"
     table += '\\hline' + "\n"
 
     for ids, s in enumerate(samples):
@@ -45,8 +45,10 @@ def cutFlowTable(hists, samples, regions, ch, year,caption='2017', nsig=5):
             continue
         table += s
         for idr, r in enumerate(regions):
-            if ('Metl' not in r) and ('geq' not in r) and ('leq' not in r) and ('lllB1' not in r):
+            if ('Metl' not in r) and ('geqX' not in r) and ('leq' not in r) and ('lllB' not in r):
                if ids<nsig:
+                  if mcSum[idr]==0:
+                     mcSum[idr]=1
                   table += (' & ' + str(round(hists[year][ids][ch][idr][2].Integral(),2)) + '[' + str(round((100*hists[year][ids][ch][idr][2].Integral()/mcSum[idr]),2)) + '\%]')
                else:
                   table += (' & ' + str(round(hists[year][ids][ch][idr][2].Integral(),2)) )
@@ -54,14 +56,14 @@ def cutFlowTable(hists, samples, regions, ch, year,caption='2017', nsig=5):
     table += '\\hline' + "\n"
     table += 'Prediction '
     for idr, r in enumerate(mcSum):
-        if ('Metl' not in regions[idr]) and ('geq' not in regions[idr]) and ('leq' not in regions[idr]) and ('lllB1' not in regions[idr]):
+        if ('Metl' not in regions[idr]) and ('geqX' not in regions[idr]) and ('leq' not in regions[idr]) and ('lllB' not in regions[idr]):
            table += (' & ' + str(round(r,2)))
     table += '\\\\' + "\n"
     table += '\\hline' + "\n"
     if showData:
       table += 'Data '
       for idr, r in enumerate(regions):
-          if ('Metl' not in regions[idr]) and ('geq' not in regions[idr]) and ('leq' not in regions[idr]) and ('lllB1' not in regions[idr]):
+          if ('Metl' not in regions[idr]) and ('geqX' not in regions[idr]) and ('leq' not in regions[idr]) and ('lllB' not in regions[idr]):
              table += (' & ' + str(hists[year][0][ch][idr][2].Integral()))
       table += '\\\\' + "\n"
       table += '\\hline' + "\n"
@@ -69,7 +71,7 @@ def cutFlowTable(hists, samples, regions, ch, year,caption='2017', nsig=5):
       for idr, r in enumerate(mcSum):
           if r==0:
              r=0.1
-          if ('Metl' not in regions[idr]) and ('geq' not in regions[idr]) and ('leq' not in regions[idr]) and ('lllB1' not in regions[idr]):
+          if ('Metl' not in regions[idr]) and ('geqX' not in regions[idr]) and ('leq' not in regions[idr]) and ('lllB' not in regions[idr]):
              table += (' & ' + str(round(hists[year][0][ch][idr][2].Integral()/r,2)))
       table += '\\\\' + "\n"
       table += '\\hline' + "\n"
@@ -291,13 +293,13 @@ def compareHists(hists,Fnames, ch = "channel", reg = "region", var="sample", var
 
 #year=['2016','2017','2018','All']
 year=['2017']
-regions=["lll","lllOnZ","lllOffZ","lllBleq1","lllB1", "lllBgeq2", "lllMetl20", "lllMetg20", "lllMetl20Jetgeq1Bleq1", "lllMetl20Jetgeq1B1", "lllMetl20Jet1B1", "lllMetl20Jetgeq2Bleq1", "lllMetl20Jetgeq2B1", "lllMetl20Jetgeq2Bgeq2", "lllMetl20Jet2B1", "lllMetg20Jetgeq1Bleq1", "lllMetg20Jetgeq1B1", "lllMetg20Jet1B1", "lllMetg20Jetgeq2Bleq1", "lllMetg20Jetgeq2B1", "lllMetg20Jetgeq2Bgeq2", "lllMetg20Jet2B1"]
+regions=["lll","lllOnZ","lllOffZ","lllB0","lllB1", "lllBgeq2", "lllMetl20", "lllMetg20", "lllMetl20Jet1B1", "lllMetl20Jet2B1", "lllMetg20Jetgeq1B0", "lllMetg20Jet1B1", "lllMetg20Jet2B1", "lllMetg20Jetgeq3B1", "lllMetg20Jetgeq2B2"]
 channels=["eee", "emul", "mumumu"];
 variables=["lep1Pt","lep1Eta","lep1Phi","lep2Pt","lep2Eta","lep2Phi","lep3Pt","lep3Eta","lep3Phi",
            "LFVePt","LFVeEta","LFVePhi","LFVmuPt","LFVmuEta","LFVmuPhi","balPt","balEta","balPhi","Topmass",
            "llM","llPt","llDr","llDphi","jet1Pt","jet1Eta","jet1Phi","njet","nbjet","Met","MetPhi","nVtx","llMZw","LFVTopmass"]
 #variables=["lep1Pt"]
-variablesName=["Leading lepton p_{T} [GeV]","Leading lepton #eta","Leading lepton #varphi","2nd-Leading lepton p_{T} [GeV]","2nd-Leading lepton #eta","2nd-Leading lepton #varphi","3rd-Leading lepton p_{T} [GeV]","3rd-Leading lepton #eta","3rd-Leading lepton #varphi","cLFV electron p_{T} [GeV]","cLFV electron #eta","cLFV electron #varphi","cLFV muon p_{T} [GeV]","cLFV muon #eta","cLFV muon #varphi","Bachelor lepton p_{T} [GeV]","Bachelor lepton #eta","Bachelor lepton #varphi","Standard top mass [GeV]","M(ll) [GeV]","p_{T}(ll) [GeV]","#Delta R(ll)","#Delta #varphi(ll)","Leading jet p_{T} [GeV]","Leading jet #eta","Leading jet #varphi","Number of jets","Number of b-tagged jets","MET [GeV]","#varphi(MET)","Number of vertices", "M(ll) (z window) [GeV]", "cLFV top mass [GeV]"]
+variablesName=["Leading lepton p_{T} [GeV]","Leading lepton #eta","Leading lepton #varphi","2nd-Leading lepton p_{T} [GeV]","2nd-Leading lepton #eta","2nd-Leading lepton #varphi","3rd-Leading lepton p_{T} [GeV]","3rd-Leading lepton #eta","3rd-Leading lepton #varphi","cLFV electron p_{T} [GeV]","cLFV electron #eta","cLFV electron #varphi","cLFV muon p_{T} [GeV]","cLFV muon #eta","cLFV muon #varphi","Bachelor lepton p_{T} [GeV]","Bachelor lepton #eta","Bachelor lepton #varphi","Standard top mass [GeV]","M(ll) [GeV]","p_{T}(ll) [GeV]","#Delta R(ll)","#Delta #varphi(ll)","Leading jet p_{T} [GeV]","Leading jet #eta","Leading jet #varphi","Number of jets","Number of b-tagged jets","MET [GeV]","#varphi(MET)","Number of vertices", "M(ll) (OSSF) [GeV]", "cLFV top mass [GeV]"]
 
 
 # set up an argument parser
@@ -311,9 +313,9 @@ ARGS = parser.parse_args()
 verbose = ARGS.VERBOSE
 HistAddress = ARGS.LOCATION
 
-Samples = ['data.root','TTV.root','VV.root', 'TTbar.root', 'others.root', 'SMEFTfr_ST_vector_emutu.root', 'SMEFTfr_TT_vector_emutu.root']
-SamplesName = ['data','TTV','VV', 'TTbar', 'others', 'ST_vector_emutu', 'TT_vector_emutu']
-SamplesNameLatex = ['data','TTV','VV', 'TTbar', 'others', 'ST\_vector\_emutu', 'TT\_vector\_emutu']
+Samples = ['data.root','TTV.root','WZ.root', 'ZZ.root', 'TTbar.root', 'others.root', 'SMEFTfr_ST_vector_emutu.root', 'SMEFTfr_TT_vector_emutu.root']
+SamplesName = ['data','TTV','WZ', 'ZZ', 'TTbar', 'others', 'ST_vector_emutu', 'TT_vector_emutu']
+SamplesNameLatex = ['data', 'TTV', 'WZ', 'ZZ', 'TTbar', 'others', 'ST\_vector\_emutu', 'TT\_vector\_emutu']
 
 colors =  [ROOT.kBlack,ROOT.kYellow,ROOT.kGreen,ROOT.kBlue-3,ROOT.kRed-4,ROOT.kOrange-3, ROOT.kOrange-6, ROOT.kCyan-6]
 
@@ -351,7 +353,7 @@ for numyear, nameyear in enumerate(year):
                     else:
                         HH.append(Hists[numyear][f][numch][numreg][numvar])
 
-#                stackPlots(HH, HHsignal, SamplesName, namech, namereg, nameyear,namevar,variablesName[numvar])
+                stackPlots(HH, HHsignal, SamplesName, namech, namereg, nameyear,namevar,variablesName[numvar])
 
 le = '\\documentclass{article}' + "\n"
 le += '\\usepackage{rotating}' + "\n"
@@ -361,7 +363,7 @@ le += '\\begin{document}' + "\n"
 print le
 for numyear, nameyear in enumerate(year):
     for numch, namech in enumerate(channels):
-        cutFlowTable(Hists, SamplesNameLatex, regions, numch, numyear, nameyear + ' ' + namech, 5 )
+        cutFlowTable(Hists, SamplesNameLatex, regions, numch, numyear, nameyear + ' ' + namech, len(Samples)-2 )
 print '\\end{document}' + "\n"
 
 
@@ -373,4 +375,4 @@ for numreg, namereg in enumerate(regions):
             if 'SMEFTfr' in Samples[f] or 'TTbar' in Samples[f]:
                 HH.append(Hists[0][f][1][numreg][numvar])
                 HHname.append(SamplesName[f])
-#        compareHists(HH,HHname, 'emul', namereg,namevar,variablesName[numvar])
+        compareHists(HH,HHname, 'emul', namereg,namevar,variablesName[numvar])
