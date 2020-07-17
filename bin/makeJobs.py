@@ -28,18 +28,18 @@ if mc_2018:
 if data_2018:
     SAMPLES.update(Files_2018.data2018_samples)
 
-rootlib1 = subprocess.check_output("root-config --cflags", shell=True)
-rootlib11="".join([s for s in rootlib1.strip().splitlines(True) if s.strip()])
-rootlib2 = subprocess.check_output("root-config --glibs", shell=True)
-rootlib22="".join([s for s in rootlib2.strip().splitlines(True) if s.strip()])
+#rootlib1 = subprocess.check_output("root-config --cflags", shell=True)
+#rootlib11="".join([s for s in rootlib1.strip().splitlines(True) if s.strip()])
+#rootlib2 = subprocess.check_output("root-config --glibs", shell=True)
+#rootlib22="".join([s for s in rootlib2.strip().splitlines(True) if s.strip()])
 
 dire = '/user/rgoldouz/NewAnalysis2020/Analysis/bin'
-cms = '/user/rgoldouz/CMSSW_9_3_4/src/'
+cms = '/user/rgoldouz/CMSSW_10_2_13/src/'
 nf =40
 
 for key, value in SAMPLES.items():
-    if 'LFV' not in key:
-        continue
+#    if 'LFV' not in key:
+#        continue
     nf = 72
     for idx, S in enumerate(value[0]):
         for subdir, dirs, files in os.walk(S):
@@ -55,9 +55,10 @@ for key, value in SAMPLES.items():
                     text += '    ch ->Add("' + S+ filename + '");\n'
                 text += '    MyAnalysis t1(ch);\n'
                 text += '    t1.Loop("/user/rgoldouz/NewAnalysis2020/Analysis/hists/' + value[3] + '/' + key +'_' + str(idx) +'_' +str(num)  + '.root", "' + value[1] + '" , "'+ value[2] + '" , "'+ value[3] + '" , "'+ value[4] + '" , ' + value[5] + ' , '+ value[6] + ' , '+ value[7] + ');\n'
-                SHNAME1 = key +'_' + str(idx) +'_' +str(num) + '.C'
-                SHFILE1='#include "MyAnalysis.h"\n' +\
-                'main(){\n' +\
+                text += '  return 0;\n'
+                SHNAME1 = 'Y' + key +'_' + str(idx) +'_' +str(num) + '.C'
+                SHFILE1='#include "../../include/MyAnalysis.h"\n' +\
+                'int ' + 'Y' + key +'_' + str(idx) +'_' +str(num) +'(){\n' +\
                 text +\
                 '}'
                 open('Jobs/'+SHNAME1, 'wt').write(SHFILE1)
@@ -68,16 +69,15 @@ for key, value in SAMPLES.items():
                 "cd "+ cms + "\n"+\
                 "eval `scramv1 runtime -sh`\n"+\
                 "cd "+ dire + "\n"+\
-                'g++ -fPIC -fno-var-tracking -Wno-deprecated -D_GNU_SOURCE -O2  -I./../include   '+ rootlib11 +' -ldl  -o ' + SHNAME1.split('.')[0] + ' Jobs/' + SHNAME1+ ' ../lib/main.so ' + rootlib22 + '  -lMinuit -lMinuit2 -lTreePlayer -lGenVector' + "\n"+\
-                "./" + SHNAME1.split('.')[0]+ "\n"+\
-                'FILE='+'/user/rgoldouz/NewAnalysis2020/Analysis/hists/' + value[3] + '/' + key +'_' + str(idx) +'_' +str(num)  + '.root'+ "\n"+\
-                'if [ -f "$FILE" ]; then'+ "\n"+\
-                '    rm  ' + SHNAME1.split('.')[0] + "\n"+\
-                'fi'
+                "root -l -b -q ../lib/libCondFormatsJetMETObjects.so ../lib/main.so Jobs/" + SHNAME1+ "\n"
+#                'FILE='+'/user/rgoldouz/NewAnalysis2020/Analysis/hists/' + value[3] + '/' + key +'_' + str(idx) +'_' +str(num)  + '.root'+ "\n"
+#                'if [ -f "$FILE" ]; then'+ "\n"+\
+#                '    rm  ' + SHNAME1.split('.')[0] + "\n"+\
+#                'fi'
                 open('Jobs/'+SHNAME, 'wt').write(SHFILE)
                 os.system("chmod +x "+'Jobs/'+SHNAME)
 #                os.system("qsub -q localgrid  -o STDOUT/" + SHNAME1.split('.')[0] + ".stdout -e STDERR/" + SHNAME1.split('.')[0] + ".stderr " + SHNAME)
             break
     print key + ' jobs are made'
    
- 
+#                'g++ -fPIC -fno-var-tracking -Wno-deprecated -D_GNU_SOURCE -O2  -I./../include   '+ rootlib11 +' -ldl  -o ' + SHNAME1.split('.')[0] + ' Jobs/' + SHNAME1+ ' ../lib/main.so ' + rootlib22 + '  -lMinuit -lMinuit2 -lTreePlayer -lGenVector' + "\n"+\ 

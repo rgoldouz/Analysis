@@ -2,7 +2,9 @@ ROOTCFLAGS     = $(shell root-config --cflags)
 ROOTLIBS       = $(shell root-config --libs)
 ROOTGLIBS      = $(shell root-config --glibs) 
 
-INCLUDES       = -I./include 
+CVM            = /cvmfs/cms.cern.ch/slc6_amd64_gcc700/cms/cmssw/CMSSW_10_2_13/src/
+BOOST          = /cvmfs/cms.cern.ch/slc6_amd64_gcc700/external/boost/1.67.0/include/
+INCLUDES       = -I./include -I$(CVM) -I$(BOOST)
 
 CXX            = g++
 CXXFLAGS       = -fPIC -fno-var-tracking -Wno-deprecated -D_GNU_SOURCE -O2  $(INCLUDES) 
@@ -31,7 +33,7 @@ lib : $(LIB)
 $(LIB): $(OBJS)
 	@echo "Creating library $(LIB)"
 	mkdir -p lib
-	$(LD) $(LDFLAGS) $(GLIBS) $(SOFLAGS) $(OBJS) -o $(LIB)
+	$(LD) $(LDFLAGS) $(GLIBS) $(SOFLAGS) $(OBJS)  -o $(LIB)
 	@echo "$(LIB) successfully compiled!"
 
 bin/RunAll : src/main.C $(LIB)	

@@ -3,22 +3,19 @@ import os
 import subprocess
 import readline
 import string
-import csv, subprocess
 
-directory = '/user/rgoldouz/NewAnalysis2020/Analysis/bin/Jobs'
+sys.path.append('/user/rgoldouz/NewAnalysis2020/Analysis/bin')
 
 import Files_2016
 import Files_2017
 import Files_2018
 SAMPLES = {}
-MC = True
-Data = True
-mc_2016 = MC
-data_2016 = Data
-mc_2017 = MC
-data_2017 = Data
-mc_2018 = MC
-data_2018 = Data
+mc_2016 = True
+data_2016 = True
+mc_2017 = True
+data_2017 = True
+mc_2018 = True
+data_2018 = True
 
 if mc_2016:
     SAMPLES.update(Files_2016.mc2016_samples)
@@ -34,22 +31,25 @@ if data_2018:
     SAMPLES.update(Files_2018.data2018_samples)
 
 
+addedFilesData = {"2016": [], "2017": [], "2018": []}
+addedFilesMc = {"2016": [], "2017": [], "2018": []}
+
 for key, value in SAMPLES.items():
-#    if 'CR2' not in key:
+#    if '2016' not in key:
 #        continue
     year = value[3]
     nf = 72
+    if 'TTTo2L2Nu' in key or 'tw' in key or 'DY' in key:
+        nf = 35
+    if value[1]=='data':
+        nf = 205
     for idx, S in enumerate(value[0]):
-        if 'TTTo2L2Nu' in key or 'tw' in key or 'DY' in key:
-            nf = 35
-        if value[1]=='data':
-            nf = 205
         for subdir, dirs, files in os.walk(S):
             sequance = [files[i:i+nf] for i in range(0,len(files),nf)]
             for num,  seq in enumerate(sequance):
+                if os.path.isfile('/user/rgoldouz/NewAnalysis2020/Analysis/hists/' + year + '/' + key +'_' + str(idx) +'_' + str(num) + '.root'):
+                    continue
                 f = key +'_' + str(idx) +'_' + str(num)
                 qsub = "qsub -q localgrid  -o STDOUT/" + f + ".stdout -e STDERR/" + f + ".stderr Jobs/" + f + '.sh'
-#                subprocess.call('rm /user/rgoldouz/NewAnalysis2020/Analysis/hists/' + year + '/' + f + '.root', shell=True)
-                subprocess.call(qsub, shell=True)
+                exit_status = subprocess.call(qsub, shell=True)
             break
-
