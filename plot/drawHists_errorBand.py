@@ -86,7 +86,7 @@ def compareError(histsup,histsdown, sys, ch = "channel", reg = "region", year='2
     legend = ROOT.TLegend(0.35,0.7,0.9,0.88)
     legend.SetBorderSize(0)
     legend.SetTextFont(42)
-    legend.SetTextSize(0.035)
+    legend.SetTextSize(0.03)
     legend.SetNColumns(3);
 
     pad2=ROOT.TPad("pad2", "pad2", 0.0, 0.0, 1, 1 , 0)#used for the ratio plot
@@ -122,8 +122,17 @@ def compareError(histsup,histsdown, sys, ch = "channel", reg = "region", year='2
             histsup[n].SetLineColor(28)
             histsdown[n].SetLineColor(28)
         if n==9:
-            histsup[n].SetLineColor(15)
-            histsdown[n].SetLineColor(15)
+            histsup[n].SetLineColor(46)
+            histsdown[n].SetLineColor(46)
+        if n==10:
+            histsup[n].SetLineColor(30)
+            histsdown[n].SetLineColor(30)
+        if n==11:
+            histsup[n].SetLineColor(38)
+            histsdown[n].SetLineColor(38)
+        if n==12:
+            histsup[n].SetLineColor(17)
+            histsdown[n].SetLineColor(17)
         if 'BDT' in varname:
             histsup[n].GetXaxis().SetRangeUser(-0.6, 0.8)
             histsdown[n].GetXaxis().SetRangeUser(-0.6, 0.8)
@@ -192,9 +201,9 @@ def stackPlotsError(hists, SignalHists,error, errorRatio, Fnames, ch = "channel"
             hists[n].GetXaxis().SetRangeUser(-0.6, 0.8)
     for n,G in enumerate(SignalHists):
         if 'tc' in Fnames[len(hists)+n]:
-            SignalHists[n].Scale(40)
+            SignalHists[n].Scale(100)
         if 'tu' in Fnames[len(hists)+n]:
-            SignalHists[n].Scale(4)
+            SignalHists[n].Scale(10)
         if 'BDT' in varname:
             SignalHists[n].GetXaxis().SetRangeUser(-0.6, 0.8)
 
@@ -240,7 +249,7 @@ def stackPlotsError(hists, SignalHists,error, errorRatio, Fnames, ch = "channel"
     dummy.SetMarkerStyle(20)
     dummy.SetMarkerSize(1.1)
 #Blinding strategy
-    if ('BDT' in var or "lep1Pt" in var or "lep2Pt" in var) and reg == 'llB1':
+    if ('BDT' in var or "lep1Pt" in var or "lep2Pt" in var or "muPt" in var or "elePt" in var) and reg == 'llB1':
         dummy.SetLineColor(0)
         dummy.SetMarkerSize(0)
     dummy.SetTitle("")
@@ -257,7 +266,7 @@ def stackPlotsError(hists, SignalHists,error, errorRatio, Fnames, ch = "channel"
         H.SetFillColor(0)
         H.SetLineStyle(9)
         H.Draw("histSAME")
-    if not (('BDT' in var or "lep1Pt" in var or "lep2Pt" in var) and reg == 'llB1'):
+    if not (('BDT' in var or "lep1Pt" in var or "lep2Pt" in var or "muPt" in var or "elePt" in var) and reg == 'llB1'):
         dummy.Draw("ex0SAME")
 
     error.SetFillColor(13)
@@ -352,15 +361,16 @@ LumiErr = [0.025, 0.023, 0.025, 0.018]
 regions=["ll","llOffZ","llB1", "llBg1"]
 channels=["ee", "emu", "mumu"];
 #channels=["emu"];
-variables=["lep1Pt","lep1Eta","lep1Phi","lep2Pt","lep2Eta","lep2Phi","llM","llPt","llDr","llDphi","jet1Pt","jet1Eta","jet1Phi","njet","nbjet","Met","MetPhi","nVtx","llMZw","BDT"]
+variables=["lep1Pt","lep1Eta","lep1Phi","lep2Pt","lep2Eta","lep2Phi","llM","llPt","llDr","llDphi","jet1Pt","jet1Eta","jet1Phi","njet","nbjet","Met","MetPhi","nVtx","llMZw","BDT","muPt","elePt","muEta","eleEta"]
 #variables=["jet1Eta"]
-variablesName=["p_{T}(leading lepton)","#eta(leading lepton)","#Phi(leading lepton)","p_{T}(sub-leading lepton)","#eta(sub-leading lepton)","#Phi(sub-leading lepton)","M(ll)","p_{T}(ll)","#Delta R(ll)","#Delta #Phi(ll)","p_{T}(leading jet)","#eta(leading jet)","#Phi(leading jet)","Number of jets","Number of b-tagged jets","MET","#Phi(MET)","Number of vertices", "M(ll) [z window]", "BDT output"]
-sys = ["eleRecoSf", "eleIDSf", "muIdSf", "muIsoSf", "bcTagSF", "udsgTagSF","pu", "prefiring", "jes", "jer"]
+variablesName=["p_{T}(leading lepton)","#eta(leading lepton)","#Phi(leading lepton)","p_{T}(sub-leading lepton)","#eta(sub-leading lepton)","#Phi(sub-leading lepton)","M(ll)","p_{T}(ll)","#Delta R(ll)","#Delta #Phi(ll)","p_{T}(leading jet)","#eta(leading jet)","#Phi(leading jet)","Number of jets","Number of b-tagged jets","MET","#Phi(MET)","Number of vertices", "M(ll) [z window]", "BDT output", "p_{T}(muon)","p_{T}(electron)","#eta(muon)","#eta(electron)"]
+sys = ["eleRecoSf", "eleIDSf", "muIdSf", "muIsoSf", "bcTagSF", "udsgTagSF","pu", "prefiring", "trigSF", "jes", "jer", "unclusMET","muonScale","electronScale","muonRes"]
+#sys = ["trigSF","eleRecoSf", "eleIDSf", "muIdSf", "muIsoSf", "unclusMET","muonScale","electronScale","muonRes"]
 
 HistAddress = '/user/rgoldouz/NewAnalysis2020/Analysis/hists/'
 
 Samples = ['data.root','WJetsToLNu.root','others.root', 'DY.root', 'TTTo2L2Nu.root', 'ST_tW.root', 'LFVVecC.root', 'LFVVecU.root']
-SamplesName = ['Data','Jets','Others', 'DY', 't#bar{t}', 'tW' , 'LFV-vec [c_{e#mutc}] #times 40', 'LFV-vec [c_{e#mutu}] #times 4']
+SamplesName = ['Data','Jets','Others', 'DY', 't#bar{t}', 'tW' , 'LFV-vec [c_{e#mutc}] #times 100', 'LFV-vec [c_{e#mutu}] #times 10']
 SamplesNameLatex = ['Data','Jets','Others', 'DY', 'tt', 'tW',  'LFV-vector(emutc)', 'LFV-vector(emutu)']
 NormalizationErr = [0, 0.5, 0.5, 0.3, 0.05, 0.1, 0,0]
 
@@ -753,13 +763,14 @@ for numyear, nameyear in enumerate(year):
             for numsys2, namesys2 in enumerate(sys):
                 hup = HistsSysUp[numyear][len(Samples)-3][1][numreg][numvar][numsys2].Clone()
                 hdown = HistsSysDown[numyear][len(Samples)-3][1][numreg][numvar][numsys2].Clone()
-                for b in range(hup.GetNbinsX()):
-                    cv = Hists_copy[numyear][len(Samples)-3][1][numreg][numvar].GetBinContent(b+1)
-                    rb = 0
-                    if cv>0:
-                        rb = 100/cv
-                    hup.SetBinContent(b+1, 0 + abs(max((HistsSysUp[numyear][len(Samples)-3][1][numreg][numvar][numsys2].GetBinContent(b+1)-cv)*rb, (HistsSysDown[numyear][len(Samples)-3][1][numreg][numvar][numsys2].GetBinContent(b+1)-cv)*rb,0)))
-                    hdown.SetBinContent(b+1, 0 - abs(min((HistsSysUp[numyear][len(Samples)-3][1][numreg][numvar][numsys2].GetBinContent(b+1)-cv)*rb, (HistsSysDown[numyear][len(Samples)-3][1][numreg][numvar][numsys2].GetBinContent(b+1)-cv)*rb,0)))
+                if hup.Integral()>0 or hdown.Integral()>0:
+                    for b in range(hup.GetNbinsX()):
+                        cv = Hists_copy[numyear][len(Samples)-3][1][numreg][numvar].GetBinContent(b+1)
+                        rb = 0
+                        if cv>0:
+                            rb = 100/cv
+                        hup.SetBinContent(b+1, 0 + abs(max((HistsSysUp[numyear][len(Samples)-3][1][numreg][numvar][numsys2].GetBinContent(b+1)-cv)*rb, (HistsSysDown[numyear][len(Samples)-3][1][numreg][numvar][numsys2].GetBinContent(b+1)-cv)*rb,0)))
+                        hdown.SetBinContent(b+1, 0 - abs(min((HistsSysUp[numyear][len(Samples)-3][1][numreg][numvar][numsys2].GetBinContent(b+1)-cv)*rb, (HistsSysDown[numyear][len(Samples)-3][1][numreg][numvar][numsys2].GetBinContent(b+1)-cv)*rb,0)))
                 glistup.append(hup)
                 glistdown.append(hdown)
             compareError(glistup,glistdown, sys, 'emu', namereg, nameyear,namevar,variablesName[numvar], 'Exp')

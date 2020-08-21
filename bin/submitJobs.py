@@ -12,7 +12,7 @@ import Files_2017
 import Files_2018
 SAMPLES = {}
 MC = True
-Data = True
+Data = False
 mc_2016 = MC
 data_2016 = Data
 mc_2017 = MC
@@ -35,7 +35,7 @@ if data_2018:
 
 
 for key, value in SAMPLES.items():
-#    if 'CR2' not in key:
+#    if '2017' in key:
 #        continue
     year = value[3]
     nf = 72

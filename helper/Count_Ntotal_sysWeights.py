@@ -47,6 +47,19 @@ path = []
 #path.append('/pnfs/iihe/cms/store/user/schenara/SYS_RunII_2016/TTTo2L2Nu_hdampDOWN_TuneCP5_PSweights_13TeV-powheg-pythia8/crab_TTTo2L2Nu_hdampDOWN_v3_ext1/200311_144755/0000/')
 #path.append('/pnfs/iihe/cms/store/user/schenara/SYS_RunII_2016/TTTo2L2Nu_hdampUP_TuneCP5_PSweights_13TeV-powheg-pythia8/crab_TTTo2L2Nu_hdampUP_v3_v1/200311_144425/0000/')
 #path.append('/pnfs/iihe/cms/store/user/schenara/SYS_RunII_2016/TTTo2L2Nu_hdampUP_TuneCP5_PSweights_13TeV-powheg-pythia8/crab_TTTo2L2Nu_hdampUP_v3_ext1/200311_144331/0000/')
+#path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2016/IIHE_Ntuple/ntuple_SMEFTfr_ST_vector_emutc/')
+#path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2016/IIHE_Ntuple/ntuple_SMEFTfr_ST_vector_emutu/')
+#path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2016/IIHE_Ntuple/ntuple_SMEFTfr_TT_vector_emutc/')
+#path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2016/IIHE_Ntuple/ntuple_SMEFTfr_TT_vector_emutu/')
+#path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2016/IIHE_Ntuple/ntuple_SMEFTfr_ST_clequ1_emutc/')
+#path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2016/IIHE_Ntuple/ntuple_SMEFTfr_ST_clequ1_emutu/')
+#path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2016/IIHE_Ntuple/ntuple_SMEFTfr_TT_clequ1_emutc/')
+#path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2016/IIHE_Ntuple/ntuple_SMEFTfr_TT_clequ1_emutu/')
+#path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2016/IIHE_Ntuple/ntuple_SMEFTfr_ST_clequ3_emutc/')
+#path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2016/IIHE_Ntuple/ntuple_SMEFTfr_ST_clequ3_emutu/')
+#path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2016/IIHE_Ntuple/ntuple_SMEFTfr_TT_clequ3_emutc/')
+#path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2016/IIHE_Ntuple/ntuple_SMEFTfr_TT_clequ3_emutu/')
+
 
 #path.append('/pnfs/iihe/cms/store/user/schenara/MC_RunII_2017/DYJetsToLL_M-10to50_TuneCP5_13TeV-madgraphMLM-pythia8/crab_DYJetsToLL_M-10to50_v14-v1/191201_123859/0000/')
 #path.append('/pnfs/iihe/cms/store/user/schenara/MC_RunII_2017/DYJetsToLL_M-10to50_TuneCP5_13TeV-madgraphMLM-pythia8/crab_DYJetsToLL_M-10to50_v14_ext1_v2/191201_123656/0000/')
@@ -68,7 +81,7 @@ path = []
 #path.append('/pnfs/iihe/cms/store/user/schenara/MC_RunII_2017/TTZToQQ_TuneCP5_13TeV-amcatnlo-pythia8/crab_TTZToQQ_v14_v1/191201_132958/0000/')
 #path.append('/pnfs/iihe/cms/store/user/schenara/MC_RunII_2017/ST_tW_top_5f_NoFullyHadronicDecays_TuneCP5_13TeV-powheg-pythia8/crab_ST_tW_top/191201_124931/0000/')
 #path.append('/pnfs/iihe/cms/store/user/schenara/MC_RunII_2017/ST_tW_antitop_5f_NoFullyHadronicDecays_TuneCP5_13TeV-powheg-pythia8/crab_ST_tW_antitop/191201_125119/0000/')
-path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2017/IIHE_Ntuple/ntuple_SMEFTfr_ST_vector_emutc/')
+#path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2017/IIHE_Ntuple/ntuple_SMEFTfr_ST_vector_emutc/')
 #path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2017/IIHE_Ntuple/ntuple_SMEFTfr_ST_vector_emutu/')
 #path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2017/IIHE_Ntuple/ntuple_SMEFTfr_TT_vector_emutc/')
 #path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2017/IIHE_Ntuple/ntuple_SMEFTfr_TT_vector_emutu/')
@@ -78,7 +91,18 @@ path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2017/IIHE_Ntuple/n
 #path.append('/pnfs/iihe/cms/store/user/schenara/SYS_RunII_2017/TTTo2L2Nu_hdampDOWN_TuneCP5_PSweights_13TeV-powheg-pythia8/crab_TTo2L2Nu_hdampDOWN_v14_v1/200311_161259/0000/')
 #path.append('/pnfs/iihe/cms/store/user/schenara/SYS_RunII_2017/TTTo2L2Nu_TuneCP5up_PSweights_13TeV-powheg-pythia8/crab_TTTo2L2Nu_TuneCP5up_v14_v1/200311_161406/0000/')
 #path.append('/pnfs/iihe/cms/store/user/schenara/SYS_RunII_2017/TTTo2L2Nu_TuneCP5down_PSweights_13TeV-powheg-pythia8/crab_TTTo2L2Nu_TuneCP5down_v14_v1/200311_161500/0000/')
-
+#path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2017/IIHE_Ntuple/ntuple_SMEFTfr_ST_vector_emutc/')
+#path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2017/IIHE_Ntuple/ntuple_SMEFTfr_ST_vector_emutu/')
+#path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2017/IIHE_Ntuple/ntuple_SMEFTfr_TT_vector_emutc/')
+#path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2017/IIHE_Ntuple/ntuple_SMEFTfr_TT_vector_emutu/')
+#path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2017/IIHE_Ntuple/ntuple_SMEFTfr_ST_clequ1_emutc/')
+#path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2017/IIHE_Ntuple/ntuple_SMEFTfr_ST_clequ1_emutu/')
+#path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2017/IIHE_Ntuple/ntuple_SMEFTfr_TT_clequ1_emutc/')
+#path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2017/IIHE_Ntuple/ntuple_SMEFTfr_TT_clequ1_emutu/')
+#path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2017/IIHE_Ntuple/ntuple_SMEFTfr_ST_clequ3_emutc/')
+#path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2017/IIHE_Ntuple/ntuple_SMEFTfr_ST_clequ3_emutu/')
+#path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2017/IIHE_Ntuple/ntuple_SMEFTfr_TT_clequ3_emutc/')
+#path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2017/IIHE_Ntuple/ntuple_SMEFTfr_TT_clequ3_emutu/')
 
 #path.append('/pnfs/iihe/cms/store/user/schenara/MC_RunII_2018/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/crab_DYJetsToLL_M-50_amcatnlo_v15_v1/200311_151257/0000/')
 #path.append('/pnfs/iihe/cms/store/user/schenara/MC_RunII_2018/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/crab_DYJetsToLL_M-50_amcatnlo_v15_ext2_v1/200311_150842/0000/')
@@ -110,6 +134,20 @@ path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2017/IIHE_Ntuple/n
 #path.append('/pnfs/iihe/cms/store/user/schenara/SYS_RunII_2018/TTTo2L2Nu_TuneCP5up_13TeV-powheg-pythia8/crab_TTTo2L2Nu_TuneCP5up_v15_v1/200311_154516/0000/')
 #path.append('/pnfs/iihe/cms/store/user/schenara/SYS_RunII_2018/TTTo2L2Nu_TuneCP5down_13TeV-powheg-pythia8/crab_TTTo2L2Nu_TuneCP5down_v15_ext1_v1/200311_154727/0000/')
 #path.append('/pnfs/iihe/cms/store/user/schenara/SYS_RunII_2018/TTTo2L2Nu_TuneCP5down_13TeV-powheg-pythia8/crab_TTTo2L2Nu_TuneCP5down_v15_v1/200311_154910/0000/')
+
+#path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2018/IIHE_Ntuple/ntuple_SMEFTfr_ST_vector_emutc/')
+#path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2018/IIHE_Ntuple/ntuple_SMEFTfr_ST_vector_emutu/')
+#path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2018/IIHE_Ntuple/ntuple_SMEFTfr_TT_vector_emutc/')
+#path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2018/IIHE_Ntuple/ntuple_SMEFTfr_TT_vector_emutu/')
+#path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2018/IIHE_Ntuple/ntuple_SMEFTfr_ST_clequ1_emutc/')
+#path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2018/IIHE_Ntuple/ntuple_SMEFTfr_ST_clequ1_emutu/')
+#path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2018/IIHE_Ntuple/ntuple_SMEFTfr_TT_clequ1_emutc/')
+#path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2018/IIHE_Ntuple/ntuple_SMEFTfr_TT_clequ1_emutu/')
+#path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2018/IIHE_Ntuple/ntuple_SMEFTfr_ST_clequ3_emutc/')
+#path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2018/IIHE_Ntuple/ntuple_SMEFTfr_ST_clequ3_emutu/')
+#path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2018/IIHE_Ntuple/ntuple_SMEFTfr_TT_clequ3_emutc/')
+path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2018/IIHE_Ntuple/ntuple_SMEFTfr_TT_clequ3_emutu/')
+
 nEventsraw = 0
 neventsweight = 0
 nEventsStored = 0
@@ -120,9 +158,10 @@ sumOfMcWeight=[]
 
 for n,a in enumerate(path):
     filenames = os.listdir(a)
+    print path
     for fnum, fname in enumerate(filenames):
         filename = a + '/' + fname
-        print fname 
+#        print fname 
         if 'fail' in fname:
             continue
         f = ROOT.TFile.Open(filename)

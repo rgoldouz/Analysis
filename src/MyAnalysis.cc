@@ -2,6 +2,7 @@
 #include "MyAnalysis.h"
 #include "PU_reWeighting.h"
 #include "sumOfWeights.h"
+#include "sumOfWeightsSignal.h"
 #include "lepton_candidate.h"
 #include "jet_candidate.h"
 #include "TRandom.h"
@@ -25,6 +26,7 @@
 #include "CondFormats/Serialization/interface/Archive.h"
 #include "CondFormats/JetMETObjects/interface/JetCorrectorParameters.h"
 #include "CondFormats/JetMETObjects/interface/JetCorrectionUncertainty.h"
+#include "GEScaleSyst.h"
 #endif
 
 void displayProgress(long current, long max){
@@ -85,8 +87,9 @@ float topPt(float pt){
   return (0.973 - (0.000134 * pt) + (0.103 * exp(pt * (-0.0118))));  
 }
 
-void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year, TString run, float xs, float lumi, float Nevent)
+void MyAnalysis::Loop(TString fname, TString sname, TString data, TString dataset ,TString year, TString run, float xs, float lumi, float Nevent)
 {
+  TRandom3 Tr;
 
 //JEC sources 
   std::string JECFile;
@@ -133,10 +136,10 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
 
   std::vector<TString> regions{"ll","llOffZ","llB1", "llBg1", };
   std::vector<TString> channels{"ee", "emu", "mumu"};
-  std::vector<TString> vars   {"lep1Pt","lep1Eta","lep1Phi","lep2Pt","lep2Eta","lep2Phi","llM","llPt","llDr","llDphi","jet1Pt","jet1Eta","jet1Phi","njet","nbjet","Met","MetPhi","nVtx", "llMZw","BDT"};
-  std::vector<int>    nbins   {30      ,20       ,25       ,20      ,20       ,25       ,30   ,20    ,25    ,15      ,20      ,20       ,25       ,10    ,6      ,30   ,20      ,70    ,80      ,20};   
-  std::vector<float> lowEdge  {0       ,-3       ,-4       ,0       ,-3       ,-4       ,0    ,0     ,0     ,0       ,0       ,-3       ,-4       ,0     ,0      ,0    ,-4      ,0     ,70      ,-1};
-  std::vector<float> highEdge {300     ,3        ,4        ,200     ,3        ,4        ,500  ,200   ,7     ,4       ,300     ,3        ,4        ,10    ,6      ,210  ,4       ,70    ,110     ,1 };       
+  std::vector<TString> vars   {"lep1Pt","lep1Eta","lep1Phi","lep2Pt","lep2Eta","lep2Phi","llM","llPt","llDr","llDphi","jet1Pt","jet1Eta","jet1Phi","njet","nbjet","Met","MetPhi","nVtx", "llMZw","BDT","muPt","elePt","muEta","eleEta"};
+  std::vector<int>    nbins   {70      ,20       ,25       ,25      ,20       ,25       ,30   ,20    ,25    ,15      ,20      ,20       ,25       ,10    ,6      ,30   ,20      ,70    ,80      ,20, 70,70,20,20};   
+  std::vector<float> lowEdge  {0       ,-3       ,-4       ,0       ,-3       ,-4       ,0    ,0     ,0     ,0       ,0       ,-3       ,-4       ,0     ,0      ,0    ,-4      ,0     ,70      ,-1, 0,0,-3,-3};
+  std::vector<float> highEdge {1500     ,3        ,4        ,1000     ,3        ,4        ,500  ,200   ,7     ,4       ,300     ,3        ,4        ,10    ,6      ,210  ,4       ,70    ,110     ,1 ,1500,1500,3,3};       
 
   Dim3 Hists(channels.size(),Dim2(regions.size(),Dim1(vars.size())));  
   std::stringstream name;
@@ -154,7 +157,7 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     }
   }
 
-  std::vector<TString> sys{"eleRecoSf", "eleIDSf", "muIdSf", "muIsoSf", "bcTagSF", "udsgTagSF","pu", "prefiring", "jes", "jer","unclusMET"};
+  std::vector<TString> sys{"eleRecoSf", "eleIDSf", "muIdSf", "muIsoSf", "bcTagSF", "udsgTagSF","pu", "prefiring", "trigSF","jes", "jer","unclusMET","muonScale","electronScale","muonRes" };
   Dim4 HistsSysUp(channels.size(),Dim3(regions.size(),Dim2(vars.size(),Dim1(sys.size()))));
   Dim4 HistsSysDown(channels.size(),Dim3(regions.size(),Dim2(vars.size(),Dim1(sys.size()))));
 
@@ -203,14 +206,24 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     }
   }
 
-  int reweightSizeQscalePDF = 110;
+  int reweightSizeQscalePDF = 150;
   int reweightSizePS = 14;
   Dim4 HistsSysReweightsQscalePDF(channels.size(),Dim3(regions.size(),Dim2(vars.size(),Dim1(reweightSizeQscalePDF))));
   Dim4 HistsSysReweightsPS(channels.size(),Dim3(regions.size(),Dim2(vars.size(),Dim1(reweightSizePS))));
   sumOfWeights SW;
-  std::vector<float> SLW = SW.LHEWeight(year);
-  std::vector<float> SGW = SW.GenWeight(year); 
+  sumOfWeightsSignal SWS;
+  std::vector<float> SLW;
+  std::vector<float> SGW;
+
   if (fname.Contains("TTTo2L2Nu")){
+     SLW = SW.LHEWeight(year);
+     SGW = SW.GenWeight(year);
+  }
+  if (fname.Contains("LFV")){
+     SLW = SWS.LHEWeightSignal(sname);
+     SGW = SWS.GenWeightSignal(sname);
+  }
+  if (fname.Contains("TTTo2L2Nu") || fname.Contains("LFV")){
     for (int i=0;i<channels.size();++i){
       for (int k=0;k<regions.size();++k){
         for (int l=0;l<vars.size();++l){
@@ -251,6 +264,7 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
   std::string rochesterFile;
   std::string btagFile;
   BTagCalibrationReader reader(BTagEntry::OP_MEDIUM, "central", {"up", "down"});
+  GEScaleSyst *GE = new GEScaleSyst();
 
   RoccoR  rc;
   if(year == "2016")    rochesterFile = "/user/rgoldouz/NewAnalysis2020/Analysis/input/RoccoR2016.txt";
@@ -293,18 +307,18 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
       sf_Ele_ID_H = *(TH2F*)f_Ele_ID_Map->Get("EGamma_SF2D");
 
       TFile *f_Mu_ID_Map_1 = new TFile("/user/rgoldouz/NewAnalysis2020/Analysis/input/2016_RunBCDEF_SF_ID.root");
-      TH2F *sf_Mu_ID_H_1 = (TH2F*)f_Mu_ID_Map_1->Get("NUM_TightID_DEN_genTracks_eta_pt");
+      TH2F *sf_Mu_ID_H_1 = (TH2F*)f_Mu_ID_Map_1->Get("NUM_HighPtID_DEN_genTracks_eta_pair_newTuneP_probe_pt");
       TFile *f_Mu_ID_Map_2 = new TFile("/user/rgoldouz/NewAnalysis2020/Analysis/input/2016_RunGH_SF_ID.root");
-      TH2F *sf_Mu_ID_H_2 = (TH2F*)f_Mu_ID_Map_2->Get("NUM_TightID_DEN_genTracks_eta_pt");
+      TH2F *sf_Mu_ID_H_2 = (TH2F*)f_Mu_ID_Map_2->Get("NUM_HighPtID_DEN_genTracks_eta_pair_newTuneP_probe_pt");
       sf_Mu_ID_H_1->Scale(0.55);
       sf_Mu_ID_H_2->Scale(0.45);
       sf_Mu_ID_H_1->Add(sf_Mu_ID_H_2);
       sf_Mu_ID_H = *sf_Mu_ID_H_1;
 
       TFile *f_Mu_ISO_Map_1 = new TFile("/user/rgoldouz/NewAnalysis2020/Analysis/input/2016_RunBCDEF_SF_ISO.root");
-      TH2F *sf_Mu_ISO_H_1 = (TH2F*)f_Mu_ISO_Map_1->Get("NUM_TightRelIso_DEN_TightIDandIPCut_eta_pt");
+      TH2F *sf_Mu_ISO_H_1 = (TH2F*)f_Mu_ISO_Map_1->Get("NUM_LooseRelTkIso_DEN_HighPtIDandIPCut_eta_pair_newTuneP_probe_pt");
       TFile *f_Mu_ISO_Map_2 = new TFile("/user/rgoldouz/NewAnalysis2020/Analysis/input/2016_RunGH_SF_ISO.root");
-      TH2F *sf_Mu_ISO_H_2 = (TH2F*)f_Mu_ISO_Map_2->Get("NUM_TightRelIso_DEN_TightIDandIPCut_eta_pt");
+      TH2F *sf_Mu_ISO_H_2 = (TH2F*)f_Mu_ISO_Map_2->Get("NUM_LooseRelTkIso_DEN_HighPtIDandIPCut_eta_pair_newTuneP_probe_pt");
       sf_Mu_ISO_H_1->Scale(0.55);
       sf_Mu_ISO_H_2->Scale(0.45);
       sf_Mu_ISO_H_1->Add(sf_Mu_ISO_H_2);
@@ -312,8 +326,8 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
 
       TFile *f_triggeree = new TFile("/user/rgoldouz/NewAnalysis2020/Analysis/input/TriggerSF_ee2016_pt.root");
       sf_triggeree_H = *(TH2F*)f_triggeree->Get("h_lep1Pt_lep2Pt_Step6");
-      TFile *f_triggeremu = new TFile("/user/rgoldouz/NewAnalysis2020/Analysis/input/TriggerSF_emu2016_pt.root");
-      sf_triggeremu_H = *(TH2F*)f_triggeremu->Get("h_lep1Pt_lep2Pt_Step3");
+      TFile *f_triggeremu = new TFile("/user/rgoldouz/NewAnalysis2020/Analysis/input/TriggerSF_emu2016_Pt.root");
+      sf_triggeremu_H = *(TH2F*)f_triggeremu->Get("SF_lep1Pt_lep2Pt");
       TFile *f_triggermumu = new TFile("/user/rgoldouz/NewAnalysis2020/Analysis/input/TriggerSF_mumu2016_pt.root");
       sf_triggermumu_H = *(TH2F*)f_triggermumu->Get("h_lep1Pt_lep2Pt_Step9");
 
@@ -335,15 +349,15 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
       sf_Ele_ID_H = *(TH2F*)f_Ele_ID_Map->Get("EGamma_SF2D");
 
       TFile *f_Mu_ID_Map = new TFile("/user/rgoldouz/NewAnalysis2020/Analysis/input/2017_RunBCDEF_SF_ID_syst.root");
-      sf_Mu_ID_H = *(TH2F*)f_Mu_ID_Map->Get("NUM_TightID_DEN_genTracks_pt_abseta");
+      sf_Mu_ID_H = *(TH2F*)f_Mu_ID_Map->Get("NUM_HighPtID_DEN_genTracks_pair_newTuneP_probe_pt_abseta");
 
       TFile *f_Mu_ISO_Map = new TFile("/user/rgoldouz/NewAnalysis2020/Analysis/input/2017_RunBCDEF_SF_ISO_syst.root");
-      sf_Mu_ISO_H = *(TH2F*)f_Mu_ISO_Map->Get("NUM_TightRelIso_DEN_TightIDandIPCut_pt_abseta");
+      sf_Mu_ISO_H = *(TH2F*)f_Mu_ISO_Map->Get("NUM_LooseRelTkIso_DEN_TrkHighPtID_pair_newTuneP_probe_pt_abseta");
 
       TFile *f_triggeree = new TFile("/user/rgoldouz/NewAnalysis2020/Analysis/input/TriggerSF_ee2017_pt.root");
       sf_triggeree_H = *(TH2F*)f_triggeree->Get("h_lep1Pt_lep2Pt_Step6");
-      TFile *f_triggeremu = new TFile("/user/rgoldouz/NewAnalysis2020/Analysis/input/TriggerSF_emu2017_pt.root");
-      sf_triggeremu_H = *(TH2F*)f_triggeremu->Get("h_lep1Pt_lep2Pt_Step3");
+      TFile *f_triggeremu = new TFile("/user/rgoldouz/NewAnalysis2020/Analysis/input/TriggerSF_emu2017_Pt.root");
+      sf_triggeremu_H = *(TH2F*)f_triggeremu->Get("SF_lep1Pt_lep2Pt");
       TFile *f_triggermumu = new TFile("/user/rgoldouz/NewAnalysis2020/Analysis/input/TriggerSF_mumu2017_pt.root");
       sf_triggermumu_H = *(TH2F*)f_triggermumu->Get("h_lep1Pt_lep2Pt_Step9");
 
@@ -363,15 +377,15 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
       sf_Ele_ID_H = *(TH2F*)f_Ele_ID_Map->Get("EGamma_SF2D");
 
       TFile *f_Mu_ID_Map = new TFile("/user/rgoldouz/NewAnalysis2020/Analysis/input/2018_RunABCD_SF_ID.root");
-      sf_Mu_ID_H = *(TH2F*)f_Mu_ID_Map->Get("NUM_TightID_DEN_TrackerMuons_pt_abseta");
+      sf_Mu_ID_H = *(TH2F*)f_Mu_ID_Map->Get("NUM_HighPtID_DEN_TrackerMuons_pair_newTuneP_probe_pt_abseta");
 
       TFile *f_Mu_ISO_Map = new TFile("/user/rgoldouz/NewAnalysis2020/Analysis/input/2018_RunABCD_SF_ISO.root");
-      sf_Mu_ISO_H = *(TH2F*)f_Mu_ISO_Map->Get("NUM_TightRelIso_DEN_TightIDandIPCut_pt_abseta");
+      sf_Mu_ISO_H = *(TH2F*)f_Mu_ISO_Map->Get("NUM_LooseRelTkIso_DEN_TrkHighPtID_pair_newTuneP_probe_pt_abseta");
 
       TFile *f_triggeree = new TFile("/user/rgoldouz/NewAnalysis2020/Analysis/input/TriggerSF_ee2018_pt.root");
       sf_triggeree_H = *(TH2F*)f_triggeree->Get("h_lep1Pt_lep2Pt_Step6");
-      TFile *f_triggeremu = new TFile("/user/rgoldouz/NewAnalysis2020/Analysis/input/TriggerSF_emu2018_pt.root");
-      sf_triggeremu_H = *(TH2F*)f_triggeremu->Get("h_lep1Pt_lep2Pt_Step3");
+      TFile *f_triggeremu = new TFile("/user/rgoldouz/NewAnalysis2020/Analysis/input/TriggerSF_emu2018_Pt.root");
+      sf_triggeremu_H = *(TH2F*)f_triggeremu->Get("SF_lep1Pt_lep2Pt");
       TFile *f_triggermumu = new TFile("/user/rgoldouz/NewAnalysis2020/Analysis/input/TriggerSF_mumu2018_pt.root");
       sf_triggermumu_H = *(TH2F*)f_triggermumu->Get("h_lep1Pt_lep2Pt_Step9");
 
@@ -390,6 +404,12 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
 
 //    cout<<"ev_event"<<"   "<<"sf_Ele_Reco"<<"   "<<"sf_Ele_ID"<<"      "<<"sf_Mu_ID"<<"   "<<"sf_Mu_ISO"<<"   "<<"sf_trigger"<<"   "<<"PU weight"<<endl;
   std::vector<lepton_candidate*> *selectedLeptons;
+  std::vector<lepton_candidate*> *selectedLeptonsMuScaleUp;
+  std::vector<lepton_candidate*> *selectedLeptonsMuScaleDown;
+  std::vector<lepton_candidate*> *selectedLeptonsEleScaleUp;
+  std::vector<lepton_candidate*> *selectedLeptonsEleScaleDown;
+  std::vector<lepton_candidate*> *selectedLeptonsMuResUp;
+  std::vector<lepton_candidate*> *selectedLeptonsMuResDown;
   std::vector<jet_candidate*> *selectedJets;
   std::vector<jet_candidate*> *selectedJetsJerUp;
   std::vector<jet_candidate*> *selectedJetsJerDown;
@@ -435,8 +455,17 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
   float MVAoutputJerDown;
   float MVAoutputJesUp;
   float MVAoutputJesDown;
+  float MVAoutputMuScaleUp;
+  float MVAoutputMuScaleDown;
+  float MVAoutputEleScaleUp;
+  float MVAoutputEleScaleDown;
+  float MVAoutputMuResUp;
+  float MVAoutputMuResDown;
+  float MVAoutputUnclusMETUp;
+  float MVAoutputUnclusMETDown;
+  float metUnclusMETUp;
+  float metUnclusMETDown;
   float MVAoutput;
-  double muPtSFRochester;
   double P_bjet_data;
   double P_bjet_mc;
   int nAccept=0;
@@ -449,6 +478,8 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
   float JECMETUpy;
   float JECMETDownx;
   float JECMETDowny;
+  float pt_res;
+  double muPtSFRochester;
 
   if (fname.Contains("TTTo2L2Nu")) ifTopPt=true;
 
@@ -488,6 +519,8 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     nbjetJerDown=0;
     nbjetJesUp=0;
     nbjetJesDown=0;
+    metUnclusMETUp=0;
+    metUnclusMETDown=0;
     for (int n=0;n<sys.size();++n){
       nominalWeights[n] =1;
       sysUpWeights[n] =1;
@@ -625,13 +658,31 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
 
 // lepton selection
   selectedLeptons = new std::vector<lepton_candidate*>();
+  selectedLeptonsMuScaleUp = new std::vector<lepton_candidate*>();
+  selectedLeptonsMuScaleDown = new std::vector<lepton_candidate*>();
+  selectedLeptonsEleScaleUp = new std::vector<lepton_candidate*>();
+  selectedLeptonsEleScaleDown = new std::vector<lepton_candidate*>();
+  selectedLeptonsMuResUp = new std::vector<lepton_candidate*>();
+  selectedLeptonsMuResDown = new std::vector<lepton_candidate*>();
+
 // electron
     for (int l=0;l<gsf_pt->size();l++){
       elePt = (*gsf_ecalTrkEnergyPostCorr)[l]*sin(2.*atan(exp(-1.*(*gsf_eta)[l]))) ;
-      if(elePt <20 || abs((*gsf_eta)[l]) > 2.4 || (abs((*gsf_sc_eta)[l])> 1.4442 && (abs((*gsf_sc_eta)[l])< 1.566))) continue;
+      if(abs((*gsf_eta)[l]) > 2.4 || (abs((*gsf_sc_eta)[l])> 1.4442 && (abs((*gsf_sc_eta)[l])< 1.566))) continue;
       if(!(*gsf_VID_cutBasedElectronID_Fall17_94X_V2_tight)[l]) continue;
+      if (data == "mc"){
+        if((elePt + 0.004*elePt) > 20 && abs((*gsf_sc_eta)[l])< 1.4442) selectedLeptonsEleScaleUp->push_back(new lepton_candidate(elePt+ 0.004*elePt,(*gsf_eta)[l],(*gsf_phi)[l],(*gsf_charge)[l],l,1));
+        if((elePt + 0.008*elePt) > 20 && abs((*gsf_sc_eta)[l])> 1.4442) selectedLeptonsEleScaleUp->push_back(new lepton_candidate(elePt+ 0.008*elePt,(*gsf_eta)[l],(*gsf_phi)[l],(*gsf_charge)[l],l,1));
+        if((elePt - 0.004*elePt) > 20 && abs((*gsf_sc_eta)[l])< 1.4442) selectedLeptonsEleScaleDown->push_back(new lepton_candidate(elePt- 0.004*elePt,(*gsf_eta)[l],(*gsf_phi)[l],(*gsf_charge)[l],l,1));
+        if((elePt - 0.008*elePt) > 20 && abs((*gsf_sc_eta)[l])> 1.4442) selectedLeptonsEleScaleDown->push_back(new lepton_candidate(elePt- 0.008*elePt,(*gsf_eta)[l],(*gsf_phi)[l],(*gsf_charge)[l],l,1));
+      }
+      if(elePt <20) continue;
       selectedLeptons->push_back(new lepton_candidate(elePt,(*gsf_eta)[l],(*gsf_phi)[l],(*gsf_charge)[l],l,1));
       if (data == "mc"){
+        selectedLeptonsMuScaleUp->push_back(new lepton_candidate(elePt,(*gsf_eta)[l],(*gsf_phi)[l],(*gsf_charge)[l],l,1));
+        selectedLeptonsMuScaleDown->push_back(new lepton_candidate(elePt,(*gsf_eta)[l],(*gsf_phi)[l],(*gsf_charge)[l],l,1));
+        selectedLeptonsMuResUp->push_back(new lepton_candidate(elePt,(*gsf_eta)[l],(*gsf_phi)[l],(*gsf_charge)[l],l,1));
+        selectedLeptonsMuResDown->push_back(new lepton_candidate(elePt,(*gsf_eta)[l],(*gsf_phi)[l],(*gsf_charge)[l],l,1));
         sf_Ele_Reco = sf_Ele_Reco * scale_factor(&sf_Ele_Reco_H ,(*gsf_sc_eta)[l],(*gsf_pt)[l],"");
         nominalWeights[0] = nominalWeights[0] * scale_factor(&sf_Ele_Reco_H ,(*gsf_sc_eta)[l],(*gsf_pt)[l],"");
         sysUpWeights[0] = sysUpWeights[0] * scale_factor(&sf_Ele_Reco_H ,(*gsf_sc_eta)[l],(*gsf_pt)[l],"up");
@@ -643,44 +694,77 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
         sysDownWeights[1] = sysDownWeights[1] * scale_factor(&sf_Ele_ID_H ,(*gsf_sc_eta)[l],(*gsf_pt)[l],"down");
       }
     }
-// Muon
-    for (int l=0;l<mu_gt_pt->size();l++){
-      if(data == "data"){
-        muPtSFRochester = rc.kScaleDT((*mu_gt_charge)[l], (*mu_gt_pt)[l],(*mu_gt_eta)[l],(*mu_gt_phi)[l], 0, 0);
-      }
-      if (data == "mc"){
-         if ((*mu_mc_index)[l]!=-1 && abs((*mc_pdgId)[(*mu_mc_index)[l]]) == 13) muPtSFRochester = rc.kSpreadMC((*mu_gt_charge)[l], (*mu_gt_pt)[l],(*mu_gt_eta)[l],(*mu_gt_phi)[l], (*mc_pt)[(*mu_mc_index)[l]],0, 0);
-         if ((*mu_mc_index)[l]<0) muPtSFRochester = rc.kSmearMC((*mu_gt_charge)[l], (*mu_gt_pt)[l],(*mu_gt_eta)[l],(*mu_gt_phi)[l], (*mu_trackerLayersWithMeasurement)[l] , gRandom->Rndm(),0, 0);
-      }
-      if(muPtSFRochester * (*mu_gt_pt)[l] <20 || abs((*mu_gt_eta)[l]) > 2.4) continue;
-      if(!(*mu_isTightMuon)[l]) continue;
-      if((*mu_pfIsoDbCorrected04)[l] > 0.15) continue;
-      selectedLeptons->push_back(new lepton_candidate(muPtSFRochester * (*mu_gt_pt)[l],(*mu_gt_eta)[l],(*mu_gt_phi)[l],(*mu_gt_charge)[l],l,10));
-      if (data == "mc" && year == "2016") {
-        sf_Mu_ID = sf_Mu_ID * scale_factor(&sf_Mu_ID_H, (*mu_gt_eta)[l], (*mu_gt_pt)[l],"");
-        nominalWeights[2] = nominalWeights[2] * scale_factor(&sf_Mu_ID_H, (*mu_gt_eta)[l], (*mu_gt_pt)[l],"");
-        sysUpWeights[2] = sysUpWeights[2] * scale_factor(&sf_Mu_ID_H, (*mu_gt_eta)[l], (*mu_gt_pt)[l],"up");
-        sysDownWeights[2] = sysDownWeights[2] * scale_factor(&sf_Mu_ID_H, (*mu_gt_eta)[l], (*mu_gt_pt)[l],"down");
 
-        sf_Mu_ISO = sf_Mu_ISO * scale_factor(&sf_Mu_ISO_H, (*mu_gt_eta)[l], (*mu_gt_pt)[l],"");
-        nominalWeights[3] = nominalWeights[3] * scale_factor(&sf_Mu_ISO_H, (*mu_gt_eta)[l], (*mu_gt_pt)[l],"");
-        sysUpWeights[3] = sysUpWeights[3] * scale_factor(&sf_Mu_ISO_H, (*mu_gt_eta)[l], (*mu_gt_pt)[l],"up");
-        sysDownWeights[3] = sysDownWeights[3] * scale_factor(&sf_Mu_ISO_H, (*mu_gt_eta)[l], (*mu_gt_pt)[l],"down");
+// Muon selection
+    for (int l=0;l<mu_ibt_pt->size();l++){
+      if(abs((*mu_ibt_eta)[l]) > 2.4) continue;
+      if(!(*mu_isHighPtMuon)[l]) continue;
+      if(!(*mu_TkIsoLoose)[l]) continue;
+//is normal muon
+      if((*mu_ibt_pt)[l] == (*mu_it_pt)[l]){
+        if(data == "data") {
+          muPtSFRochester = rc.kScaleDT((*mu_ibt_charge)[l], (*mu_ibt_pt)[l],(*mu_ibt_eta)[l],(*mu_ibt_phi)[l], 0, 0);
+          if(muPtSFRochester * (*mu_ibt_pt)[l] > 20) selectedLeptons->push_back(new lepton_candidate(muPtSFRochester * (*mu_ibt_pt)[l],(*mu_ibt_eta)[l],(*mu_ibt_phi)[l],(*mu_ibt_charge)[l],l,10));
+        }
+        if (data == "mc"){
+          if ((*mu_mc_index)[l]!=-1 && abs((*mc_pdgId)[(*mu_mc_index)[l]]) == 13) muPtSFRochester = rc.kSpreadMC((*mu_ibt_charge)[l], (*mu_ibt_pt)[l],(*mu_ibt_eta)[l],(*mu_ibt_phi)[l], (*mc_pt)[(*mu_mc_index)[l]],0, 0);
+          if ((*mu_mc_index)[l]<0) muPtSFRochester = rc.kSmearMC((*mu_ibt_charge)[l], (*mu_ibt_pt)[l],(*mu_ibt_eta)[l],(*mu_ibt_phi)[l], (*mu_trackerLayersWithMeasurement)[l] , gRandom->Rndm(),0, 0);
+          if(muPtSFRochester * (*mu_ibt_pt)[l] > 20) selectedLeptons->push_back(new lepton_candidate(muPtSFRochester * (*mu_ibt_pt)[l],(*mu_ibt_eta)[l],(*mu_ibt_phi)[l],(*mu_ibt_charge)[l],l,10));
+          if(muPtSFRochester * (*mu_ibt_pt)[l] > 20) selectedLeptonsEleScaleUp->push_back(new lepton_candidate(muPtSFRochester * (*mu_ibt_pt)[l],(*mu_ibt_eta)[l],(*mu_ibt_phi)[l],(*mu_ibt_charge)[l],l,10));
+          if(muPtSFRochester * (*mu_ibt_pt)[l] > 20) selectedLeptonsEleScaleDown->push_back(new lepton_candidate(muPtSFRochester * (*mu_ibt_pt)[l],(*mu_ibt_eta)[l],(*mu_ibt_phi)[l],(*mu_ibt_charge)[l],l,10));
+          if(muPtSFRochester * (*mu_ibt_pt)[l] > 20) selectedLeptonsMuResUp->push_back(new lepton_candidate(muPtSFRochester * (*mu_ibt_pt)[l],(*mu_ibt_eta)[l],(*mu_ibt_phi)[l],(*mu_ibt_charge)[l],l,10)); 
+          if(muPtSFRochester * (*mu_ibt_pt)[l] > 20) selectedLeptonsMuResDown->push_back(new lepton_candidate(muPtSFRochester * (*mu_ibt_pt)[l],(*mu_ibt_eta)[l],(*mu_ibt_phi)[l],(*mu_ibt_charge)[l],l,10));
+          if(muPtSFRochester * (*mu_ibt_pt)[l] > 20) selectedLeptonsMuScaleUp->push_back(new lepton_candidate(muPtSFRochester * (*mu_ibt_pt)[l],(*mu_ibt_eta)[l],(*mu_ibt_phi)[l],(*mu_ibt_charge)[l],l,10));
+          if(muPtSFRochester * (*mu_ibt_pt)[l] > 20) selectedLeptonsMuScaleDown->push_back(new lepton_candidate(muPtSFRochester * (*mu_ibt_pt)[l],(*mu_ibt_eta)[l],(*mu_ibt_phi)[l],(*mu_ibt_charge)[l],l,10));
+        }
+      }
+      if((*mu_ibt_pt)[l] != (*mu_it_pt)[l]){
+        pt_res = 0.02;
+        if(abs((*mu_ibt_eta)[l]) < 1.2) pt_res = 0.01;
+        if (data == "data" && (*mu_ibt_pt)[l]>20) selectedLeptons->push_back(new lepton_candidate((*mu_ibt_pt)[l],(*mu_ibt_eta)[l],(*mu_ibt_phi)[l],(*mu_ibt_charge)[l],l,10));
+        if(data == "mc"){
+          if (GE->GEScaleCorrPt(1600, (*mu_ibt_pt)[l],(*mu_ibt_eta)[l],(*mu_ibt_phi)[l],(*mu_ibt_charge)[l]) > 20) selectedLeptons->push_back(new lepton_candidate(GE->GEScaleCorrPt(1600, (*mu_ibt_pt)[l],(*mu_ibt_eta)[l],(*mu_ibt_phi)[l],(*mu_ibt_charge)[l]),(*mu_ibt_eta)[l],(*mu_ibt_phi)[l],(*mu_ibt_charge)[l],l,10));
+          if (GE->GEScaleCorrPt(1600, (*mu_ibt_pt)[l],(*mu_ibt_eta)[l],(*mu_ibt_phi)[l],(*mu_ibt_charge)[l]) > 20) selectedLeptonsEleScaleUp->push_back(new lepton_candidate(GE->GEScaleCorrPt(1600, (*mu_ibt_pt)[l],(*mu_ibt_eta)[l],(*mu_ibt_phi)[l],(*mu_ibt_charge)[l]),(*mu_ibt_eta)[l],(*mu_ibt_phi)[l],(*mu_ibt_charge)[l],l,10));
+          if (GE->GEScaleCorrPt(1600, (*mu_ibt_pt)[l],(*mu_ibt_eta)[l],(*mu_ibt_phi)[l],(*mu_ibt_charge)[l]) > 20) selectedLeptonsEleScaleDown->push_back(new lepton_candidate(GE->GEScaleCorrPt(1600, (*mu_ibt_pt)[l],(*mu_ibt_eta)[l],(*mu_ibt_phi)[l],(*mu_ibt_charge)[l]),(*mu_ibt_eta)[l],(*mu_ibt_phi)[l],(*mu_ibt_charge)[l],l,10));
+
+          if (GE->GEScaleCorrPt(1600, (*mu_ibt_pt)[l],(*mu_ibt_eta)[l],(*mu_ibt_phi)[l],(*mu_ibt_charge)[l])*(Tr.Gaus(1, pt_res)) > 20) selectedLeptonsMuResUp->push_back(new lepton_candidate((Tr.Gaus(1, pt_res))*GE->GEScaleCorrPt(1600, (*mu_ibt_pt)[l],(*mu_ibt_eta)[l],(*mu_ibt_phi)[l],(*mu_ibt_charge)[l]),(*mu_ibt_eta)[l],(*mu_ibt_phi)[l],(*mu_ibt_charge)[l],l,10));
+          if (GE->GEScaleCorrPt(1600, (*mu_ibt_pt)[l],(*mu_ibt_eta)[l],(*mu_ibt_phi)[l],(*mu_ibt_charge)[l])*(Tr.Gaus(1, pt_res)) > 20) selectedLeptonsMuResDown->push_back(new lepton_candidate((Tr.Gaus(1, pt_res))*GE->GEScaleCorrPt(1600, (*mu_ibt_pt)[l],(*mu_ibt_eta)[l],(*mu_ibt_phi)[l],(*mu_ibt_charge)[l]),(*mu_ibt_eta)[l],(*mu_ibt_phi)[l],(*mu_ibt_charge)[l],l,10));
+
+          if (GE->GEScaleCorrPt(1601, (*mu_ibt_pt)[l],(*mu_ibt_eta)[l],(*mu_ibt_phi)[l],(*mu_ibt_charge)[l]) > 20) selectedLeptonsMuScaleUp->push_back(new lepton_candidate(GE->GEScaleCorrPt(1601, (*mu_ibt_pt)[l],(*mu_ibt_eta)[l],(*mu_ibt_phi)[l],(*mu_ibt_charge)[l]),(*mu_ibt_eta)[l],(*mu_ibt_phi)[l],(*mu_ibt_charge)[l],l,10));
+          if (GE->GEScaleCorrPt(1602, (*mu_ibt_pt)[l],(*mu_ibt_eta)[l],(*mu_ibt_phi)[l],(*mu_ibt_charge)[l]) > 20) selectedLeptonsMuScaleDown->push_back(new lepton_candidate(GE->GEScaleCorrPt(1602, (*mu_ibt_pt)[l],(*mu_ibt_eta)[l],(*mu_ibt_phi)[l],(*mu_ibt_charge)[l]),(*mu_ibt_eta)[l],(*mu_ibt_phi)[l],(*mu_ibt_charge)[l],l,10));
+        }
+      }
+      if((*mu_ibt_pt)[l] <20) continue;
+      if (data == "mc" && year == "2016") {
+        sf_Mu_ID = sf_Mu_ID * scale_factor(&sf_Mu_ID_H, (*mu_ibt_eta)[l], (*mu_ibt_pt)[l],"");
+        nominalWeights[2] = nominalWeights[2] * scale_factor(&sf_Mu_ID_H, (*mu_ibt_eta)[l], (*mu_ibt_pt)[l],"");
+        sysUpWeights[2] = sysUpWeights[2] * scale_factor(&sf_Mu_ID_H, (*mu_ibt_eta)[l], (*mu_ibt_pt)[l],"up");
+        sysDownWeights[2] = sysDownWeights[2] * scale_factor(&sf_Mu_ID_H, (*mu_ibt_eta)[l], (*mu_ibt_pt)[l],"down");
+
+        sf_Mu_ISO = sf_Mu_ISO * scale_factor(&sf_Mu_ISO_H, (*mu_ibt_eta)[l], (*mu_ibt_pt)[l],"");
+        nominalWeights[3] = nominalWeights[3] * scale_factor(&sf_Mu_ISO_H, (*mu_ibt_eta)[l], (*mu_ibt_pt)[l],"");
+        sysUpWeights[3] = sysUpWeights[3] * scale_factor(&sf_Mu_ISO_H, (*mu_ibt_eta)[l], (*mu_ibt_pt)[l],"up");
+        sysDownWeights[3] = sysDownWeights[3] * scale_factor(&sf_Mu_ISO_H, (*mu_ibt_eta)[l], (*mu_ibt_pt)[l],"down");
       }
       if (data == "mc" && year != "2016") {
-        sf_Mu_ID = sf_Mu_ID * scale_factor(&sf_Mu_ID_H, (*mu_gt_pt)[l], abs((*mu_gt_eta)[l]),"");
-        nominalWeights[2] = nominalWeights[2] * scale_factor(&sf_Mu_ID_H, (*mu_gt_pt)[l], abs((*mu_gt_eta)[l]),"");
-        sysUpWeights[2] = sysUpWeights[2] * scale_factor(&sf_Mu_ID_H, (*mu_gt_pt)[l], abs((*mu_gt_eta)[l]),"up");
-        sysDownWeights[2] = sysDownWeights[2] * scale_factor(&sf_Mu_ID_H, (*mu_gt_pt)[l], abs((*mu_gt_eta)[l]),"down");
+        sf_Mu_ID = sf_Mu_ID * scale_factor(&sf_Mu_ID_H, (*mu_ibt_pt)[l], abs((*mu_ibt_eta)[l]),"");
+        nominalWeights[2] = nominalWeights[2] * scale_factor(&sf_Mu_ID_H, (*mu_ibt_pt)[l], abs((*mu_ibt_eta)[l]),"");
+        sysUpWeights[2] = sysUpWeights[2] * scale_factor(&sf_Mu_ID_H, (*mu_ibt_pt)[l], abs((*mu_ibt_eta)[l]),"up");
+        sysDownWeights[2] = sysDownWeights[2] * scale_factor(&sf_Mu_ID_H, (*mu_ibt_pt)[l], abs((*mu_ibt_eta)[l]),"down");
 
-        sf_Mu_ISO = sf_Mu_ISO * scale_factor(&sf_Mu_ISO_H, (*mu_gt_pt)[l], abs((*mu_gt_eta)[l]),"");
-        nominalWeights[3] = nominalWeights[3] * scale_factor(&sf_Mu_ISO_H, (*mu_gt_pt)[l], abs((*mu_gt_eta)[l]),"");
-        sysUpWeights[3] = sysUpWeights[3] * scale_factor(&sf_Mu_ISO_H, (*mu_gt_pt)[l], abs((*mu_gt_eta)[l]),"up");
-        sysDownWeights[3] = sysDownWeights[3] * scale_factor(&sf_Mu_ISO_H, (*mu_gt_pt)[l], abs((*mu_gt_eta)[l]),"down");
+        sf_Mu_ISO = sf_Mu_ISO * scale_factor(&sf_Mu_ISO_H, (*mu_ibt_pt)[l], abs((*mu_ibt_eta)[l]),"");
+        nominalWeights[3] = nominalWeights[3] * scale_factor(&sf_Mu_ISO_H, (*mu_ibt_pt)[l], abs((*mu_ibt_eta)[l]),"");
+        sysUpWeights[3] = sysUpWeights[3] * scale_factor(&sf_Mu_ISO_H, (*mu_ibt_pt)[l], abs((*mu_ibt_eta)[l]),"up");
+        sysDownWeights[3] = sysDownWeights[3] * scale_factor(&sf_Mu_ISO_H, (*mu_ibt_pt)[l], abs((*mu_ibt_eta)[l]),"down");
       }
-
     }
     sort(selectedLeptons->begin(), selectedLeptons->end(), ComparePtLep);
+    sort(selectedLeptonsMuScaleUp->begin(), selectedLeptonsMuScaleUp->end(), ComparePtLep);
+    sort(selectedLeptonsMuScaleDown->begin(), selectedLeptonsMuScaleDown->end(), ComparePtLep);
+    sort(selectedLeptonsMuResDown->begin(), selectedLeptonsMuResDown->end(), ComparePtLep);
+    sort(selectedLeptonsMuResUp->begin(), selectedLeptonsMuResUp->end(), ComparePtLep);
+    sort(selectedLeptonsEleScaleUp->begin(), selectedLeptonsEleScaleUp->end(), ComparePtLep);
+    sort(selectedLeptonsEleScaleDown->begin(), selectedLeptonsEleScaleDown->end(), ComparePtLep);
 // dilepton selection
 //cout<<ev_event<<"  "<<triggerPass<<"  "<<metFilterPass<<"  "<<selectedLeptons->size()<<endl;
     if(selectedLeptons->size()!=2 ||
@@ -691,16 +775,52 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
       for (int l=0;l<selectedLeptons->size();l++){
         delete (*selectedLeptons)[l];  
       }
+      for (int l=0;l<selectedLeptonsMuScaleUp->size();l++){
+        delete (*selectedLeptonsMuScaleUp)[l];
+      }
+      for (int l=0;l<selectedLeptonsMuScaleDown->size();l++){
+        delete (*selectedLeptonsMuScaleDown)[l];
+      }
+      for (int l=0;l<selectedLeptonsEleScaleUp->size();l++){
+        delete (*selectedLeptonsEleScaleUp)[l];
+      }
+      for (int l=0;l<selectedLeptonsEleScaleDown->size();l++){
+        delete (*selectedLeptonsEleScaleDown)[l];
+      }
+      for (int l=0;l<selectedLeptonsMuResUp->size();l++){
+        delete (*selectedLeptonsMuResUp)[l];
+      }
+      for (int l=0;l<selectedLeptonsMuResDown->size();l++){
+        delete (*selectedLeptonsMuResDown)[l];
+      }
       selectedLeptons->clear();
       selectedLeptons->shrink_to_fit();
       delete selectedLeptons;
+      selectedLeptonsMuScaleUp->clear();
+      selectedLeptonsMuScaleUp->shrink_to_fit();
+      delete selectedLeptonsMuScaleUp;
+      selectedLeptonsMuScaleDown->clear();
+      selectedLeptonsMuScaleDown->shrink_to_fit();
+      delete selectedLeptonsMuScaleDown;
+      selectedLeptonsMuResUp->clear();
+      selectedLeptonsMuResUp->shrink_to_fit();
+      delete selectedLeptonsMuResUp;
+      selectedLeptonsMuResDown->clear();
+      selectedLeptonsMuResDown->shrink_to_fit();
+      delete selectedLeptonsMuResDown;
+      selectedLeptonsEleScaleUp->clear();
+      selectedLeptonsEleScaleUp->shrink_to_fit();
+      delete selectedLeptonsEleScaleUp;
+      selectedLeptonsEleScaleDown->clear();
+      selectedLeptonsEleScaleDown->shrink_to_fit();
+      delete selectedLeptonsEleScaleDown;
       continue;
     }
 
 //remove HEM effected region from 2018 samples
-    if (year == "2018" && (*selectedLeptons)[0]->lep_ == 1 && (*selectedLeptons)[0]->eta_ < -1.4 && (*selectedLeptons)[0]->phi< -0.8 && (*selectedLeptons)[0]->phi > -1.6) continue;
-    if (year == "2018" && (*selectedLeptons)[1]->lep_ == 1 && (*selectedLeptons)[1]->eta_ < -1.4 && (*selectedLeptons)[1]->phi< -0.8 && (*selectedLeptons)[1]->phi > -1.6) continue;
-
+    if (year == "2018" && (*selectedLeptons)[0]->lep_ == 1 && (*selectedLeptons)[0]->eta_ < -1.4 && (*selectedLeptons)[0]->phi_< -0.8 && (*selectedLeptons)[0]->phi_ > -1.6) continue;
+    if (year == "2018" && (*selectedLeptons)[1]->lep_ == 1 && (*selectedLeptons)[1]->eta_ < -1.4 && (*selectedLeptons)[1]->phi_< -0.8 && (*selectedLeptons)[1]->phi_ > -1.6) continue;
+//categorize dilepton channels
     if ((*selectedLeptons)[0]->lep_ + (*selectedLeptons)[1]->lep_ == 2) ch = 0;
     if ((*selectedLeptons)[0]->lep_ + (*selectedLeptons)[1]->lep_ == 11) ch = 1;
     if ((*selectedLeptons)[0]->lep_ + (*selectedLeptons)[1]->lep_ == 20) ch = 2;
@@ -745,6 +865,8 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     sort(selectedJetsJerDown->begin(), selectedJetsJerDown->end(), ComparePtJet);
     sort(selectedJetsJesUp->begin(), selectedJetsJesUp->end(), ComparePtJet);
     sort(selectedJetsJesDown->begin(), selectedJetsJesDown->end(), ComparePtJet);
+
+
     for (int l=0;l<selectedJetsJerUp->size();l++){
       if((*selectedJetsJerUp)[l]->btag_) nbjetJerUp++;
     }
@@ -843,6 +965,30 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
       MET = MET_T1SmearJetResUp_Pt;
       n_jet = selectedJetsJerDown->size();
       MVAoutputJerDown = readerMVA->EvaluateMVA( "BDT_1b_tc_BDT");
+
+      if (selectedJets->size()>0) jet_leading_pt = (*selectedJets)[0]->pt_;
+      MET = MET_FinalCollection_Pt;
+      n_jet = selectedJets->size();
+      if (selectedLeptonsMuScaleUp->size()>0) leading_pt = (*selectedLeptonsMuScaleUp)[0]->pt_;
+      MVAoutputMuScaleUp = readerMVA->EvaluateMVA( "BDT_1b_tc_BDT");
+      if (selectedLeptonsMuScaleDown->size()>0) leading_pt = (*selectedLeptonsMuScaleDown)[0]->pt_;
+      MVAoutputMuScaleDown = readerMVA->EvaluateMVA( "BDT_1b_tc_BDT");
+      if (selectedLeptonsEleScaleUp->size()>0) leading_pt = (*selectedLeptonsEleScaleUp)[0]->pt_;
+      MVAoutputEleScaleUp = readerMVA->EvaluateMVA( "BDT_1b_tc_BDT");
+      if (selectedLeptonsEleScaleDown->size()>0) leading_pt = (*selectedLeptonsEleScaleDown)[0]->pt_;
+      MVAoutputEleScaleDown = readerMVA->EvaluateMVA( "BDT_1b_tc_BDT");
+      if (selectedLeptonsMuResUp->size()>0) leading_pt = (*selectedLeptonsMuResUp)[0]->pt_;
+      MVAoutputMuResUp = readerMVA->EvaluateMVA( "BDT_1b_tc_BDT");
+      if (selectedLeptonsMuResDown->size()>0) leading_pt = (*selectedLeptonsMuResDown)[0]->pt_;
+      MVAoutputMuResDown = readerMVA->EvaluateMVA( "BDT_1b_tc_BDT");
+  
+      leading_pt = (*selectedLeptons)[0]->pt_;
+      MET = (*MET_Type1Unc_Pt)[10];
+      MVAoutputUnclusMETUp = readerMVA->EvaluateMVA( "BDT_1b_tc_BDT");
+      MET = (*MET_Type1Unc_Pt)[11];
+      MVAoutputUnclusMETDown = readerMVA->EvaluateMVA( "BDT_1b_tc_BDT");
+      metUnclusMETUp = (*MET_Type1Unc_Pt)[10];
+      metUnclusMETDown = (*MET_Type1Unc_Pt)[11];
   }
 
     for (int n=0;n<sysJecNames.size();++n){
@@ -958,10 +1104,6 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     }
 
 
-//trigger SF
-    if (data == "mc" && ch==0) sf_Trigger = scale_factor(&sf_triggeree_H, (*selectedLeptons)[0]->pt_, (*selectedLeptons)[1]->pt_,"");
-    if (data == "mc" && ch==1) sf_Trigger = scale_factor(&sf_triggeremu_H, (*selectedLeptons)[0]->pt_, (*selectedLeptons)[1]->pt_,"");
-    if (data == "mc" && ch==2) sf_Trigger = scale_factor(&sf_triggermumu_H, (*selectedLeptons)[0]->pt_, (*selectedLeptons)[1]->pt_,"");
 //PU reweighting
     if (data == "mc" && year == "2016") {
       weight_PU = wPU.PU_2016(mc_trueNumInteractions,"nominal");
@@ -991,6 +1133,28 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
       sysUpWeights[7] = ev_prefiringweightup;
       sysDownWeights[7] = ev_prefiringweightdown;
     }
+
+//trigger SF
+    if (data == "mc" && ch==0) {
+      sf_Trigger = scale_factor(&sf_triggeree_H, (*selectedLeptons)[0]->pt_, (*selectedLeptons)[1]->pt_,"");
+      nominalWeights[8] = scale_factor(&sf_triggeree_H, (*selectedLeptons)[0]->pt_, (*selectedLeptons)[1]->pt_,"");
+      sysUpWeights[8] = scale_factor(&sf_triggeree_H, (*selectedLeptons)[0]->pt_, (*selectedLeptons)[1]->pt_,"up");
+      sysDownWeights[8] = scale_factor(&sf_triggeree_H, (*selectedLeptons)[0]->pt_, (*selectedLeptons)[1]->pt_,"down");
+    }
+    if (data == "mc" && ch==1) {
+      sf_Trigger = scale_factor(&sf_triggeremu_H, (*selectedLeptons)[0]->pt_, (*selectedLeptons)[1]->pt_,"");
+      nominalWeights[8] = scale_factor(&sf_triggeremu_H, (*selectedLeptons)[0]->pt_, (*selectedLeptons)[1]->pt_,"");
+      sysUpWeights[8] = scale_factor(&sf_triggeremu_H, (*selectedLeptons)[0]->pt_, (*selectedLeptons)[1]->pt_,"up");
+      sysDownWeights[8] = scale_factor(&sf_triggeremu_H, (*selectedLeptons)[0]->pt_, (*selectedLeptons)[1]->pt_,"down");
+    }
+    if (data == "mc" && ch==2) {
+      sf_Trigger = scale_factor(&sf_triggermumu_H, (*selectedLeptons)[0]->pt_, (*selectedLeptons)[1]->pt_,"");
+      nominalWeights[8] = scale_factor(&sf_triggermumu_H, (*selectedLeptons)[0]->pt_, (*selectedLeptons)[1]->pt_,"");
+      sysUpWeights[8] = scale_factor(&sf_triggermumu_H, (*selectedLeptons)[0]->pt_, (*selectedLeptons)[1]->pt_,"up");
+      sysDownWeights[8] = scale_factor(&sf_triggermumu_H, (*selectedLeptons)[0]->pt_, (*selectedLeptons)[1]->pt_,"down");
+    }
+
+
     if (data == "mc" && ifTopPt) {
       for (int l=0;l<mc_status->size();l++){
         if((*mc_status)[l]<30 && (*mc_status)[l]>20 && (*mc_pdgId)[l]==24) wp.SetPtEtaPhiE((*mc_pt)[l], (*mc_eta)[l], (*mc_phi)[l], (*mc_energy)[l]) ;
@@ -1026,7 +1190,16 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     Hists[ch][0][17]->Fill(pv_n,weight_lep);
     Hists[ch][0][18]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M(),weight_lep);
     Hists[ch][0][19]->Fill(MVAoutput,weight_lep);
-    for (int n=0;n<8;++n){
+    if ((*selectedLeptons)[0]->lep_ == 10) Hists[ch][0][20]->Fill((*selectedLeptons)[0]->pt_  ,weight_lep);
+    if ((*selectedLeptons)[0]->lep_ == 10) Hists[ch][0][22]->Fill((*selectedLeptons)[0]->eta_ ,weight_lep);
+    if ((*selectedLeptons)[0]->lep_ == 1) Hists[ch][0][21]->Fill((*selectedLeptons)[0]->pt_   ,weight_lep);
+    if ((*selectedLeptons)[0]->lep_ == 1) Hists[ch][0][23]->Fill((*selectedLeptons)[0]->eta_  ,weight_lep);
+    if ((*selectedLeptons)[1]->lep_ == 10) Hists[ch][0][20]->Fill((*selectedLeptons)[1]->pt_  ,weight_lep);
+    if ((*selectedLeptons)[1]->lep_ == 10) Hists[ch][0][22]->Fill((*selectedLeptons)[1]->eta_ ,weight_lep);
+    if ((*selectedLeptons)[1]->lep_ == 1) Hists[ch][0][21]->Fill((*selectedLeptons)[1]->pt_   ,weight_lep);
+    if ((*selectedLeptons)[1]->lep_ == 1) Hists[ch][0][23]->Fill((*selectedLeptons)[1]->eta_  ,weight_lep);
+
+    for (int n=0;n<9;++n){
       HistsSysUp[ch][0][0][n]->Fill((*selectedLeptons)[0]->pt_,weight_lep * (sysUpWeights[n]/nominalWeights[n]));
       HistsSysUp[ch][0][1][n]->Fill((*selectedLeptons)[0]->eta_,weight_lep * (sysUpWeights[n]/nominalWeights[n]));
       HistsSysUp[ch][0][2][n]->Fill((*selectedLeptons)[0]->phi_,weight_lep * (sysUpWeights[n]/nominalWeights[n]));
@@ -1047,6 +1220,14 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
       HistsSysUp[ch][0][17][n]->Fill(pv_n,weight_lep * (sysUpWeights[n]/nominalWeights[n]));
       HistsSysUp[ch][0][18][n]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M(),weight_lep * (sysUpWeights[n]/nominalWeights[n]));
       HistsSysUp[ch][0][19][n]->Fill(MVAoutput,weight_lep * (sysUpWeights[n]/nominalWeights[n]));
+      if ((*selectedLeptons)[0]->lep_ == 10) Hists[ch][0][20]->Fill((*selectedLeptons)[0]->pt_   ,weight_lep);
+      if ((*selectedLeptons)[0]->lep_ == 10) Hists[ch][0][22]->Fill((*selectedLeptons)[0]->eta_  ,weight_lep);
+      if ((*selectedLeptons)[0]->lep_ == 1)  Hists[ch][0][21]->Fill((*selectedLeptons)[0]->pt_   ,weight_lep);
+      if ((*selectedLeptons)[0]->lep_ == 1)  Hists[ch][0][23]->Fill((*selectedLeptons)[0]->eta_  ,weight_lep);
+      if ((*selectedLeptons)[1]->lep_ == 10) Hists[ch][0][20]->Fill((*selectedLeptons)[1]->pt_   ,weight_lep);
+      if ((*selectedLeptons)[1]->lep_ == 10) Hists[ch][0][22]->Fill((*selectedLeptons)[1]->eta_  ,weight_lep);
+      if ((*selectedLeptons)[1]->lep_ == 1)  Hists[ch][0][21]->Fill((*selectedLeptons)[1]->pt_   ,weight_lep);
+      if ((*selectedLeptons)[1]->lep_ == 1)  Hists[ch][0][23]->Fill((*selectedLeptons)[1]->eta_  ,weight_lep);
 
       HistsSysDown[ch][0][0][n]->Fill((*selectedLeptons)[0]->pt_,weight_lep * (sysDownWeights[n]/nominalWeights[n]));
       HistsSysDown[ch][0][1][n]->Fill((*selectedLeptons)[0]->eta_,weight_lep * (sysDownWeights[n]/nominalWeights[n]));
@@ -1068,17 +1249,25 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
       HistsSysDown[ch][0][17][n]->Fill(pv_n,weight_lep * (sysDownWeights[n]/nominalWeights[n]));
       HistsSysDown[ch][0][18][n]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M(),weight_lep * (sysDownWeights[n]/nominalWeights[n]));
       HistsSysDown[ch][0][19][n]->Fill(MVAoutput,weight_lep * (sysDownWeights[n]/nominalWeights[n]));
+      if ((*selectedLeptons)[0]->lep_ == 10) Hists[ch][0][20]->Fill((*selectedLeptons)[0]->pt_   ,weight_lep);
+      if ((*selectedLeptons)[0]->lep_ == 10) Hists[ch][0][22]->Fill((*selectedLeptons)[0]->eta_  ,weight_lep);
+      if ((*selectedLeptons)[0]->lep_ == 1)  Hists[ch][0][21]->Fill((*selectedLeptons)[0]->pt_   ,weight_lep);
+      if ((*selectedLeptons)[0]->lep_ == 1)  Hists[ch][0][23]->Fill((*selectedLeptons)[0]->eta_  ,weight_lep);
+      if ((*selectedLeptons)[1]->lep_ == 10) Hists[ch][0][20]->Fill((*selectedLeptons)[1]->pt_   ,weight_lep);
+      if ((*selectedLeptons)[1]->lep_ == 10) Hists[ch][0][22]->Fill((*selectedLeptons)[1]->eta_  ,weight_lep);
+      if ((*selectedLeptons)[1]->lep_ == 1)  Hists[ch][0][21]->Fill((*selectedLeptons)[1]->pt_   ,weight_lep);
+      if ((*selectedLeptons)[1]->lep_ == 1)  Hists[ch][0][23]->Fill((*selectedLeptons)[1]->eta_  ,weight_lep);
     }
-    if(selectedJetsJesUp->size()>0) HistsSysUp[ch][0][10][8]->Fill((*selectedJetsJesUp)[0]->pt_,weight_lep );
-    if(selectedJetsJesDown->size()>0) HistsSysDown[ch][0][10][8]->Fill((*selectedJetsJesDown)[0]->pt_,weight_lep );
-    if(selectedJetsJerUp->size()>0) HistsSysUp[ch][0][10][9]->Fill((*selectedJetsJerUp)[0]->pt_,weight_lep );
-    if(selectedJetsJerDown->size()>0) HistsSysDown[ch][0][10][9]->Fill((*selectedJetsJerDown)[0]->pt_,weight_lep );
-    HistsSysUp[ch][0][13][8]->Fill(selectedJetsJesUp->size(),weight_lep );
-    HistsSysDown[ch][0][13][8]->Fill(selectedJetsJesDown->size(),weight_lep );
-    HistsSysUp[ch][0][13][9]->Fill(selectedJetsJerUp->size(),weight_lep );
-    HistsSysDown[ch][0][13][9]->Fill(selectedJetsJerDown->size(),weight_lep );
+    if(selectedJetsJesUp->size()>0) HistsSysUp[ch][0][10][9]->Fill((*selectedJetsJesUp)[0]->pt_,weight_lep );
+    if(selectedJetsJesDown->size()>0) HistsSysDown[ch][0][10][9]->Fill((*selectedJetsJesDown)[0]->pt_,weight_lep );
+    if(selectedJetsJerUp->size()>0) HistsSysUp[ch][0][10][10]->Fill((*selectedJetsJerUp)[0]->pt_,weight_lep );
+    if(selectedJetsJerDown->size()>0) HistsSysDown[ch][0][10][10]->Fill((*selectedJetsJerDown)[0]->pt_,weight_lep );
+    HistsSysUp[ch][0][13][9]->Fill(selectedJetsJesUp->size(),weight_lep );
+    HistsSysDown[ch][0][13][9]->Fill(selectedJetsJesDown->size(),weight_lep );
+    HistsSysUp[ch][0][13][10]->Fill(selectedJetsJerUp->size(),weight_lep );
+    HistsSysDown[ch][0][13][10]->Fill(selectedJetsJerDown->size(),weight_lep );
 
-  if (fname.Contains("TTTo2L2Nu")){
+  if (fname.Contains("TTTo2L2Nu")|| fname.Contains("LFV")){
      for (int n=0;n<reweightSizeQscalePDF;++n){
        HistsSysReweightsQscalePDF[ch][0][0][n]->Fill((*selectedLeptons)[0]->pt_,weight_lep*(SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
        HistsSysReweightsQscalePDF[ch][0][1][n]->Fill((*selectedLeptons)[0]->eta_,weight_lep*(SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
@@ -1100,6 +1289,14 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
        HistsSysReweightsQscalePDF[ch][0][17][n]->Fill(pv_n,weight_lep*(SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
        HistsSysReweightsQscalePDF[ch][0][18][n]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M(),weight_lep*(SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
        HistsSysReweightsQscalePDF[ch][0][19][n]->Fill(MVAoutput,weight_lep*(SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
+      if ((*selectedLeptons)[0]->lep_ == 10) Hists[ch][0][20]->Fill((*selectedLeptons)[0]->pt_   ,weight_lep);
+      if ((*selectedLeptons)[0]->lep_ == 10) Hists[ch][0][22]->Fill((*selectedLeptons)[0]->eta_  ,weight_lep);
+      if ((*selectedLeptons)[0]->lep_ == 1)  Hists[ch][0][21]->Fill((*selectedLeptons)[0]->pt_   ,weight_lep);
+      if ((*selectedLeptons)[0]->lep_ == 1)  Hists[ch][0][23]->Fill((*selectedLeptons)[0]->eta_  ,weight_lep);
+      if ((*selectedLeptons)[1]->lep_ == 10) Hists[ch][0][20]->Fill((*selectedLeptons)[1]->pt_   ,weight_lep);
+      if ((*selectedLeptons)[1]->lep_ == 10) Hists[ch][0][22]->Fill((*selectedLeptons)[1]->eta_  ,weight_lep);
+      if ((*selectedLeptons)[1]->lep_ == 1)  Hists[ch][0][21]->Fill((*selectedLeptons)[1]->pt_   ,weight_lep);
+      if ((*selectedLeptons)[1]->lep_ == 1)  Hists[ch][0][23]->Fill((*selectedLeptons)[1]->eta_  ,weight_lep);
      }
      for (int n=0;n<reweightSizePS;++n){
        HistsSysReweightsPS[ch][0][0][n]->Fill((*selectedLeptons)[0]->pt_,weight_lep * (SGW[0]/SGW[n])*((*gen_weight_sys)[n]/(*gen_weight_sys)[0]));
@@ -1122,100 +1319,161 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
        HistsSysReweightsPS[ch][0][17][n]->Fill(pv_n,weight_lep* (SGW[0]/SGW[n])*((*gen_weight_sys)[n]/(*gen_weight_sys)[0]));
        HistsSysReweightsPS[ch][0][18][n]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M(),weight_lep* (SGW[0]/SGW[n])*((*gen_weight_sys)[n]/(*gen_weight_sys)[0]));
        HistsSysReweightsPS[ch][0][19][n]->Fill(MVAoutput,weight_lep* (SGW[0]/SGW[n])*((*gen_weight_sys)[n]/(*gen_weight_sys)[0]));
+      if ((*selectedLeptons)[0]->lep_ == 10) Hists[ch][0][20]->Fill((*selectedLeptons)[0]->pt_   ,weight_lep);
+      if ((*selectedLeptons)[0]->lep_ == 10) Hists[ch][0][22]->Fill((*selectedLeptons)[0]->eta_  ,weight_lep);
+      if ((*selectedLeptons)[0]->lep_ == 1)  Hists[ch][0][21]->Fill((*selectedLeptons)[0]->pt_   ,weight_lep);
+      if ((*selectedLeptons)[0]->lep_ == 1)  Hists[ch][0][23]->Fill((*selectedLeptons)[0]->eta_  ,weight_lep);
+      if ((*selectedLeptons)[1]->lep_ == 10) Hists[ch][0][20]->Fill((*selectedLeptons)[1]->pt_   ,weight_lep);
+      if ((*selectedLeptons)[1]->lep_ == 10) Hists[ch][0][22]->Fill((*selectedLeptons)[1]->eta_  ,weight_lep);
+      if ((*selectedLeptons)[1]->lep_ == 1)  Hists[ch][0][21]->Fill((*selectedLeptons)[1]->pt_   ,weight_lep);
+      if ((*selectedLeptons)[1]->lep_ == 1)  Hists[ch][0][23]->Fill((*selectedLeptons)[1]->eta_  ,weight_lep);
     }
   }
 
 //exclude events in zmass window
-    if ((*selectedLeptons)[0]->lep_ + (*selectedLeptons)[1]->lep_ != 11 && ((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M()<106 && ((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M()>76) continue;
+  if ((*selectedLeptons)[0]->lep_ + (*selectedLeptons)[1]->lep_ != 11 && ((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M()<106 && ((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M()>76) continue;
 //ll off Z region
-    Hists[ch][1][0]->Fill((*selectedLeptons)[0]->pt_,weight_lep);
-    Hists[ch][1][1]->Fill((*selectedLeptons)[0]->eta_,weight_lep);
-    Hists[ch][1][2]->Fill((*selectedLeptons)[0]->phi_,weight_lep);
-    Hists[ch][1][3]->Fill((*selectedLeptons)[1]->pt_,weight_lep);
-    Hists[ch][1][4]->Fill((*selectedLeptons)[1]->eta_,weight_lep);
-    Hists[ch][1][5]->Fill((*selectedLeptons)[1]->phi_,weight_lep);
-    Hists[ch][1][6]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M(),weight_lep);
-    Hists[ch][1][7]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).Pt(),weight_lep);
-    Hists[ch][1][8]->Fill(deltaR((*selectedLeptons)[0]->eta_,(*selectedLeptons)[0]->phi_,(*selectedLeptons)[1]->eta_,(*selectedLeptons)[1]->phi_),weight_lep);
-    Hists[ch][1][9]->Fill(deltaPhi((*selectedLeptons)[0]->phi_,(*selectedLeptons)[1]->phi_),weight_lep);
-    if(selectedJets->size()>0) Hists[ch][1][10]->Fill((*selectedJets)[0]->pt_,weight_lep);
-    if(selectedJets->size()>0) Hists[ch][1][11]->Fill((*selectedJets)[0]->eta_,weight_lep);
-    if(selectedJets->size()>0) Hists[ch][1][12]->Fill((*selectedJets)[0]->phi_,weight_lep);
-    Hists[ch][1][13]->Fill(selectedJets->size(),weight_lep);
-    Hists[ch][1][14]->Fill(nbjet,weight_lepB);
-    Hists[ch][1][15]->Fill(MET_FinalCollection_Pt,weight_lep);
-    Hists[ch][1][16]->Fill(MET_FinalCollection_phi,weight_lep);
-    Hists[ch][1][17]->Fill(pv_n,weight_lep);
-    Hists[ch][1][18]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M(),weight_lep);
-    Hists[ch][1][19]->Fill(MVAoutput,weight_lep);
-    for (int n=0;n<8;++n){
-      HistsSysUp[ch][1][0][n]->Fill((*selectedLeptons)[0]->pt_,weight_lep * (sysUpWeights[n]/nominalWeights[n]));
-      HistsSysUp[ch][1][1][n]->Fill((*selectedLeptons)[0]->eta_,weight_lep * (sysUpWeights[n]/nominalWeights[n]));
-      HistsSysUp[ch][1][2][n]->Fill((*selectedLeptons)[0]->phi_,weight_lep * (sysUpWeights[n]/nominalWeights[n]));
-      HistsSysUp[ch][1][3][n]->Fill((*selectedLeptons)[1]->pt_,weight_lep * (sysUpWeights[n]/nominalWeights[n]));
-      HistsSysUp[ch][1][4][n]->Fill((*selectedLeptons)[1]->eta_,weight_lep * (sysUpWeights[n]/nominalWeights[n]));
-      HistsSysUp[ch][1][5][n]->Fill((*selectedLeptons)[1]->phi_,weight_lep * (sysUpWeights[n]/nominalWeights[n]));
-      HistsSysUp[ch][1][6][n]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M(),weight_lep * (sysUpWeights[n]/nominalWeights[n]));
-      HistsSysUp[ch][1][7][n]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).Pt(),weight_lep * (sysUpWeights[n]/nominalWeights[n]));
-      HistsSysUp[ch][1][8][n]->Fill(deltaR((*selectedLeptons)[0]->eta_,(*selectedLeptons)[0]->phi_,(*selectedLeptons)[1]->eta_,(*selectedLeptons)[1]->phi_),weight_lep * (sysUpWeights[n]/nominalWeights[n]));
-      HistsSysUp[ch][1][9][n]->Fill(deltaPhi((*selectedLeptons)[0]->phi_,(*selectedLeptons)[1]->phi_),weight_lep * (sysUpWeights[n]/nominalWeights[n]));
-      if(selectedJets->size()>0) HistsSysUp[ch][1][10][n]->Fill((*selectedJets)[0]->pt_,weight_lep * (sysUpWeights[n]/nominalWeights[n]));
-      if(selectedJets->size()>0) HistsSysUp[ch][1][11][n]->Fill((*selectedJets)[0]->eta_,weight_lep * (sysUpWeights[n]/nominalWeights[n]));
-      if(selectedJets->size()>0) HistsSysUp[ch][1][12][n]->Fill((*selectedJets)[0]->phi_,weight_lep * (sysUpWeights[n]/nominalWeights[n]));
-      HistsSysUp[ch][1][13][n]->Fill(selectedJets->size(),weight_lep * (sysUpWeights[n]/nominalWeights[n]));
-      HistsSysUp[ch][1][14][n]->Fill(nbjet,weight_lepB * (sysUpWeights[n]/nominalWeights[n]));
-      HistsSysUp[ch][1][15][n]->Fill(MET_FinalCollection_Pt,weight_lep * (sysUpWeights[n]/nominalWeights[n]));
-      HistsSysUp[ch][1][16][n]->Fill(MET_FinalCollection_phi,weight_lep * (sysUpWeights[n]/nominalWeights[n]));
-      HistsSysUp[ch][1][17][n]->Fill(pv_n,weight_lep * (sysUpWeights[n]/nominalWeights[n]));
-      HistsSysUp[ch][1][18][n]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M(),weight_lep * (sysUpWeights[n]/nominalWeights[n]));
-      HistsSysUp[ch][1][19][n]->Fill(MVAoutput,weight_lep * (sysUpWeights[n]/nominalWeights[n]));
+  Hists[ch][1][0]->Fill((*selectedLeptons)[0]->pt_,weight_lep);
+  Hists[ch][1][1]->Fill((*selectedLeptons)[0]->eta_,weight_lep);
+  Hists[ch][1][2]->Fill((*selectedLeptons)[0]->phi_,weight_lep);
+  Hists[ch][1][3]->Fill((*selectedLeptons)[1]->pt_,weight_lep);
+  Hists[ch][1][4]->Fill((*selectedLeptons)[1]->eta_,weight_lep);
+  Hists[ch][1][5]->Fill((*selectedLeptons)[1]->phi_,weight_lep);
+  Hists[ch][1][6]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M(),weight_lep);
+  Hists[ch][1][7]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).Pt(),weight_lep);
+  Hists[ch][1][8]->Fill(deltaR((*selectedLeptons)[0]->eta_,(*selectedLeptons)[0]->phi_,(*selectedLeptons)[1]->eta_,(*selectedLeptons)[1]->phi_),weight_lep);
+  Hists[ch][1][9]->Fill(deltaPhi((*selectedLeptons)[0]->phi_,(*selectedLeptons)[1]->phi_),weight_lep);
+  if(selectedJets->size()>0) Hists[ch][1][10]->Fill((*selectedJets)[0]->pt_,weight_lep);
+  if(selectedJets->size()>0) Hists[ch][1][11]->Fill((*selectedJets)[0]->eta_,weight_lep);
+  if(selectedJets->size()>0) Hists[ch][1][12]->Fill((*selectedJets)[0]->phi_,weight_lep);
+  Hists[ch][1][13]->Fill(selectedJets->size(),weight_lep);
+  Hists[ch][1][14]->Fill(nbjet,weight_lepB);
+  Hists[ch][1][15]->Fill(MET_FinalCollection_Pt,weight_lep);
+  Hists[ch][1][16]->Fill(MET_FinalCollection_phi,weight_lep);
+  Hists[ch][1][17]->Fill(pv_n,weight_lep);
+  Hists[ch][1][18]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M(),weight_lep);
+  Hists[ch][1][19]->Fill(MVAoutput,weight_lep);
+  if ((*selectedLeptons)[0]->lep_ == 10) Hists[ch][1][20]->Fill((*selectedLeptons)[0]->pt_   ,weight_lep);
+  if ((*selectedLeptons)[0]->lep_ == 10) Hists[ch][1][22]->Fill((*selectedLeptons)[0]->eta_  ,weight_lep);
+  if ((*selectedLeptons)[0]->lep_ == 1)  Hists[ch][1][21]->Fill((*selectedLeptons)[0]->pt_   ,weight_lep);
+  if ((*selectedLeptons)[0]->lep_ == 1)  Hists[ch][1][23]->Fill((*selectedLeptons)[0]->eta_  ,weight_lep);
+  if ((*selectedLeptons)[1]->lep_ == 10) Hists[ch][1][20]->Fill((*selectedLeptons)[1]->pt_   ,weight_lep);
+  if ((*selectedLeptons)[1]->lep_ == 10) Hists[ch][1][22]->Fill((*selectedLeptons)[1]->eta_  ,weight_lep);
+  if ((*selectedLeptons)[1]->lep_ == 1)  Hists[ch][1][21]->Fill((*selectedLeptons)[1]->pt_   ,weight_lep);
+  if ((*selectedLeptons)[1]->lep_ == 1)  Hists[ch][1][23]->Fill((*selectedLeptons)[1]->eta_  ,weight_lep);
 
-      HistsSysDown[ch][1][0][n]->Fill((*selectedLeptons)[0]->pt_,weight_lep * (sysDownWeights[n]/nominalWeights[n]));
-      HistsSysDown[ch][1][1][n]->Fill((*selectedLeptons)[0]->eta_,weight_lep * (sysDownWeights[n]/nominalWeights[n]));
-      HistsSysDown[ch][1][2][n]->Fill((*selectedLeptons)[0]->phi_,weight_lep * (sysDownWeights[n]/nominalWeights[n]));
-      HistsSysDown[ch][1][3][n]->Fill((*selectedLeptons)[1]->pt_,weight_lep * (sysDownWeights[n]/nominalWeights[n]));
-      HistsSysDown[ch][1][4][n]->Fill((*selectedLeptons)[1]->eta_,weight_lep * (sysDownWeights[n]/nominalWeights[n]));
-      HistsSysDown[ch][1][5][n]->Fill((*selectedLeptons)[1]->phi_,weight_lep * (sysDownWeights[n]/nominalWeights[n]));
-      HistsSysDown[ch][1][6][n]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M(),weight_lep * (sysDownWeights[n]/nominalWeights[n]));
-      HistsSysDown[ch][1][7][n]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).Pt(),weight_lep * (sysDownWeights[n]/nominalWeights[n]));
-      HistsSysDown[ch][1][8][n]->Fill(deltaR((*selectedLeptons)[0]->eta_,(*selectedLeptons)[0]->phi_,(*selectedLeptons)[1]->eta_,(*selectedLeptons)[1]->phi_),weight_lep * (sysDownWeights[n]/nominalWeights[n]));
-      HistsSysDown[ch][1][9][n]->Fill(deltaPhi((*selectedLeptons)[0]->phi_,(*selectedLeptons)[1]->phi_),weight_lep * (sysDownWeights[n]/nominalWeights[n]));
-      if(selectedJets->size()>0) HistsSysDown[ch][1][10][n]->Fill((*selectedJets)[0]->pt_,weight_lep * (sysDownWeights[n]/nominalWeights[n]));
-      if(selectedJets->size()>0) HistsSysDown[ch][1][11][n]->Fill((*selectedJets)[0]->eta_,weight_lep * (sysDownWeights[n]/nominalWeights[n]));
-      if(selectedJets->size()>0) HistsSysDown[ch][1][12][n]->Fill((*selectedJets)[0]->phi_,weight_lep * (sysDownWeights[n]/nominalWeights[n]));
-      HistsSysDown[ch][1][13][n]->Fill(selectedJets->size(),weight_lep * (sysDownWeights[n]/nominalWeights[n]));
-      HistsSysDown[ch][1][14][n]->Fill(nbjet,weight_lepB * (sysDownWeights[n]/nominalWeights[n]));
-      HistsSysDown[ch][1][15][n]->Fill(MET_FinalCollection_Pt,weight_lep * (sysDownWeights[n]/nominalWeights[n]));
-      HistsSysDown[ch][1][16][n]->Fill(MET_FinalCollection_phi,weight_lep * (sysDownWeights[n]/nominalWeights[n]));
-      HistsSysDown[ch][1][17][n]->Fill(pv_n,weight_lep * (sysDownWeights[n]/nominalWeights[n]));
-      HistsSysDown[ch][1][18][n]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M(),weight_lep * (sysDownWeights[n]/nominalWeights[n]));
-      HistsSysDown[ch][1][19][n]->Fill(MVAoutput,weight_lep * (sysDownWeights[n]/nominalWeights[n]));
-    }
-    if(selectedJetsJesUp->size()>0) {
-      HistsSysUp[ch][1][10][8]->Fill((*selectedJetsJesUp)[0]->pt_,weight_lep );
-      HistsSysUp[ch][1][15][8]->Fill(MET_T1SmearJetEnUp_Pt,weight_lep );
-      HistsSysUp[ch][1][19][8]->Fill(MVAoutput,weight_lep );
-    }
-    if(selectedJetsJesDown->size()>0){
-      HistsSysDown[ch][1][10][8]->Fill((*selectedJetsJesDown)[0]->pt_,weight_lep );
-      HistsSysDown[ch][1][15][8]->Fill(MET_T1SmearJetEnDown_Pt,weight_lep );
-      HistsSysDown[ch][1][19][8]->Fill(MVAoutput,weight_lep );
-    }
-    if(selectedJetsJerUp->size()>0){
-      HistsSysUp[ch][1][10][9]->Fill((*selectedJetsJerUp)[0]->pt_,weight_lep );
-      HistsSysUp[ch][1][15][9]->Fill(MET_T1SmearJetResUp_Pt,weight_lep );
-      HistsSysUp[ch][1][19][9]->Fill(MVAoutput,weight_lep );
-    }
-    if(selectedJetsJerDown->size()>0){
-      HistsSysDown[ch][1][10][9]->Fill((*selectedJetsJerDown)[0]->pt_,weight_lep );
-      HistsSysDown[ch][1][15][9]->Fill(MET_T1SmearJetResDown_Pt,weight_lep );
-      HistsSysDown[ch][1][19][9]->Fill(MVAoutput,weight_lep );
-    }
-    HistsSysUp[ch][1][13][8]->Fill(selectedJetsJesUp->size(),weight_lep );
-    HistsSysDown[ch][1][13][8]->Fill(selectedJetsJesDown->size(),weight_lep );
-    HistsSysUp[ch][1][13][9]->Fill(selectedJetsJerUp->size(),weight_lep );
-    HistsSysDown[ch][1][13][9]->Fill(selectedJetsJerDown->size(),weight_lep );
-  if (fname.Contains("TTTo2L2Nu")){
+  for (int n=0;n<9;++n){
+    HistsSysUp[ch][1][0][n]->Fill((*selectedLeptons)[0]->pt_,weight_lep * (sysUpWeights[n]/nominalWeights[n]));
+    HistsSysUp[ch][1][1][n]->Fill((*selectedLeptons)[0]->eta_,weight_lep * (sysUpWeights[n]/nominalWeights[n]));
+    HistsSysUp[ch][1][2][n]->Fill((*selectedLeptons)[0]->phi_,weight_lep * (sysUpWeights[n]/nominalWeights[n]));
+    HistsSysUp[ch][1][3][n]->Fill((*selectedLeptons)[1]->pt_,weight_lep * (sysUpWeights[n]/nominalWeights[n]));
+    HistsSysUp[ch][1][4][n]->Fill((*selectedLeptons)[1]->eta_,weight_lep * (sysUpWeights[n]/nominalWeights[n]));
+    HistsSysUp[ch][1][5][n]->Fill((*selectedLeptons)[1]->phi_,weight_lep * (sysUpWeights[n]/nominalWeights[n]));
+    HistsSysUp[ch][1][6][n]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M(),weight_lep * (sysUpWeights[n]/nominalWeights[n]));
+    HistsSysUp[ch][1][7][n]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).Pt(),weight_lep * (sysUpWeights[n]/nominalWeights[n]));
+    HistsSysUp[ch][1][8][n]->Fill(deltaR((*selectedLeptons)[0]->eta_,(*selectedLeptons)[0]->phi_,(*selectedLeptons)[1]->eta_,(*selectedLeptons)[1]->phi_),weight_lep * (sysUpWeights[n]/nominalWeights[n]));
+    HistsSysUp[ch][1][9][n]->Fill(deltaPhi((*selectedLeptons)[0]->phi_,(*selectedLeptons)[1]->phi_),weight_lep * (sysUpWeights[n]/nominalWeights[n]));
+    if(selectedJets->size()>0) HistsSysUp[ch][1][10][n]->Fill((*selectedJets)[0]->pt_,weight_lep * (sysUpWeights[n]/nominalWeights[n]));
+    if(selectedJets->size()>0) HistsSysUp[ch][1][11][n]->Fill((*selectedJets)[0]->eta_,weight_lep * (sysUpWeights[n]/nominalWeights[n]));
+    if(selectedJets->size()>0) HistsSysUp[ch][1][12][n]->Fill((*selectedJets)[0]->phi_,weight_lep * (sysUpWeights[n]/nominalWeights[n]));
+    HistsSysUp[ch][1][13][n]->Fill(selectedJets->size(),weight_lep * (sysUpWeights[n]/nominalWeights[n]));
+    HistsSysUp[ch][1][14][n]->Fill(nbjet,weight_lepB * (sysUpWeights[n]/nominalWeights[n]));
+    HistsSysUp[ch][1][15][n]->Fill(MET_FinalCollection_Pt,weight_lep * (sysUpWeights[n]/nominalWeights[n]));
+    HistsSysUp[ch][1][16][n]->Fill(MET_FinalCollection_phi,weight_lep * (sysUpWeights[n]/nominalWeights[n]));
+    HistsSysUp[ch][1][17][n]->Fill(pv_n,weight_lep * (sysUpWeights[n]/nominalWeights[n]));
+    HistsSysUp[ch][1][18][n]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M(),weight_lep * (sysUpWeights[n]/nominalWeights[n]));
+    HistsSysUp[ch][1][19][n]->Fill(MVAoutput,weight_lep * (sysUpWeights[n]/nominalWeights[n]));
+    if ((*selectedLeptons)[0]->lep_ == 10) HistsSysUp[ch][1][20][n]->Fill((*selectedLeptons)[0]->pt_   ,weight_lep * (sysUpWeights[n]/nominalWeights[n]));
+    if ((*selectedLeptons)[0]->lep_ == 10) HistsSysUp[ch][1][22][n]->Fill((*selectedLeptons)[0]->eta_  ,weight_lep * (sysUpWeights[n]/nominalWeights[n]));
+    if ((*selectedLeptons)[0]->lep_ == 1)  HistsSysUp[ch][1][21][n]->Fill((*selectedLeptons)[0]->pt_   ,weight_lep * (sysUpWeights[n]/nominalWeights[n]));
+    if ((*selectedLeptons)[0]->lep_ == 1)  HistsSysUp[ch][1][23][n]->Fill((*selectedLeptons)[0]->eta_  ,weight_lep * (sysUpWeights[n]/nominalWeights[n]));
+    if ((*selectedLeptons)[1]->lep_ == 10) HistsSysUp[ch][1][20][n]->Fill((*selectedLeptons)[1]->pt_   ,weight_lep * (sysUpWeights[n]/nominalWeights[n]));
+    if ((*selectedLeptons)[1]->lep_ == 10) HistsSysUp[ch][1][22][n]->Fill((*selectedLeptons)[1]->eta_  ,weight_lep * (sysUpWeights[n]/nominalWeights[n]));
+    if ((*selectedLeptons)[1]->lep_ == 1)  HistsSysUp[ch][1][21][n]->Fill((*selectedLeptons)[1]->pt_   ,weight_lep * (sysUpWeights[n]/nominalWeights[n]));
+    if ((*selectedLeptons)[1]->lep_ == 1)  HistsSysUp[ch][1][23][n]->Fill((*selectedLeptons)[1]->eta_  ,weight_lep * (sysUpWeights[n]/nominalWeights[n]));
+
+
+    HistsSysDown[ch][1][0][n]->Fill((*selectedLeptons)[0]->pt_,weight_lep * (sysDownWeights[n]/nominalWeights[n]));
+    HistsSysDown[ch][1][1][n]->Fill((*selectedLeptons)[0]->eta_,weight_lep * (sysDownWeights[n]/nominalWeights[n]));
+    HistsSysDown[ch][1][2][n]->Fill((*selectedLeptons)[0]->phi_,weight_lep * (sysDownWeights[n]/nominalWeights[n]));
+    HistsSysDown[ch][1][3][n]->Fill((*selectedLeptons)[1]->pt_,weight_lep * (sysDownWeights[n]/nominalWeights[n]));
+    HistsSysDown[ch][1][4][n]->Fill((*selectedLeptons)[1]->eta_,weight_lep * (sysDownWeights[n]/nominalWeights[n]));
+    HistsSysDown[ch][1][5][n]->Fill((*selectedLeptons)[1]->phi_,weight_lep * (sysDownWeights[n]/nominalWeights[n]));
+    HistsSysDown[ch][1][6][n]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M(),weight_lep * (sysDownWeights[n]/nominalWeights[n]));
+    HistsSysDown[ch][1][7][n]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).Pt(),weight_lep * (sysDownWeights[n]/nominalWeights[n]));
+    HistsSysDown[ch][1][8][n]->Fill(deltaR((*selectedLeptons)[0]->eta_,(*selectedLeptons)[0]->phi_,(*selectedLeptons)[1]->eta_,(*selectedLeptons)[1]->phi_),weight_lep * (sysDownWeights[n]/nominalWeights[n]));
+    HistsSysDown[ch][1][9][n]->Fill(deltaPhi((*selectedLeptons)[0]->phi_,(*selectedLeptons)[1]->phi_),weight_lep * (sysDownWeights[n]/nominalWeights[n]));
+    if(selectedJets->size()>0) HistsSysDown[ch][1][10][n]->Fill((*selectedJets)[0]->pt_,weight_lep * (sysDownWeights[n]/nominalWeights[n]));
+    if(selectedJets->size()>0) HistsSysDown[ch][1][11][n]->Fill((*selectedJets)[0]->eta_,weight_lep * (sysDownWeights[n]/nominalWeights[n]));
+    if(selectedJets->size()>0) HistsSysDown[ch][1][12][n]->Fill((*selectedJets)[0]->phi_,weight_lep * (sysDownWeights[n]/nominalWeights[n]));
+    HistsSysDown[ch][1][13][n]->Fill(selectedJets->size(),weight_lep * (sysDownWeights[n]/nominalWeights[n]));
+    HistsSysDown[ch][1][14][n]->Fill(nbjet,weight_lepB * (sysDownWeights[n]/nominalWeights[n]));
+    HistsSysDown[ch][1][15][n]->Fill(MET_FinalCollection_Pt,weight_lep * (sysDownWeights[n]/nominalWeights[n]));
+    HistsSysDown[ch][1][16][n]->Fill(MET_FinalCollection_phi,weight_lep * (sysDownWeights[n]/nominalWeights[n]));
+    HistsSysDown[ch][1][17][n]->Fill(pv_n,weight_lep * (sysDownWeights[n]/nominalWeights[n]));
+    HistsSysDown[ch][1][18][n]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M(),weight_lep * (sysDownWeights[n]/nominalWeights[n]));
+    HistsSysDown[ch][1][19][n]->Fill(MVAoutput,weight_lep * (sysDownWeights[n]/nominalWeights[n]));
+    if ((*selectedLeptons)[0]->lep_ == 10) HistsSysDown[ch][1][20][n]->Fill((*selectedLeptons)[0]->pt_   ,weight_lep * (sysDownWeights[n]/nominalWeights[n]));
+    if ((*selectedLeptons)[0]->lep_ == 10) HistsSysDown[ch][1][22][n]->Fill((*selectedLeptons)[0]->eta_  ,weight_lep * (sysDownWeights[n]/nominalWeights[n]));
+    if ((*selectedLeptons)[0]->lep_ == 1)  HistsSysDown[ch][1][21][n]->Fill((*selectedLeptons)[0]->pt_   ,weight_lep * (sysDownWeights[n]/nominalWeights[n]));
+    if ((*selectedLeptons)[0]->lep_ == 1)  HistsSysDown[ch][1][23][n]->Fill((*selectedLeptons)[0]->eta_  ,weight_lep * (sysDownWeights[n]/nominalWeights[n]));
+    if ((*selectedLeptons)[1]->lep_ == 10) HistsSysDown[ch][1][20][n]->Fill((*selectedLeptons)[1]->pt_   ,weight_lep * (sysDownWeights[n]/nominalWeights[n]));
+    if ((*selectedLeptons)[1]->lep_ == 10) HistsSysDown[ch][1][22][n]->Fill((*selectedLeptons)[1]->eta_  ,weight_lep * (sysDownWeights[n]/nominalWeights[n]));
+    if ((*selectedLeptons)[1]->lep_ == 1)  HistsSysDown[ch][1][21][n]->Fill((*selectedLeptons)[1]->pt_   ,weight_lep * (sysDownWeights[n]/nominalWeights[n]));
+    if ((*selectedLeptons)[1]->lep_ == 1)  HistsSysDown[ch][1][23][n]->Fill((*selectedLeptons)[1]->eta_  ,weight_lep * (sysDownWeights[n]/nominalWeights[n]));
+  }
+  if(selectedJetsJesUp->size()>0) {
+    HistsSysUp[ch][1][10][9]->Fill((*selectedJetsJesUp)[0]->pt_,weight_lep );
+    HistsSysUp[ch][1][15][9]->Fill(MET_T1SmearJetEnUp_Pt,weight_lep );
+    HistsSysUp[ch][1][19][9]->Fill(MVAoutput,weight_lep );
+  }
+  if(selectedJetsJesDown->size()>0){
+    HistsSysDown[ch][1][10][9]->Fill((*selectedJetsJesDown)[0]->pt_,weight_lep );
+    HistsSysDown[ch][1][15][9]->Fill(MET_T1SmearJetEnDown_Pt,weight_lep );
+    HistsSysDown[ch][1][19][9]->Fill(MVAoutput,weight_lep );
+  }
+  if(selectedJetsJerUp->size()>0){
+    HistsSysUp[ch][1][10][10]->Fill((*selectedJetsJerUp)[0]->pt_,weight_lep );
+    HistsSysUp[ch][1][15][10]->Fill(MET_T1SmearJetResUp_Pt,weight_lep );
+    HistsSysUp[ch][1][19][10]->Fill(MVAoutput,weight_lep );
+  }
+  if(selectedJetsJerDown->size()>0){
+    HistsSysDown[ch][1][10][10]->Fill((*selectedJetsJerDown)[0]->pt_,weight_lep );
+    HistsSysDown[ch][1][15][10]->Fill(MET_T1SmearJetResDown_Pt,weight_lep );
+    HistsSysDown[ch][1][19][10]->Fill(MVAoutput,weight_lep );
+  }
+  HistsSysUp[ch][1][13][9]->Fill(selectedJetsJesUp->size(),weight_lep );
+  HistsSysDown[ch][1][13][9]->Fill(selectedJetsJesDown->size(),weight_lep );
+  HistsSysUp[ch][1][13][10]->Fill(selectedJetsJerUp->size(),weight_lep );
+  HistsSysDown[ch][1][13][10]->Fill(selectedJetsJerDown->size(),weight_lep );
+  HistsSysUp[ch][1][15][11]->Fill(metUnclusMETUp,weight_lep );
+  HistsSysUp[ch][1][19][11]->Fill(MVAoutputUnclusMETUp,weight_lep );
+  HistsSysDown[ch][1][15][11]->Fill(metUnclusMETDown,weight_lep );
+  HistsSysDown[ch][1][19][11]->Fill(MVAoutputUnclusMETDown,weight_lep );
+  if (selectedLeptonsMuScaleUp->size()>1) HistsSysUp[ch][1][0][12]->Fill((*selectedLeptonsMuScaleUp)[0]->pt_,weight_lep );
+  if (selectedLeptonsMuScaleDown->size()>1) HistsSysDown[ch][1][0][12]->Fill((*selectedLeptonsMuScaleDown)[0]->pt_,weight_lep );
+  if (selectedLeptonsMuScaleUp->size()>1) HistsSysUp[ch][1][3][12]->Fill((*selectedLeptonsMuScaleUp)[1]->pt_,weight_lep );
+  if (selectedLeptonsMuScaleDown->size()>1) HistsSysDown[ch][1][3][12]->Fill((*selectedLeptonsMuScaleDown)[1]->pt_,weight_lep );
+
+  if (selectedLeptonsEleScaleUp->size()>1) HistsSysUp[ch][1][0][13]->Fill((*selectedLeptonsEleScaleUp)[0]->pt_,weight_lep );
+  if (selectedLeptonsEleScaleDown->size()>1) HistsSysDown[ch][1][0][13]->Fill((*selectedLeptonsEleScaleDown)[0]->pt_,weight_lep );
+  if (selectedLeptonsEleScaleUp->size()>1) HistsSysUp[ch][1][3][13]->Fill((*selectedLeptonsEleScaleUp)[1]->pt_,weight_lep );
+  if (selectedLeptonsEleScaleDown->size()>1) HistsSysDown[ch][1][3][13]->Fill((*selectedLeptonsEleScaleDown)[1]->pt_,weight_lep );
+
+  if (selectedLeptonsMuResUp->size()>1) HistsSysUp[ch][1][0][14]->Fill((*selectedLeptonsMuResUp)[0]->pt_,weight_lep );
+  if (selectedLeptonsMuResDown->size()>1) HistsSysDown[ch][1][0][14]->Fill((*selectedLeptonsMuResDown)[0]->pt_,weight_lep );
+  if (selectedLeptonsMuResUp->size()>1) HistsSysUp[ch][1][3][14]->Fill((*selectedLeptonsMuResUp)[1]->pt_,weight_lep );
+  if (selectedLeptonsMuResDown->size()>1) HistsSysDown[ch][1][3][14]->Fill((*selectedLeptonsMuResDown)[1]->pt_,weight_lep );
+
+  HistsSysUp[ch][1][19][12]->Fill(MVAoutputMuScaleUp,weight_lep );
+  HistsSysUp[ch][1][19][13]->Fill(MVAoutputEleScaleUp,weight_lep );
+  HistsSysUp[ch][1][19][14]->Fill(MVAoutputMuResUp,weight_lep );
+
+  HistsSysDown[ch][1][19][12]->Fill(MVAoutputMuScaleDown,weight_lep );
+  HistsSysDown[ch][1][19][13]->Fill(MVAoutputEleScaleDown,weight_lep );
+  HistsSysDown[ch][1][19][14]->Fill(MVAoutputMuResDown,weight_lep );
+
+  if (fname.Contains("TTTo2L2Nu")|| fname.Contains("LFV")){
      for (int n=0;n<reweightSizeQscalePDF;++n){
        HistsSysReweightsQscalePDF[ch][1][0][n]->Fill((*selectedLeptons)[0]->pt_,weight_lep*(SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
        HistsSysReweightsQscalePDF[ch][1][1][n]->Fill((*selectedLeptons)[0]->eta_,weight_lep*(SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
@@ -1261,6 +1519,7 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
        HistsSysReweightsPS[ch][1][19][n]->Fill(MVAoutput,weight_lep* (SGW[0]/SGW[n])*((*gen_weight_sys)[n]/(*gen_weight_sys)[0]));
     }
   }
+
 //************* SIGNAL region
   if(nbjet==1){
     Hists[ch][2][0]->Fill((*selectedLeptons)[0]->pt_,weight_lepB);
@@ -1283,7 +1542,16 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     Hists[ch][2][17]->Fill(pv_n,weight_lepB);
     Hists[ch][2][18]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M(),weight_lepB);
     Hists[ch][2][19]->Fill(MVAoutput,weight_lepB);
-    for (int n=0;n<8;++n){
+    if ((*selectedLeptons)[0]->lep_ == 10) Hists[ch][2][20]->Fill((*selectedLeptons)[0]->pt_   ,weight_lepB);
+    if ((*selectedLeptons)[0]->lep_ == 10) Hists[ch][2][22]->Fill((*selectedLeptons)[0]->eta_  ,weight_lepB);
+    if ((*selectedLeptons)[0]->lep_ == 1)  Hists[ch][2][21]->Fill((*selectedLeptons)[0]->pt_   ,weight_lepB);
+    if ((*selectedLeptons)[0]->lep_ == 1)  Hists[ch][2][23]->Fill((*selectedLeptons)[0]->eta_  ,weight_lepB);
+    if ((*selectedLeptons)[1]->lep_ == 10) Hists[ch][2][20]->Fill((*selectedLeptons)[1]->pt_   ,weight_lepB);
+    if ((*selectedLeptons)[1]->lep_ == 10) Hists[ch][2][22]->Fill((*selectedLeptons)[1]->eta_  ,weight_lepB);
+    if ((*selectedLeptons)[1]->lep_ == 1)  Hists[ch][2][21]->Fill((*selectedLeptons)[1]->pt_   ,weight_lepB);
+    if ((*selectedLeptons)[1]->lep_ == 1)  Hists[ch][2][23]->Fill((*selectedLeptons)[1]->eta_  ,weight_lepB);
+
+    for (int n=0;n<9;++n){
       HistsSysUp[ch][2][0][n]->Fill((*selectedLeptons)[0]->pt_,weight_lepB * (sysUpWeights[n]/nominalWeights[n]));
       HistsSysUp[ch][2][1][n]->Fill((*selectedLeptons)[0]->eta_,weight_lepB * (sysUpWeights[n]/nominalWeights[n]));
       HistsSysUp[ch][2][2][n]->Fill((*selectedLeptons)[0]->phi_,weight_lepB * (sysUpWeights[n]/nominalWeights[n]));
@@ -1304,6 +1572,14 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
       HistsSysUp[ch][2][17][n]->Fill(pv_n,weight_lepB * (sysUpWeights[n]/nominalWeights[n]));
       HistsSysUp[ch][2][18][n]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M(),weight_lepB * (sysUpWeights[n]/nominalWeights[n]));
       HistsSysUp[ch][2][19][n]->Fill(MVAoutput,weight_lepB * (sysUpWeights[n]/nominalWeights[n]));
+      if ((*selectedLeptons)[0]->lep_ == 10) HistsSysUp[ch][2][20][n]->Fill((*selectedLeptons)[0]->pt_   ,weight_lepB * (sysUpWeights[n]/nominalWeights[n]));
+      if ((*selectedLeptons)[0]->lep_ == 10) HistsSysUp[ch][2][22][n]->Fill((*selectedLeptons)[0]->eta_  ,weight_lepB * (sysUpWeights[n]/nominalWeights[n]));
+      if ((*selectedLeptons)[0]->lep_ == 1)  HistsSysUp[ch][2][21][n]->Fill((*selectedLeptons)[0]->pt_   ,weight_lepB * (sysUpWeights[n]/nominalWeights[n]));
+      if ((*selectedLeptons)[0]->lep_ == 1)  HistsSysUp[ch][2][23][n]->Fill((*selectedLeptons)[0]->eta_  ,weight_lepB * (sysUpWeights[n]/nominalWeights[n]));
+      if ((*selectedLeptons)[1]->lep_ == 10) HistsSysUp[ch][2][20][n]->Fill((*selectedLeptons)[1]->pt_   ,weight_lepB * (sysUpWeights[n]/nominalWeights[n]));
+      if ((*selectedLeptons)[1]->lep_ == 10) HistsSysUp[ch][2][22][n]->Fill((*selectedLeptons)[1]->eta_  ,weight_lepB * (sysUpWeights[n]/nominalWeights[n]));
+      if ((*selectedLeptons)[1]->lep_ == 1)  HistsSysUp[ch][2][21][n]->Fill((*selectedLeptons)[1]->pt_   ,weight_lepB * (sysUpWeights[n]/nominalWeights[n]));
+      if ((*selectedLeptons)[1]->lep_ == 1)  HistsSysUp[ch][2][23][n]->Fill((*selectedLeptons)[1]->eta_  ,weight_lepB * (sysUpWeights[n]/nominalWeights[n]));
 
       HistsSysDown[ch][2][0][n]->Fill((*selectedLeptons)[0]->pt_,weight_lepB * (sysDownWeights[n]/nominalWeights[n]));
       HistsSysDown[ch][2][1][n]->Fill((*selectedLeptons)[0]->eta_,weight_lepB * (sysDownWeights[n]/nominalWeights[n]));
@@ -1325,8 +1601,81 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
       HistsSysDown[ch][2][17][n]->Fill(pv_n,weight_lepB * (sysDownWeights[n]/nominalWeights[n]));
       HistsSysDown[ch][2][18][n]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M(),weight_lepB * (sysDownWeights[n]/nominalWeights[n]));
       HistsSysDown[ch][2][19][n]->Fill(MVAoutput,weight_lepB * (sysDownWeights[n]/nominalWeights[n]));
+      if ((*selectedLeptons)[0]->lep_ == 10) HistsSysDown[ch][2][20][n]->Fill((*selectedLeptons)[0]->pt_   ,weight_lepB * (sysDownWeights[n]/nominalWeights[n]));
+      if ((*selectedLeptons)[0]->lep_ == 10) HistsSysDown[ch][2][22][n]->Fill((*selectedLeptons)[0]->eta_  ,weight_lepB * (sysDownWeights[n]/nominalWeights[n]));
+      if ((*selectedLeptons)[0]->lep_ == 1)  HistsSysDown[ch][2][21][n]->Fill((*selectedLeptons)[0]->pt_   ,weight_lepB * (sysDownWeights[n]/nominalWeights[n]));
+      if ((*selectedLeptons)[0]->lep_ == 1)  HistsSysDown[ch][2][23][n]->Fill((*selectedLeptons)[0]->eta_  ,weight_lepB * (sysDownWeights[n]/nominalWeights[n]));
+      if ((*selectedLeptons)[1]->lep_ == 10) HistsSysDown[ch][2][20][n]->Fill((*selectedLeptons)[1]->pt_   ,weight_lepB * (sysDownWeights[n]/nominalWeights[n]));
+      if ((*selectedLeptons)[1]->lep_ == 10) HistsSysDown[ch][2][22][n]->Fill((*selectedLeptons)[1]->eta_  ,weight_lepB * (sysDownWeights[n]/nominalWeights[n]));
+      if ((*selectedLeptons)[1]->lep_ == 1)  HistsSysDown[ch][2][21][n]->Fill((*selectedLeptons)[1]->pt_   ,weight_lepB * (sysDownWeights[n]/nominalWeights[n]));
+      if ((*selectedLeptons)[1]->lep_ == 1)  HistsSysDown[ch][2][23][n]->Fill((*selectedLeptons)[1]->eta_  ,weight_lepB * (sysDownWeights[n]/nominalWeights[n]));
     }
-    if (fname.Contains("TTTo2L2Nu")){
+    HistsSysUp[ch][2][15][11]->Fill(metUnclusMETUp,weight_lepB );
+    HistsSysUp[ch][2][19][11]->Fill(MVAoutputUnclusMETUp,weight_lepB );
+    HistsSysDown[ch][2][15][11]->Fill(metUnclusMETDown,weight_lepB );
+    HistsSysDown[ch][2][19][11]->Fill(MVAoutputUnclusMETDown,weight_lepB );
+    if (selectedLeptonsMuScaleUp->size()>1) {
+      HistsSysUp[ch][2][0][12]->Fill((*selectedLeptonsMuScaleUp)[0]->pt_,weight_lepB );
+      HistsSysUp[ch][2][3][12]->Fill((*selectedLeptonsMuScaleUp)[1]->pt_,weight_lepB );
+      if ((*selectedLeptonsMuScaleUp)[0]->lep_ == 10) HistsSysUp[ch][2][20][12]->Fill((*selectedLeptonsMuScaleUp)[0]->pt_   ,weight_lepB);
+      if ((*selectedLeptonsMuScaleUp)[0]->lep_ == 1)  HistsSysUp[ch][2][21][12]->Fill((*selectedLeptonsMuScaleUp)[0]->pt_   ,weight_lepB);
+      if ((*selectedLeptonsMuScaleUp)[1]->lep_ == 10) HistsSysUp[ch][2][20][12]->Fill((*selectedLeptonsMuScaleUp)[1]->pt_   ,weight_lepB);
+      if ((*selectedLeptonsMuScaleUp)[1]->lep_ == 1)  HistsSysUp[ch][2][21][12]->Fill((*selectedLeptonsMuScaleUp)[1]->pt_   ,weight_lepB);
+    }
+
+    if (selectedLeptonsMuScaleDown->size()>1) {
+       HistsSysDown[ch][2][0][12]->Fill((*selectedLeptonsMuScaleDown)[0]->pt_,weight_lepB );
+       HistsSysDown[ch][2][3][12]->Fill((*selectedLeptonsMuScaleDown)[1]->pt_,weight_lepB );
+      if ((*selectedLeptonsMuScaleDown)[0]->lep_ == 10) HistsSysDown[ch][2][20][12]->Fill((*selectedLeptonsMuScaleDown)[0]->pt_   ,weight_lepB);
+      if ((*selectedLeptonsMuScaleDown)[0]->lep_ == 1)  HistsSysDown[ch][2][21][12]->Fill((*selectedLeptonsMuScaleDown)[0]->pt_   ,weight_lepB);
+      if ((*selectedLeptonsMuScaleDown)[1]->lep_ == 10) HistsSysDown[ch][2][20][12]->Fill((*selectedLeptonsMuScaleDown)[1]->pt_   ,weight_lepB);
+      if ((*selectedLeptonsMuScaleDown)[1]->lep_ == 1)  HistsSysDown[ch][2][21][12]->Fill((*selectedLeptonsMuScaleDown)[1]->pt_   ,weight_lepB);
+    }
+
+    if (selectedLeptonsEleScaleUp->size()>1) {
+      HistsSysUp[ch][2][0][13]->Fill((*selectedLeptonsEleScaleUp)[0]->pt_,weight_lepB );
+      HistsSysUp[ch][2][3][13]->Fill((*selectedLeptonsEleScaleUp)[1]->pt_,weight_lepB );
+      if ((*selectedLeptonsEleScaleUp)[0]->lep_ == 10) HistsSysUp[ch][2][20][13]->Fill((*selectedLeptonsEleScaleUp)[0]->pt_   ,weight_lepB);
+      if ((*selectedLeptonsEleScaleUp)[0]->lep_ == 1)  HistsSysUp[ch][2][21][13]->Fill((*selectedLeptonsEleScaleUp)[0]->pt_   ,weight_lepB);
+      if ((*selectedLeptonsEleScaleUp)[1]->lep_ == 10) HistsSysUp[ch][2][20][13]->Fill((*selectedLeptonsEleScaleUp)[1]->pt_   ,weight_lepB);
+      if ((*selectedLeptonsEleScaleUp)[1]->lep_ == 1)  HistsSysUp[ch][2][21][13]->Fill((*selectedLeptonsEleScaleUp)[1]->pt_   ,weight_lepB);
+    }
+
+    if (selectedLeptonsEleScaleDown->size()>1) {
+      HistsSysDown[ch][2][0][13]->Fill((*selectedLeptonsEleScaleDown)[0]->pt_,weight_lepB );
+      HistsSysDown[ch][2][3][13]->Fill((*selectedLeptonsEleScaleDown)[1]->pt_,weight_lepB );
+      if ((*selectedLeptonsEleScaleDown)[0]->lep_ == 10) HistsSysDown[ch][2][20][13]->Fill((*selectedLeptonsEleScaleDown)[0]->pt_   ,weight_lepB);
+      if ((*selectedLeptonsEleScaleDown)[0]->lep_ == 1)  HistsSysDown[ch][2][21][13]->Fill((*selectedLeptonsEleScaleDown)[0]->pt_   ,weight_lepB);
+      if ((*selectedLeptonsEleScaleDown)[1]->lep_ == 10) HistsSysDown[ch][2][20][13]->Fill((*selectedLeptonsEleScaleDown)[1]->pt_   ,weight_lepB);
+      if ((*selectedLeptonsEleScaleDown)[1]->lep_ == 1)  HistsSysDown[ch][2][21][13]->Fill((*selectedLeptonsEleScaleDown)[1]->pt_   ,weight_lepB);
+    }
+
+    if (selectedLeptonsMuResUp->size()>1) {
+      HistsSysUp[ch][2][0][14]->Fill((*selectedLeptonsMuResUp)[0]->pt_,weight_lepB );
+      HistsSysUp[ch][2][3][14]->Fill((*selectedLeptonsMuResUp)[1]->pt_,weight_lepB );
+      if ((*selectedLeptonsMuResUp)[0]->lep_ == 10) HistsSysUp[ch][2][20][14]->Fill((*selectedLeptonsMuResUp)[0]->pt_   ,weight_lepB);
+      if ((*selectedLeptonsMuResUp)[0]->lep_ == 1)  HistsSysUp[ch][2][21][14]->Fill((*selectedLeptonsMuResUp)[0]->pt_   ,weight_lepB);
+      if ((*selectedLeptonsMuResUp)[1]->lep_ == 10) HistsSysUp[ch][2][20][14]->Fill((*selectedLeptonsMuResUp)[1]->pt_   ,weight_lepB);
+      if ((*selectedLeptonsMuResUp)[1]->lep_ == 1)  HistsSysUp[ch][2][21][14]->Fill((*selectedLeptonsMuResUp)[1]->pt_   ,weight_lepB);
+    }
+
+    if (selectedLeptonsMuResDown->size()>1) {
+      HistsSysDown[ch][2][0][14]->Fill((*selectedLeptonsMuResDown)[0]->pt_,weight_lepB );
+      HistsSysDown[ch][2][3][14]->Fill((*selectedLeptonsMuResDown)[1]->pt_,weight_lepB );
+      if ((*selectedLeptonsMuResDown)[0]->lep_ == 10) HistsSysDown[ch][2][20][14]->Fill((*selectedLeptonsMuResDown)[0]->pt_   ,weight_lepB);
+      if ((*selectedLeptonsMuResDown)[0]->lep_ == 1)  HistsSysDown[ch][2][21][14]->Fill((*selectedLeptonsMuResDown)[0]->pt_   ,weight_lepB);
+      if ((*selectedLeptonsMuResDown)[1]->lep_ == 10) HistsSysDown[ch][2][20][14]->Fill((*selectedLeptonsMuResDown)[1]->pt_   ,weight_lepB);
+      if ((*selectedLeptonsMuResDown)[1]->lep_ == 1)  HistsSysDown[ch][2][21][14]->Fill((*selectedLeptonsMuResDown)[1]->pt_   ,weight_lepB);
+    }
+  
+    HistsSysUp[ch][2][19][12]->Fill(MVAoutputMuScaleUp,weight_lepB );
+    HistsSysUp[ch][2][19][13]->Fill(MVAoutputEleScaleUp,weight_lepB );
+    HistsSysUp[ch][2][19][14]->Fill(MVAoutputMuResUp,weight_lepB );
+  
+    HistsSysDown[ch][2][19][12]->Fill(MVAoutputMuScaleDown,weight_lepB );
+    HistsSysDown[ch][2][19][13]->Fill(MVAoutputEleScaleDown,weight_lepB );
+    HistsSysDown[ch][2][19][14]->Fill(MVAoutputMuResDown,weight_lepB );
+    if (fname.Contains("TTTo2L2Nu")|| fname.Contains("LFV")){
        for (int n=0;n<reweightSizeQscalePDF;++n){
          HistsSysReweightsQscalePDF[ch][2][0][n]->Fill((*selectedLeptons)[0]->pt_,weight_lepB*(SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
          HistsSysReweightsQscalePDF[ch][2][1][n]->Fill((*selectedLeptons)[0]->eta_,weight_lepB*(SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
@@ -1348,6 +1697,14 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
          HistsSysReweightsQscalePDF[ch][2][17][n]->Fill(pv_n,weight_lepB*(SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
          HistsSysReweightsQscalePDF[ch][2][18][n]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M(),weight_lepB*(SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
          HistsSysReweightsQscalePDF[ch][2][19][n]->Fill(MVAoutput,weight_lepB*(SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
+         if ((*selectedLeptons)[0]->lep_ == 10) HistsSysReweightsQscalePDF[ch][2][20][n]->Fill((*selectedLeptons)[0]->pt_   ,weight_lepB * (SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
+         if ((*selectedLeptons)[0]->lep_ == 10) HistsSysReweightsQscalePDF[ch][2][22][n]->Fill((*selectedLeptons)[0]->eta_  ,weight_lepB * (SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
+         if ((*selectedLeptons)[0]->lep_ == 1)  HistsSysReweightsQscalePDF[ch][2][21][n]->Fill((*selectedLeptons)[0]->pt_   ,weight_lepB * (SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
+         if ((*selectedLeptons)[0]->lep_ == 1)  HistsSysReweightsQscalePDF[ch][2][23][n]->Fill((*selectedLeptons)[0]->eta_  ,weight_lepB * (SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
+         if ((*selectedLeptons)[1]->lep_ == 10) HistsSysReweightsQscalePDF[ch][2][20][n]->Fill((*selectedLeptons)[1]->pt_   ,weight_lepB * (SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
+         if ((*selectedLeptons)[1]->lep_ == 10) HistsSysReweightsQscalePDF[ch][2][22][n]->Fill((*selectedLeptons)[1]->eta_  ,weight_lepB * (SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
+         if ((*selectedLeptons)[1]->lep_ == 1)  HistsSysReweightsQscalePDF[ch][2][21][n]->Fill((*selectedLeptons)[1]->pt_   ,weight_lepB * (SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
+         if ((*selectedLeptons)[1]->lep_ == 1)  HistsSysReweightsQscalePDF[ch][2][23][n]->Fill((*selectedLeptons)[1]->eta_  ,weight_lepB * (SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
        }
        for (int n=0;n<reweightSizePS;++n){
          if ((*gen_weight_sys)[n]/(*gen_weight_sys)[0]>20) continue;
@@ -1371,56 +1728,18 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
          HistsSysReweightsPS[ch][2][17][n]->Fill(pv_n,weight_lepB* (SGW[0]/SGW[n])*((*gen_weight_sys)[n]/(*gen_weight_sys)[0]));
          HistsSysReweightsPS[ch][2][18][n]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M(),weight_lepB* (SGW[0]/SGW[n])*((*gen_weight_sys)[n]/(*gen_weight_sys)[0]));
          HistsSysReweightsPS[ch][2][19][n]->Fill(MVAoutput,weight_lepB* (SGW[0]/SGW[n])*((*gen_weight_sys)[n]/(*gen_weight_sys)[0]));
+         if ((*selectedLeptons)[0]->lep_ == 10) HistsSysReweightsPS[ch][2][20][n]->Fill((*selectedLeptons)[0]->pt_   ,weight_lepB * (SGW[0]/SGW[n])*((*gen_weight_sys)[n]/(*gen_weight_sys)[0]));
+         if ((*selectedLeptons)[0]->lep_ == 10) HistsSysReweightsPS[ch][2][22][n]->Fill((*selectedLeptons)[0]->eta_  ,weight_lepB * (SGW[0]/SGW[n])*((*gen_weight_sys)[n]/(*gen_weight_sys)[0]));
+         if ((*selectedLeptons)[0]->lep_ == 1)  HistsSysReweightsPS[ch][2][21][n]->Fill((*selectedLeptons)[0]->pt_   ,weight_lepB * (SGW[0]/SGW[n])*((*gen_weight_sys)[n]/(*gen_weight_sys)[0]));
+         if ((*selectedLeptons)[0]->lep_ == 1)  HistsSysReweightsPS[ch][2][23][n]->Fill((*selectedLeptons)[0]->eta_  ,weight_lepB * (SGW[0]/SGW[n])*((*gen_weight_sys)[n]/(*gen_weight_sys)[0]));
+         if ((*selectedLeptons)[1]->lep_ == 10) HistsSysReweightsPS[ch][2][20][n]->Fill((*selectedLeptons)[1]->pt_   ,weight_lepB * (SGW[0]/SGW[n])*((*gen_weight_sys)[n]/(*gen_weight_sys)[0]));
+         if ((*selectedLeptons)[1]->lep_ == 10) HistsSysReweightsPS[ch][2][22][n]->Fill((*selectedLeptons)[1]->eta_  ,weight_lepB * (SGW[0]/SGW[n])*((*gen_weight_sys)[n]/(*gen_weight_sys)[0]));
+         if ((*selectedLeptons)[1]->lep_ == 1)  HistsSysReweightsPS[ch][2][21][n]->Fill((*selectedLeptons)[1]->pt_   ,weight_lepB * (SGW[0]/SGW[n])*((*gen_weight_sys)[n]/(*gen_weight_sys)[0]));
+         if ((*selectedLeptons)[1]->lep_ == 1)  HistsSysReweightsPS[ch][2][23][n]->Fill((*selectedLeptons)[1]->eta_  ,weight_lepB * (SGW[0]/SGW[n])*((*gen_weight_sys)[n]/(*gen_weight_sys)[0]));
       }
     }
   }
   if(nbjetJesUp ==1) {
-    HistsSysUp[ch][2][0][8]->Fill((*selectedLeptons)[0]->pt_,weight_lepB);
-    HistsSysUp[ch][2][1][8]->Fill((*selectedLeptons)[0]->eta_,weight_lepB);
-    HistsSysUp[ch][2][2][8]->Fill((*selectedLeptons)[0]->phi_,weight_lepB);
-    HistsSysUp[ch][2][3][8]->Fill((*selectedLeptons)[1]->pt_,weight_lepB);
-    HistsSysUp[ch][2][4][8]->Fill((*selectedLeptons)[1]->eta_,weight_lepB);
-    HistsSysUp[ch][2][5][8]->Fill((*selectedLeptons)[1]->phi_,weight_lepB);
-    HistsSysUp[ch][2][6][8]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M(),weight_lepB);
-    HistsSysUp[ch][2][7][8]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).Pt(),weight_lepB);
-    HistsSysUp[ch][2][8][8]->Fill(deltaR((*selectedLeptons)[0]->eta_,(*selectedLeptons)[0]->phi_,(*selectedLeptons)[1]->eta_,(*selectedLeptons)[1]->phi_),weight_lepB);
-    HistsSysUp[ch][2][9][8]->Fill(deltaPhi((*selectedLeptons)[0]->phi_,(*selectedLeptons)[1]->phi_),weight_lepB);
-    HistsSysUp[ch][2][16][8]->Fill(MET_FinalCollection_phi,weight_lepB);
-    HistsSysUp[ch][2][17][8]->Fill(pv_n,weight_lepB);
-    HistsSysUp[ch][2][18][8]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M(),weight_lepB);
-
-    HistsSysUp[ch][2][10][8]->Fill((*selectedJetsJesUp)[0]->pt_,weight_lepB );
-    HistsSysUp[ch][2][11][8]->Fill((*selectedJetsJesUp)[0]->eta_,weight_lepB);
-    HistsSysUp[ch][2][12][8]->Fill((*selectedJetsJesUp)[0]->phi_,weight_lepB);
-    HistsSysUp[ch][2][13][8]->Fill(selectedJetsJesUp->size(),weight_lepB );
-    HistsSysUp[ch][2][14][8]->Fill(nbjetJesUp,weight_lepB);
-    HistsSysUp[ch][2][15][8]->Fill(MET_T1SmearJetEnUp_Pt,weight_lepB );
-    HistsSysUp[ch][2][19][8]->Fill(MVAoutputJesUp,weight_lepB );
-  }
-  if(nbjetJesDown==1){
-    HistsSysDown[ch][2][0][8]->Fill((*selectedLeptons)[0]->pt_,weight_lepB);
-    HistsSysDown[ch][2][1][8]->Fill((*selectedLeptons)[0]->eta_,weight_lepB);
-    HistsSysDown[ch][2][2][8]->Fill((*selectedLeptons)[0]->phi_,weight_lepB);
-    HistsSysDown[ch][2][3][8]->Fill((*selectedLeptons)[1]->pt_,weight_lepB);
-    HistsSysDown[ch][2][4][8]->Fill((*selectedLeptons)[1]->eta_,weight_lepB);
-    HistsSysDown[ch][2][5][8]->Fill((*selectedLeptons)[1]->phi_,weight_lepB);
-    HistsSysDown[ch][2][6][8]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M(),weight_lepB);
-    HistsSysDown[ch][2][7][8]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).Pt(),weight_lepB);
-    HistsSysDown[ch][2][8][8]->Fill(deltaR((*selectedLeptons)[0]->eta_,(*selectedLeptons)[0]->phi_,(*selectedLeptons)[1]->eta_,(*selectedLeptons)[1]->phi_),weight_lepB);
-    HistsSysDown[ch][2][9][8]->Fill(deltaPhi((*selectedLeptons)[0]->phi_,(*selectedLeptons)[1]->phi_),weight_lepB);
-    HistsSysDown[ch][2][16][8]->Fill(MET_FinalCollection_phi,weight_lepB);
-    HistsSysDown[ch][2][17][8]->Fill(pv_n,weight_lepB);
-    HistsSysDown[ch][2][18][8]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M(),weight_lepB);
-
-    HistsSysDown[ch][2][10][8]->Fill((*selectedJetsJesDown)[0]->pt_,weight_lepB );
-    HistsSysDown[ch][2][11][8]->Fill((*selectedJetsJesDown)[0]->eta_,weight_lepB);
-    HistsSysDown[ch][2][12][8]->Fill((*selectedJetsJesDown)[0]->phi_,weight_lepB);
-    HistsSysDown[ch][2][13][8]->Fill(selectedJetsJesDown->size(),weight_lepB );
-    HistsSysDown[ch][2][14][8]->Fill(nbjetJesDown,weight_lepB);
-    HistsSysDown[ch][2][15][8]->Fill(MET_T1SmearJetEnDown_Pt,weight_lepB );
-    HistsSysDown[ch][2][19][8]->Fill(MVAoutputJesDown,weight_lepB );
-  }
-  if(nbjetJerUp==1){
     HistsSysUp[ch][2][0][9]->Fill((*selectedLeptons)[0]->pt_,weight_lepB);
     HistsSysUp[ch][2][1][9]->Fill((*selectedLeptons)[0]->eta_,weight_lepB);
     HistsSysUp[ch][2][2][9]->Fill((*selectedLeptons)[0]->phi_,weight_lepB);
@@ -1434,16 +1753,23 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     HistsSysUp[ch][2][16][9]->Fill(MET_FinalCollection_phi,weight_lepB);
     HistsSysUp[ch][2][17][9]->Fill(pv_n,weight_lepB);
     HistsSysUp[ch][2][18][9]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M(),weight_lepB);
-
-    HistsSysUp[ch][2][10][9]->Fill((*selectedJetsJerUp)[0]->pt_,weight_lepB );
-    HistsSysUp[ch][2][11][9]->Fill((*selectedJetsJerUp)[0]->eta_,weight_lepB);
-    HistsSysUp[ch][2][12][9]->Fill((*selectedJetsJerUp)[0]->phi_,weight_lepB);
-    HistsSysUp[ch][2][13][9]->Fill(selectedJetsJerUp->size(),weight_lepB );
-    HistsSysUp[ch][2][14][9]->Fill(nbjetJerUp,weight_lepB);
-    HistsSysUp[ch][2][15][9]->Fill(MET_T1SmearJetResUp_Pt,weight_lepB );
-    HistsSysUp[ch][2][19][9]->Fill(MVAoutputJerUp,weight_lepB );
+    HistsSysUp[ch][2][10][9]->Fill((*selectedJetsJesUp)[0]->pt_,weight_lepB );
+    HistsSysUp[ch][2][11][9]->Fill((*selectedJetsJesUp)[0]->eta_,weight_lepB);
+    HistsSysUp[ch][2][12][9]->Fill((*selectedJetsJesUp)[0]->phi_,weight_lepB);
+    HistsSysUp[ch][2][13][9]->Fill(selectedJetsJesUp->size(),weight_lepB );
+    HistsSysUp[ch][2][14][9]->Fill(nbjetJesUp,weight_lepB);
+    HistsSysUp[ch][2][15][9]->Fill(MET_T1SmearJetEnUp_Pt,weight_lepB );
+    HistsSysUp[ch][2][19][9]->Fill(MVAoutputJesUp,weight_lepB );
+    if ((*selectedLeptons)[0]->lep_ == 10) HistsSysUp[ch][2][20][9]->Fill((*selectedLeptons)[0]->pt_   ,weight_lepB);
+    if ((*selectedLeptons)[0]->lep_ == 10) HistsSysUp[ch][2][22][9]->Fill((*selectedLeptons)[0]->eta_  ,weight_lepB);
+    if ((*selectedLeptons)[0]->lep_ == 1)  HistsSysUp[ch][2][21][9]->Fill((*selectedLeptons)[0]->pt_   ,weight_lepB);
+    if ((*selectedLeptons)[0]->lep_ == 1)  HistsSysUp[ch][2][23][9]->Fill((*selectedLeptons)[0]->eta_  ,weight_lepB);
+    if ((*selectedLeptons)[1]->lep_ == 10) HistsSysUp[ch][2][20][9]->Fill((*selectedLeptons)[1]->pt_   ,weight_lepB);
+    if ((*selectedLeptons)[1]->lep_ == 10) HistsSysUp[ch][2][22][9]->Fill((*selectedLeptons)[1]->eta_  ,weight_lepB);
+    if ((*selectedLeptons)[1]->lep_ == 1)  HistsSysUp[ch][2][21][9]->Fill((*selectedLeptons)[1]->pt_   ,weight_lepB);
+    if ((*selectedLeptons)[1]->lep_ == 1)  HistsSysUp[ch][2][23][9]->Fill((*selectedLeptons)[1]->eta_  ,weight_lepB);
   }
-  if(nbjetJerDown==1){
+  if(nbjetJesDown==1){
     HistsSysDown[ch][2][0][9]->Fill((*selectedLeptons)[0]->pt_,weight_lepB);
     HistsSysDown[ch][2][1][9]->Fill((*selectedLeptons)[0]->eta_,weight_lepB);
     HistsSysDown[ch][2][2][9]->Fill((*selectedLeptons)[0]->phi_,weight_lepB);
@@ -1457,14 +1783,81 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     HistsSysDown[ch][2][16][9]->Fill(MET_FinalCollection_phi,weight_lepB);
     HistsSysDown[ch][2][17][9]->Fill(pv_n,weight_lepB);
     HistsSysDown[ch][2][18][9]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M(),weight_lepB);
-
-    HistsSysDown[ch][2][10][9]->Fill((*selectedJetsJerDown)[0]->pt_,weight_lepB );
-    HistsSysDown[ch][2][11][9]->Fill((*selectedJetsJerDown)[0]->eta_,weight_lepB);
-    HistsSysDown[ch][2][12][9]->Fill((*selectedJetsJerDown)[0]->phi_,weight_lepB);
-    HistsSysDown[ch][2][13][9]->Fill(selectedJetsJerDown->size(),weight_lepB );
-    HistsSysDown[ch][2][14][9]->Fill(nbjetJerDown,weight_lepB);
-    HistsSysDown[ch][2][15][9]->Fill(MET_T1SmearJetResDown_Pt,weight_lepB );
-    HistsSysDown[ch][2][19][9]->Fill(MVAoutputJerDown,weight_lepB );
+    HistsSysDown[ch][2][10][9]->Fill((*selectedJetsJesDown)[0]->pt_,weight_lepB );
+    HistsSysDown[ch][2][11][9]->Fill((*selectedJetsJesDown)[0]->eta_,weight_lepB);
+    HistsSysDown[ch][2][12][9]->Fill((*selectedJetsJesDown)[0]->phi_,weight_lepB);
+    HistsSysDown[ch][2][13][9]->Fill(selectedJetsJesDown->size(),weight_lepB );
+    HistsSysDown[ch][2][14][9]->Fill(nbjetJesDown,weight_lepB);
+    HistsSysDown[ch][2][15][9]->Fill(MET_T1SmearJetEnDown_Pt,weight_lepB );
+    HistsSysDown[ch][2][19][9]->Fill(MVAoutputJesDown,weight_lepB );
+    if ((*selectedLeptons)[0]->lep_ == 10) HistsSysDown[ch][2][20][9]->Fill((*selectedLeptons)[0]->pt_   ,weight_lepB);
+    if ((*selectedLeptons)[0]->lep_ == 10) HistsSysDown[ch][2][22][9]->Fill((*selectedLeptons)[0]->eta_  ,weight_lepB);
+    if ((*selectedLeptons)[0]->lep_ == 1)  HistsSysDown[ch][2][21][9]->Fill((*selectedLeptons)[0]->pt_   ,weight_lepB);
+    if ((*selectedLeptons)[0]->lep_ == 1)  HistsSysDown[ch][2][23][9]->Fill((*selectedLeptons)[0]->eta_  ,weight_lepB);
+    if ((*selectedLeptons)[1]->lep_ == 10) HistsSysDown[ch][2][20][9]->Fill((*selectedLeptons)[1]->pt_   ,weight_lepB);
+    if ((*selectedLeptons)[1]->lep_ == 10) HistsSysDown[ch][2][22][9]->Fill((*selectedLeptons)[1]->eta_  ,weight_lepB);
+    if ((*selectedLeptons)[1]->lep_ == 1)  HistsSysDown[ch][2][21][9]->Fill((*selectedLeptons)[1]->pt_   ,weight_lepB);
+    if ((*selectedLeptons)[1]->lep_ == 1)  HistsSysDown[ch][2][23][9]->Fill((*selectedLeptons)[1]->eta_  ,weight_lepB);
+  }
+  if(nbjetJerUp==1){
+    HistsSysUp[ch][2][0][10]->Fill((*selectedLeptons)[0]->pt_,weight_lepB);
+    HistsSysUp[ch][2][1][10]->Fill((*selectedLeptons)[0]->eta_,weight_lepB);
+    HistsSysUp[ch][2][2][10]->Fill((*selectedLeptons)[0]->phi_,weight_lepB);
+    HistsSysUp[ch][2][3][10]->Fill((*selectedLeptons)[1]->pt_,weight_lepB);
+    HistsSysUp[ch][2][4][10]->Fill((*selectedLeptons)[1]->eta_,weight_lepB);
+    HistsSysUp[ch][2][5][10]->Fill((*selectedLeptons)[1]->phi_,weight_lepB);
+    HistsSysUp[ch][2][6][10]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M(),weight_lepB);
+    HistsSysUp[ch][2][7][10]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).Pt(),weight_lepB);
+    HistsSysUp[ch][2][8][10]->Fill(deltaR((*selectedLeptons)[0]->eta_,(*selectedLeptons)[0]->phi_,(*selectedLeptons)[1]->eta_,(*selectedLeptons)[1]->phi_),weight_lepB);
+    HistsSysUp[ch][2][9][10]->Fill(deltaPhi((*selectedLeptons)[0]->phi_,(*selectedLeptons)[1]->phi_),weight_lepB);
+    HistsSysUp[ch][2][16][10]->Fill(MET_FinalCollection_phi,weight_lepB);
+    HistsSysUp[ch][2][17][10]->Fill(pv_n,weight_lepB);
+    HistsSysUp[ch][2][18][10]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M(),weight_lepB);
+    HistsSysUp[ch][2][10][10]->Fill((*selectedJetsJerUp)[0]->pt_,weight_lepB );
+    HistsSysUp[ch][2][11][10]->Fill((*selectedJetsJerUp)[0]->eta_,weight_lepB);
+    HistsSysUp[ch][2][12][10]->Fill((*selectedJetsJerUp)[0]->phi_,weight_lepB);
+    HistsSysUp[ch][2][13][10]->Fill(selectedJetsJerUp->size(),weight_lepB );
+    HistsSysUp[ch][2][14][10]->Fill(nbjetJerUp,weight_lepB);
+    HistsSysUp[ch][2][15][10]->Fill(MET_T1SmearJetResUp_Pt,weight_lepB );
+    HistsSysUp[ch][2][19][10]->Fill(MVAoutputJerUp,weight_lepB );
+    if ((*selectedLeptons)[0]->lep_ == 10) HistsSysUp[ch][2][20][10]->Fill((*selectedLeptons)[0]->pt_   ,weight_lepB);
+    if ((*selectedLeptons)[0]->lep_ == 10) HistsSysUp[ch][2][22][10]->Fill((*selectedLeptons)[0]->eta_  ,weight_lepB);
+    if ((*selectedLeptons)[0]->lep_ == 1)  HistsSysUp[ch][2][21][10]->Fill((*selectedLeptons)[0]->pt_   ,weight_lepB);
+    if ((*selectedLeptons)[0]->lep_ == 1)  HistsSysUp[ch][2][23][10]->Fill((*selectedLeptons)[0]->eta_  ,weight_lepB);
+    if ((*selectedLeptons)[1]->lep_ == 10) HistsSysUp[ch][2][20][10]->Fill((*selectedLeptons)[1]->pt_   ,weight_lepB);
+    if ((*selectedLeptons)[1]->lep_ == 10) HistsSysUp[ch][2][22][10]->Fill((*selectedLeptons)[1]->eta_  ,weight_lepB);
+    if ((*selectedLeptons)[1]->lep_ == 1)  HistsSysUp[ch][2][21][10]->Fill((*selectedLeptons)[1]->pt_   ,weight_lepB);
+    if ((*selectedLeptons)[1]->lep_ == 1)  HistsSysUp[ch][2][23][10]->Fill((*selectedLeptons)[1]->eta_  ,weight_lepB);
+  }
+  if(nbjetJerDown==1){
+    HistsSysDown[ch][2][0][10]->Fill((*selectedLeptons)[0]->pt_,weight_lepB);
+    HistsSysDown[ch][2][1][10]->Fill((*selectedLeptons)[0]->eta_,weight_lepB);
+    HistsSysDown[ch][2][2][10]->Fill((*selectedLeptons)[0]->phi_,weight_lepB);
+    HistsSysDown[ch][2][3][10]->Fill((*selectedLeptons)[1]->pt_,weight_lepB);
+    HistsSysDown[ch][2][4][10]->Fill((*selectedLeptons)[1]->eta_,weight_lepB);
+    HistsSysDown[ch][2][5][10]->Fill((*selectedLeptons)[1]->phi_,weight_lepB);
+    HistsSysDown[ch][2][6][10]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M(),weight_lepB);
+    HistsSysDown[ch][2][7][10]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).Pt(),weight_lepB);
+    HistsSysDown[ch][2][8][10]->Fill(deltaR((*selectedLeptons)[0]->eta_,(*selectedLeptons)[0]->phi_,(*selectedLeptons)[1]->eta_,(*selectedLeptons)[1]->phi_),weight_lepB);
+    HistsSysDown[ch][2][9][10]->Fill(deltaPhi((*selectedLeptons)[0]->phi_,(*selectedLeptons)[1]->phi_),weight_lepB);
+    HistsSysDown[ch][2][16][10]->Fill(MET_FinalCollection_phi,weight_lepB);
+    HistsSysDown[ch][2][17][10]->Fill(pv_n,weight_lepB);
+    HistsSysDown[ch][2][18][10]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M(),weight_lepB);
+    HistsSysDown[ch][2][10][10]->Fill((*selectedJetsJerDown)[0]->pt_,weight_lepB );
+    HistsSysDown[ch][2][11][10]->Fill((*selectedJetsJerDown)[0]->eta_,weight_lepB);
+    HistsSysDown[ch][2][12][10]->Fill((*selectedJetsJerDown)[0]->phi_,weight_lepB);
+    HistsSysDown[ch][2][13][10]->Fill(selectedJetsJerDown->size(),weight_lepB );
+    HistsSysDown[ch][2][14][10]->Fill(nbjetJerDown,weight_lepB);
+    HistsSysDown[ch][2][15][10]->Fill(MET_T1SmearJetResDown_Pt,weight_lepB );
+    HistsSysDown[ch][2][19][10]->Fill(MVAoutputJerDown,weight_lepB );
+    if ((*selectedLeptons)[0]->lep_ == 10) HistsSysDown[ch][2][20][10]->Fill((*selectedLeptons)[0]->pt_   ,weight_lepB);
+    if ((*selectedLeptons)[0]->lep_ == 10) HistsSysDown[ch][2][22][10]->Fill((*selectedLeptons)[0]->eta_  ,weight_lepB);
+    if ((*selectedLeptons)[0]->lep_ == 1)  HistsSysDown[ch][2][21][10]->Fill((*selectedLeptons)[0]->pt_   ,weight_lepB);
+    if ((*selectedLeptons)[0]->lep_ == 1)  HistsSysDown[ch][2][23][10]->Fill((*selectedLeptons)[0]->eta_  ,weight_lepB);
+    if ((*selectedLeptons)[1]->lep_ == 10) HistsSysDown[ch][2][20][10]->Fill((*selectedLeptons)[1]->pt_   ,weight_lepB);
+    if ((*selectedLeptons)[1]->lep_ == 10) HistsSysDown[ch][2][22][10]->Fill((*selectedLeptons)[1]->eta_  ,weight_lepB);
+    if ((*selectedLeptons)[1]->lep_ == 1)  HistsSysDown[ch][2][21][10]->Fill((*selectedLeptons)[1]->pt_   ,weight_lepB);
+    if ((*selectedLeptons)[1]->lep_ == 1)  HistsSysDown[ch][2][23][10]->Fill((*selectedLeptons)[1]->eta_  ,weight_lepB);
   }
   for (int n=0;n<sysJecNames.size();++n){
     if ((*JECsysNbtagUp)[n]==1) {
@@ -1487,7 +1880,15 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
       HistsJECUp[ch][2][13][n]->Fill((*JECsysUp)[n].size(),weight_lepB );
       HistsJECUp[ch][2][14][n]->Fill((*JECsysNbtagUp)[n],weight_lepB);
       HistsJECUp[ch][2][15][n]->Fill((*JECsysMETUp)[n],weight_lepB );
-      HistsJECUp[ch][2][19][n]->Fill((*JECsysMVAUp)[n],weight_lepB );     
+      HistsJECUp[ch][2][19][n]->Fill((*JECsysMVAUp)[n],weight_lepB );    
+      if ((*selectedLeptons)[0]->lep_ == 10) HistsJECUp[ch][2][20][n]->Fill((*selectedLeptons)[0]->pt_   ,weight_lepB);
+      if ((*selectedLeptons)[0]->lep_ == 10) HistsJECUp[ch][2][22][n]->Fill((*selectedLeptons)[0]->eta_  ,weight_lepB);
+      if ((*selectedLeptons)[0]->lep_ == 1)  HistsJECUp[ch][2][21][n]->Fill((*selectedLeptons)[0]->pt_   ,weight_lepB);
+      if ((*selectedLeptons)[0]->lep_ == 1)  HistsJECUp[ch][2][23][n]->Fill((*selectedLeptons)[0]->eta_  ,weight_lepB);
+      if ((*selectedLeptons)[1]->lep_ == 10) HistsJECUp[ch][2][20][n]->Fill((*selectedLeptons)[1]->pt_   ,weight_lepB);
+      if ((*selectedLeptons)[1]->lep_ == 10) HistsJECUp[ch][2][22][n]->Fill((*selectedLeptons)[1]->eta_  ,weight_lepB);
+      if ((*selectedLeptons)[1]->lep_ == 1)  HistsJECUp[ch][2][21][n]->Fill((*selectedLeptons)[1]->pt_   ,weight_lepB);
+      if ((*selectedLeptons)[1]->lep_ == 1)  HistsJECUp[ch][2][23][n]->Fill((*selectedLeptons)[1]->eta_  ,weight_lepB); 
       }
     if ((*JECsysNbtagDown)[n]==1) {
       HistsJECDown[ch][2][0][n]->Fill((*selectedLeptons)[0]->pt_,weight_lepB);
@@ -1510,9 +1911,19 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
       HistsJECDown[ch][2][14][n]->Fill((*JECsysNbtagDown)[n],weight_lepB);
       HistsJECDown[ch][2][15][n]->Fill((*JECsysMETDown)[n],weight_lepB );
       HistsJECDown[ch][2][19][n]->Fill((*JECsysMVADown)[n],weight_lepB );
+      if ((*selectedLeptons)[0]->lep_ == 10) HistsJECDown[ch][2][20][n]->Fill((*selectedLeptons)[0]->pt_   ,weight_lepB);
+      if ((*selectedLeptons)[0]->lep_ == 10) HistsJECDown[ch][2][22][n]->Fill((*selectedLeptons)[0]->eta_  ,weight_lepB);
+      if ((*selectedLeptons)[0]->lep_ == 1)  HistsJECDown[ch][2][21][n]->Fill((*selectedLeptons)[0]->pt_   ,weight_lepB);
+      if ((*selectedLeptons)[0]->lep_ == 1)  HistsJECDown[ch][2][23][n]->Fill((*selectedLeptons)[0]->eta_  ,weight_lepB);
+      if ((*selectedLeptons)[1]->lep_ == 10) HistsJECDown[ch][2][20][n]->Fill((*selectedLeptons)[1]->pt_   ,weight_lepB);
+      if ((*selectedLeptons)[1]->lep_ == 10) HistsJECDown[ch][2][22][n]->Fill((*selectedLeptons)[1]->eta_  ,weight_lepB);
+      if ((*selectedLeptons)[1]->lep_ == 1)  HistsJECDown[ch][2][21][n]->Fill((*selectedLeptons)[1]->pt_   ,weight_lepB);
+      if ((*selectedLeptons)[1]->lep_ == 1)  HistsJECDown[ch][2][23][n]->Fill((*selectedLeptons)[1]->eta_  ,weight_lepB);
     }
   }
 
+
+///////// TT control region
   if(nbjet>1){
     Hists[ch][3][0]->Fill((*selectedLeptons)[0]->pt_,weight_lepB);
     Hists[ch][3][1]->Fill((*selectedLeptons)[0]->eta_,weight_lepB);
@@ -1534,7 +1945,15 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     Hists[ch][3][17]->Fill(pv_n,weight_lepB);
     Hists[ch][3][18]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M(),weight_lepB);
     Hists[ch][3][19]->Fill(MVAoutput,weight_lepB);
-    for (int n=0;n<8;++n){
+    if ((*selectedLeptons)[0]->lep_ == 10) Hists[ch][3][20]->Fill((*selectedLeptons)[0]->pt_   ,weight_lepB);
+    if ((*selectedLeptons)[0]->lep_ == 10) Hists[ch][3][22]->Fill((*selectedLeptons)[0]->eta_  ,weight_lepB);
+    if ((*selectedLeptons)[0]->lep_ == 1)  Hists[ch][3][21]->Fill((*selectedLeptons)[0]->pt_   ,weight_lepB);
+    if ((*selectedLeptons)[0]->lep_ == 1)  Hists[ch][3][23]->Fill((*selectedLeptons)[0]->eta_  ,weight_lepB);
+    if ((*selectedLeptons)[1]->lep_ == 10) Hists[ch][3][20]->Fill((*selectedLeptons)[1]->pt_   ,weight_lepB);
+    if ((*selectedLeptons)[1]->lep_ == 10) Hists[ch][3][22]->Fill((*selectedLeptons)[1]->eta_  ,weight_lepB);
+    if ((*selectedLeptons)[1]->lep_ == 1)  Hists[ch][3][21]->Fill((*selectedLeptons)[1]->pt_   ,weight_lepB);
+    if ((*selectedLeptons)[1]->lep_ == 1)  Hists[ch][3][23]->Fill((*selectedLeptons)[1]->eta_  ,weight_lepB);
+    for (int n=0;n<9;++n){
       HistsSysUp[ch][3][0][n]->Fill((*selectedLeptons)[0]->pt_,weight_lepB * (sysUpWeights[n]/nominalWeights[n]));
       HistsSysUp[ch][3][1][n]->Fill((*selectedLeptons)[0]->eta_,weight_lepB * (sysUpWeights[n]/nominalWeights[n]));
       HistsSysUp[ch][3][2][n]->Fill((*selectedLeptons)[0]->phi_,weight_lepB * (sysUpWeights[n]/nominalWeights[n]));
@@ -1555,6 +1974,14 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
       HistsSysUp[ch][3][17][n]->Fill(pv_n,weight_lepB * (sysUpWeights[n]/nominalWeights[n]));
       HistsSysUp[ch][3][18][n]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M(),weight_lepB * (sysUpWeights[n]/nominalWeights[n]));
       HistsSysUp[ch][3][19][n]->Fill(MVAoutput,weight_lepB * (sysUpWeights[n]/nominalWeights[n]));
+      if ((*selectedLeptons)[0]->lep_ == 10) HistsSysUp[ch][3][20][n]->Fill((*selectedLeptons)[0]->pt_   ,weight_lepB * (sysUpWeights[n]/nominalWeights[n]));
+      if ((*selectedLeptons)[0]->lep_ == 10) HistsSysUp[ch][3][22][n]->Fill((*selectedLeptons)[0]->eta_  ,weight_lepB * (sysUpWeights[n]/nominalWeights[n]));
+      if ((*selectedLeptons)[0]->lep_ == 1)  HistsSysUp[ch][3][21][n]->Fill((*selectedLeptons)[0]->pt_   ,weight_lepB * (sysUpWeights[n]/nominalWeights[n]));
+      if ((*selectedLeptons)[0]->lep_ == 1)  HistsSysUp[ch][3][23][n]->Fill((*selectedLeptons)[0]->eta_  ,weight_lepB * (sysUpWeights[n]/nominalWeights[n]));
+      if ((*selectedLeptons)[1]->lep_ == 10) HistsSysUp[ch][3][20][n]->Fill((*selectedLeptons)[1]->pt_   ,weight_lepB * (sysUpWeights[n]/nominalWeights[n]));
+      if ((*selectedLeptons)[1]->lep_ == 10) HistsSysUp[ch][3][22][n]->Fill((*selectedLeptons)[1]->eta_  ,weight_lepB * (sysUpWeights[n]/nominalWeights[n]));
+      if ((*selectedLeptons)[1]->lep_ == 1)  HistsSysUp[ch][3][21][n]->Fill((*selectedLeptons)[1]->pt_   ,weight_lepB * (sysUpWeights[n]/nominalWeights[n]));
+      if ((*selectedLeptons)[1]->lep_ == 1)  HistsSysUp[ch][3][23][n]->Fill((*selectedLeptons)[1]->eta_  ,weight_lepB * (sysUpWeights[n]/nominalWeights[n]));
 
       HistsSysDown[ch][3][0][n]->Fill((*selectedLeptons)[0]->pt_,weight_lepB * (sysDownWeights[n]/nominalWeights[n]));
       HistsSysDown[ch][3][1][n]->Fill((*selectedLeptons)[0]->eta_,weight_lepB * (sysDownWeights[n]/nominalWeights[n]));
@@ -1576,8 +2003,84 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
       HistsSysDown[ch][3][17][n]->Fill(pv_n,weight_lepB * (sysDownWeights[n]/nominalWeights[n]));
       HistsSysDown[ch][3][18][n]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M(),weight_lepB * (sysDownWeights[n]/nominalWeights[n]));
       HistsSysDown[ch][3][19][n]->Fill(MVAoutput,weight_lepB * (sysDownWeights[n]/nominalWeights[n]));
+      if ((*selectedLeptons)[0]->lep_ == 10) HistsSysDown[ch][3][20][n]->Fill((*selectedLeptons)[0]->pt_   ,weight_lepB * (sysDownWeights[n]/nominalWeights[n]));
+      if ((*selectedLeptons)[0]->lep_ == 10) HistsSysDown[ch][3][22][n]->Fill((*selectedLeptons)[0]->eta_  ,weight_lepB * (sysDownWeights[n]/nominalWeights[n]));
+      if ((*selectedLeptons)[0]->lep_ == 1)  HistsSysDown[ch][3][21][n]->Fill((*selectedLeptons)[0]->pt_   ,weight_lepB * (sysDownWeights[n]/nominalWeights[n]));
+      if ((*selectedLeptons)[0]->lep_ == 1)  HistsSysDown[ch][3][23][n]->Fill((*selectedLeptons)[0]->eta_  ,weight_lepB * (sysDownWeights[n]/nominalWeights[n]));
+      if ((*selectedLeptons)[1]->lep_ == 10) HistsSysDown[ch][3][20][n]->Fill((*selectedLeptons)[1]->pt_   ,weight_lepB * (sysDownWeights[n]/nominalWeights[n]));
+      if ((*selectedLeptons)[1]->lep_ == 10) HistsSysDown[ch][3][22][n]->Fill((*selectedLeptons)[1]->eta_  ,weight_lepB * (sysDownWeights[n]/nominalWeights[n]));
+      if ((*selectedLeptons)[1]->lep_ == 1)  HistsSysDown[ch][3][21][n]->Fill((*selectedLeptons)[1]->pt_   ,weight_lepB * (sysDownWeights[n]/nominalWeights[n]));
+      if ((*selectedLeptons)[1]->lep_ == 1)  HistsSysDown[ch][3][23][n]->Fill((*selectedLeptons)[1]->eta_  ,weight_lepB * (sysDownWeights[n]/nominalWeights[n]));
     }
-    if (fname.Contains("TTTo2L2Nu")){
+
+    HistsSysUp[ch][3][15][11]->Fill(metUnclusMETUp,weight_lepB );
+    HistsSysUp[ch][3][19][11]->Fill(MVAoutputUnclusMETUp,weight_lepB );
+    HistsSysDown[ch][3][15][11]->Fill(metUnclusMETDown,weight_lepB );
+    HistsSysDown[ch][3][19][11]->Fill(MVAoutputUnclusMETDown,weight_lepB );
+
+    if (selectedLeptonsMuScaleUp->size()>1) {
+      HistsSysUp[ch][3][0][12]->Fill((*selectedLeptonsMuScaleUp)[0]->pt_,weight_lepB );
+      HistsSysUp[ch][3][3][12]->Fill((*selectedLeptonsMuScaleUp)[1]->pt_,weight_lepB );
+      if ((*selectedLeptonsMuScaleUp)[0]->lep_ == 10) HistsSysUp[ch][3][20][12]->Fill((*selectedLeptonsMuScaleUp)[0]->pt_   ,weight_lepB);
+      if ((*selectedLeptonsMuScaleUp)[0]->lep_ == 1)  HistsSysUp[ch][3][21][12]->Fill((*selectedLeptonsMuScaleUp)[0]->pt_   ,weight_lepB);
+      if ((*selectedLeptonsMuScaleUp)[1]->lep_ == 10) HistsSysUp[ch][3][20][12]->Fill((*selectedLeptonsMuScaleUp)[1]->pt_   ,weight_lepB);
+      if ((*selectedLeptonsMuScaleUp)[1]->lep_ == 1)  HistsSysUp[ch][3][21][12]->Fill((*selectedLeptonsMuScaleUp)[1]->pt_   ,weight_lepB);
+    }
+
+    if (selectedLeptonsMuScaleDown->size()>1) {
+       HistsSysDown[ch][3][0][12]->Fill((*selectedLeptonsMuScaleDown)[0]->pt_,weight_lepB );
+       HistsSysDown[ch][3][3][12]->Fill((*selectedLeptonsMuScaleDown)[1]->pt_,weight_lepB );
+      if ((*selectedLeptonsMuScaleDown)[0]->lep_ == 10) HistsSysDown[ch][3][20][12]->Fill((*selectedLeptonsMuScaleDown)[0]->pt_   ,weight_lepB);
+      if ((*selectedLeptonsMuScaleDown)[0]->lep_ == 1)  HistsSysDown[ch][3][21][12]->Fill((*selectedLeptonsMuScaleDown)[0]->pt_   ,weight_lepB);
+      if ((*selectedLeptonsMuScaleDown)[1]->lep_ == 10) HistsSysDown[ch][3][20][12]->Fill((*selectedLeptonsMuScaleDown)[1]->pt_   ,weight_lepB);
+      if ((*selectedLeptonsMuScaleDown)[1]->lep_ == 1)  HistsSysDown[ch][3][21][12]->Fill((*selectedLeptonsMuScaleDown)[1]->pt_   ,weight_lepB);
+    }
+
+    if (selectedLeptonsEleScaleUp->size()>1) {
+      HistsSysUp[ch][3][0][13]->Fill((*selectedLeptonsEleScaleUp)[0]->pt_,weight_lepB );
+      HistsSysUp[ch][3][3][13]->Fill((*selectedLeptonsEleScaleUp)[1]->pt_,weight_lepB );
+      if ((*selectedLeptonsEleScaleUp)[0]->lep_ == 10) HistsSysUp[ch][3][20][13]->Fill((*selectedLeptonsEleScaleUp)[0]->pt_   ,weight_lepB);
+      if ((*selectedLeptonsEleScaleUp)[0]->lep_ == 1)  HistsSysUp[ch][3][21][13]->Fill((*selectedLeptonsEleScaleUp)[0]->pt_   ,weight_lepB);
+      if ((*selectedLeptonsEleScaleUp)[1]->lep_ == 10) HistsSysUp[ch][3][20][13]->Fill((*selectedLeptonsEleScaleUp)[1]->pt_   ,weight_lepB);
+      if ((*selectedLeptonsEleScaleUp)[1]->lep_ == 1)  HistsSysUp[ch][3][21][13]->Fill((*selectedLeptonsEleScaleUp)[1]->pt_   ,weight_lepB);
+    }
+
+    if (selectedLeptonsEleScaleDown->size()>1) {
+      HistsSysDown[ch][3][0][13]->Fill((*selectedLeptonsEleScaleDown)[0]->pt_,weight_lepB );
+      HistsSysDown[ch][3][3][13]->Fill((*selectedLeptonsEleScaleDown)[1]->pt_,weight_lepB );
+      if ((*selectedLeptonsEleScaleDown)[0]->lep_ == 10) HistsSysDown[ch][3][20][13]->Fill((*selectedLeptonsEleScaleDown)[0]->pt_   ,weight_lepB);
+      if ((*selectedLeptonsEleScaleDown)[0]->lep_ == 1)  HistsSysDown[ch][3][21][13]->Fill((*selectedLeptonsEleScaleDown)[0]->pt_   ,weight_lepB);
+      if ((*selectedLeptonsEleScaleDown)[1]->lep_ == 10) HistsSysDown[ch][3][20][13]->Fill((*selectedLeptonsEleScaleDown)[1]->pt_   ,weight_lepB);
+      if ((*selectedLeptonsEleScaleDown)[1]->lep_ == 1)  HistsSysDown[ch][3][21][13]->Fill((*selectedLeptonsEleScaleDown)[1]->pt_   ,weight_lepB);
+    }
+
+    if (selectedLeptonsMuResUp->size()>1) {
+      HistsSysUp[ch][3][0][14]->Fill((*selectedLeptonsMuResUp)[0]->pt_,weight_lepB );
+      HistsSysUp[ch][3][3][14]->Fill((*selectedLeptonsMuResUp)[1]->pt_,weight_lepB );
+      if ((*selectedLeptonsMuResUp)[0]->lep_ == 10) HistsSysUp[ch][3][20][14]->Fill((*selectedLeptonsMuResUp)[0]->pt_   ,weight_lepB);
+      if ((*selectedLeptonsMuResUp)[0]->lep_ == 1)  HistsSysUp[ch][3][21][14]->Fill((*selectedLeptonsMuResUp)[0]->pt_   ,weight_lepB);
+      if ((*selectedLeptonsMuResUp)[1]->lep_ == 10) HistsSysUp[ch][3][20][14]->Fill((*selectedLeptonsMuResUp)[1]->pt_   ,weight_lepB);
+      if ((*selectedLeptonsMuResUp)[1]->lep_ == 1)  HistsSysUp[ch][3][21][14]->Fill((*selectedLeptonsMuResUp)[1]->pt_   ,weight_lepB);
+    }
+
+    if (selectedLeptonsMuResDown->size()>1) {
+      HistsSysDown[ch][3][0][14]->Fill((*selectedLeptonsMuResDown)[0]->pt_,weight_lepB );
+      HistsSysDown[ch][3][3][14]->Fill((*selectedLeptonsMuResDown)[1]->pt_,weight_lepB );
+      if ((*selectedLeptonsMuResDown)[0]->lep_ == 10) HistsSysDown[ch][3][20][14]->Fill((*selectedLeptonsMuResDown)[0]->pt_   ,weight_lepB);
+      if ((*selectedLeptonsMuResDown)[0]->lep_ == 1)  HistsSysDown[ch][3][21][14]->Fill((*selectedLeptonsMuResDown)[0]->pt_   ,weight_lepB);
+      if ((*selectedLeptonsMuResDown)[1]->lep_ == 10) HistsSysDown[ch][3][20][14]->Fill((*selectedLeptonsMuResDown)[1]->pt_   ,weight_lepB);
+      if ((*selectedLeptonsMuResDown)[1]->lep_ == 1)  HistsSysDown[ch][3][21][14]->Fill((*selectedLeptonsMuResDown)[1]->pt_   ,weight_lepB);
+    }
+
+    HistsSysUp[ch][3][19][12]->Fill(MVAoutputMuScaleUp,weight_lepB );
+    HistsSysUp[ch][3][19][13]->Fill(MVAoutputEleScaleUp,weight_lepB );
+    HistsSysUp[ch][3][19][14]->Fill(MVAoutputMuResUp,weight_lepB );
+
+    HistsSysDown[ch][3][19][12]->Fill(MVAoutputMuScaleDown,weight_lepB );
+    HistsSysDown[ch][3][19][13]->Fill(MVAoutputEleScaleDown,weight_lepB );
+    HistsSysDown[ch][3][19][14]->Fill(MVAoutputMuResDown,weight_lepB );
+
+    if (fname.Contains("TTTo2L2Nu")|| fname.Contains("LFV")){
        for (int n=0;n<reweightSizeQscalePDF;++n){
          HistsSysReweightsQscalePDF[ch][3][0][n]->Fill((*selectedLeptons)[0]->pt_,weight_lepB*(SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
          HistsSysReweightsQscalePDF[ch][3][1][n]->Fill((*selectedLeptons)[0]->eta_,weight_lepB*(SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
@@ -1599,6 +2102,14 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
          HistsSysReweightsQscalePDF[ch][3][17][n]->Fill(pv_n,weight_lepB*(SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
          HistsSysReweightsQscalePDF[ch][3][18][n]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M(),weight_lepB*(SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
          HistsSysReweightsQscalePDF[ch][3][19][n]->Fill(MVAoutput,weight_lepB*(SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
+         if ((*selectedLeptons)[0]->lep_ == 10) HistsSysReweightsQscalePDF[ch][3][20][n]->Fill((*selectedLeptons)[0]->pt_   ,weight_lepB * (SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
+         if ((*selectedLeptons)[0]->lep_ == 10) HistsSysReweightsQscalePDF[ch][3][22][n]->Fill((*selectedLeptons)[0]->eta_  ,weight_lepB * (SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
+         if ((*selectedLeptons)[0]->lep_ == 1)  HistsSysReweightsQscalePDF[ch][3][21][n]->Fill((*selectedLeptons)[0]->pt_   ,weight_lepB * (SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
+         if ((*selectedLeptons)[0]->lep_ == 1)  HistsSysReweightsQscalePDF[ch][3][23][n]->Fill((*selectedLeptons)[0]->eta_  ,weight_lepB * (SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
+         if ((*selectedLeptons)[1]->lep_ == 10) HistsSysReweightsQscalePDF[ch][3][20][n]->Fill((*selectedLeptons)[1]->pt_   ,weight_lepB * (SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
+         if ((*selectedLeptons)[1]->lep_ == 10) HistsSysReweightsQscalePDF[ch][3][22][n]->Fill((*selectedLeptons)[1]->eta_  ,weight_lepB * (SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
+         if ((*selectedLeptons)[1]->lep_ == 1)  HistsSysReweightsQscalePDF[ch][3][21][n]->Fill((*selectedLeptons)[1]->pt_   ,weight_lepB * (SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
+         if ((*selectedLeptons)[1]->lep_ == 1)  HistsSysReweightsQscalePDF[ch][3][23][n]->Fill((*selectedLeptons)[1]->eta_  ,weight_lepB * (SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
        }
        for (int n=0;n<reweightSizePS;++n){
          if ((*gen_weight_sys)[n]/(*gen_weight_sys)[0]>20) continue;
@@ -1622,56 +2133,18 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
          HistsSysReweightsPS[ch][3][17][n]->Fill(pv_n,weight_lepB* (SGW[0]/SGW[n])*((*gen_weight_sys)[n]/(*gen_weight_sys)[0]));
          HistsSysReweightsPS[ch][3][18][n]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M(),weight_lepB* (SGW[0]/SGW[n])*((*gen_weight_sys)[n]/(*gen_weight_sys)[0]));
          HistsSysReweightsPS[ch][3][19][n]->Fill(MVAoutput,weight_lepB* (SGW[0]/SGW[n])*((*gen_weight_sys)[n]/(*gen_weight_sys)[0]));
+         if ((*selectedLeptons)[0]->lep_ == 10) HistsSysReweightsPS[ch][3][20][n]->Fill((*selectedLeptons)[0]->pt_   ,weight_lepB * (SGW[0]/SGW[n])*((*gen_weight_sys)[n]/(*gen_weight_sys)[0]));
+         if ((*selectedLeptons)[0]->lep_ == 10) HistsSysReweightsPS[ch][3][22][n]->Fill((*selectedLeptons)[0]->eta_  ,weight_lepB * (SGW[0]/SGW[n])*((*gen_weight_sys)[n]/(*gen_weight_sys)[0]));
+         if ((*selectedLeptons)[0]->lep_ == 1)  HistsSysReweightsPS[ch][3][21][n]->Fill((*selectedLeptons)[0]->pt_   ,weight_lepB * (SGW[0]/SGW[n])*((*gen_weight_sys)[n]/(*gen_weight_sys)[0]));
+         if ((*selectedLeptons)[0]->lep_ == 1)  HistsSysReweightsPS[ch][3][23][n]->Fill((*selectedLeptons)[0]->eta_  ,weight_lepB * (SGW[0]/SGW[n])*((*gen_weight_sys)[n]/(*gen_weight_sys)[0]));
+         if ((*selectedLeptons)[1]->lep_ == 10) HistsSysReweightsPS[ch][3][20][n]->Fill((*selectedLeptons)[1]->pt_   ,weight_lepB * (SGW[0]/SGW[n])*((*gen_weight_sys)[n]/(*gen_weight_sys)[0]));
+         if ((*selectedLeptons)[1]->lep_ == 10) HistsSysReweightsPS[ch][3][22][n]->Fill((*selectedLeptons)[1]->eta_  ,weight_lepB * (SGW[0]/SGW[n])*((*gen_weight_sys)[n]/(*gen_weight_sys)[0]));
+         if ((*selectedLeptons)[1]->lep_ == 1)  HistsSysReweightsPS[ch][3][21][n]->Fill((*selectedLeptons)[1]->pt_   ,weight_lepB * (SGW[0]/SGW[n])*((*gen_weight_sys)[n]/(*gen_weight_sys)[0]));
+         if ((*selectedLeptons)[1]->lep_ == 1)  HistsSysReweightsPS[ch][3][23][n]->Fill((*selectedLeptons)[1]->eta_  ,weight_lepB * (SGW[0]/SGW[n])*((*gen_weight_sys)[n]/(*gen_weight_sys)[0]));
       }
     }
   }
   if(nbjetJesUp >1) {
-    HistsSysUp[ch][3][0][8]->Fill((*selectedLeptons)[0]->pt_,weight_lepB);
-    HistsSysUp[ch][3][1][8]->Fill((*selectedLeptons)[0]->eta_,weight_lepB);
-    HistsSysUp[ch][3][2][8]->Fill((*selectedLeptons)[0]->phi_,weight_lepB);
-    HistsSysUp[ch][3][3][8]->Fill((*selectedLeptons)[1]->pt_,weight_lepB);
-    HistsSysUp[ch][3][4][8]->Fill((*selectedLeptons)[1]->eta_,weight_lepB);
-    HistsSysUp[ch][3][5][8]->Fill((*selectedLeptons)[1]->phi_,weight_lepB);
-    HistsSysUp[ch][3][6][8]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M(),weight_lepB);
-    HistsSysUp[ch][3][7][8]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).Pt(),weight_lepB);
-    HistsSysUp[ch][3][8][8]->Fill(deltaR((*selectedLeptons)[0]->eta_,(*selectedLeptons)[0]->phi_,(*selectedLeptons)[1]->eta_,(*selectedLeptons)[1]->phi_),weight_lepB);
-    HistsSysUp[ch][3][9][8]->Fill(deltaPhi((*selectedLeptons)[0]->phi_,(*selectedLeptons)[1]->phi_),weight_lepB);
-    HistsSysUp[ch][3][16][8]->Fill(MET_FinalCollection_phi,weight_lepB);
-    HistsSysUp[ch][3][17][8]->Fill(pv_n,weight_lepB);
-    HistsSysUp[ch][3][18][8]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M(),weight_lepB);
-
-    HistsSysUp[ch][3][10][8]->Fill((*selectedJetsJesUp)[0]->pt_,weight_lepB );
-    HistsSysUp[ch][3][11][8]->Fill((*selectedJetsJesUp)[0]->eta_,weight_lepB);
-    HistsSysUp[ch][3][12][8]->Fill((*selectedJetsJesUp)[0]->phi_,weight_lepB);
-    HistsSysUp[ch][3][13][8]->Fill(selectedJetsJesUp->size(),weight_lepB );
-    HistsSysUp[ch][3][14][8]->Fill(nbjetJesUp,weight_lepB);
-    HistsSysUp[ch][3][15][8]->Fill(MET_T1SmearJetEnUp_Pt,weight_lepB );
-    HistsSysUp[ch][3][19][8]->Fill(MVAoutputJesUp,weight_lepB );
-  }
-  if(nbjetJesDown>1){
-    HistsSysDown[ch][3][0][8]->Fill((*selectedLeptons)[0]->pt_,weight_lepB);
-    HistsSysDown[ch][3][1][8]->Fill((*selectedLeptons)[0]->eta_,weight_lepB);
-    HistsSysDown[ch][3][2][8]->Fill((*selectedLeptons)[0]->phi_,weight_lepB);
-    HistsSysDown[ch][3][3][8]->Fill((*selectedLeptons)[1]->pt_,weight_lepB);
-    HistsSysDown[ch][3][4][8]->Fill((*selectedLeptons)[1]->eta_,weight_lepB);
-    HistsSysDown[ch][3][5][8]->Fill((*selectedLeptons)[1]->phi_,weight_lepB);
-    HistsSysDown[ch][3][6][8]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M(),weight_lepB);
-    HistsSysDown[ch][3][7][8]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).Pt(),weight_lepB);
-    HistsSysDown[ch][3][8][8]->Fill(deltaR((*selectedLeptons)[0]->eta_,(*selectedLeptons)[0]->phi_,(*selectedLeptons)[1]->eta_,(*selectedLeptons)[1]->phi_),weight_lepB);
-    HistsSysDown[ch][3][9][8]->Fill(deltaPhi((*selectedLeptons)[0]->phi_,(*selectedLeptons)[1]->phi_),weight_lepB);
-    HistsSysDown[ch][3][16][8]->Fill(MET_FinalCollection_phi,weight_lepB);
-    HistsSysDown[ch][3][17][8]->Fill(pv_n,weight_lepB);
-    HistsSysDown[ch][3][18][8]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M(),weight_lepB);
-
-    HistsSysDown[ch][3][10][8]->Fill((*selectedJetsJesDown)[0]->pt_,weight_lepB );
-    HistsSysDown[ch][3][11][8]->Fill((*selectedJetsJesDown)[0]->eta_,weight_lepB);
-    HistsSysDown[ch][3][12][8]->Fill((*selectedJetsJesDown)[0]->phi_,weight_lepB);
-    HistsSysDown[ch][3][13][8]->Fill(selectedJetsJesDown->size(),weight_lepB );
-    HistsSysDown[ch][3][14][8]->Fill(nbjetJesDown,weight_lepB);
-    HistsSysDown[ch][3][15][8]->Fill(MET_T1SmearJetEnDown_Pt,weight_lepB );
-    HistsSysDown[ch][3][19][8]->Fill(MVAoutputJesDown,weight_lepB );
-  }
-  if(nbjetJerUp>1){
     HistsSysUp[ch][3][0][9]->Fill((*selectedLeptons)[0]->pt_,weight_lepB);
     HistsSysUp[ch][3][1][9]->Fill((*selectedLeptons)[0]->eta_,weight_lepB);
     HistsSysUp[ch][3][2][9]->Fill((*selectedLeptons)[0]->phi_,weight_lepB);
@@ -1685,17 +2158,23 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     HistsSysUp[ch][3][16][9]->Fill(MET_FinalCollection_phi,weight_lepB);
     HistsSysUp[ch][3][17][9]->Fill(pv_n,weight_lepB);
     HistsSysUp[ch][3][18][9]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M(),weight_lepB);
-
-    HistsSysUp[ch][3][10][9]->Fill((*selectedJetsJerUp)[0]->pt_,weight_lepB );
-    HistsSysUp[ch][3][11][9]->Fill((*selectedJetsJerUp)[0]->eta_,weight_lepB);
-    HistsSysUp[ch][3][12][9]->Fill((*selectedJetsJerUp)[0]->phi_,weight_lepB);
-    HistsSysUp[ch][3][13][9]->Fill(selectedJetsJerUp->size(),weight_lepB );
-    HistsSysUp[ch][3][14][9]->Fill(nbjetJerUp,weight_lepB);
-    HistsSysUp[ch][3][15][9]->Fill(MET_T1SmearJetResUp_Pt,weight_lepB );
-    HistsSysUp[ch][3][19][9]->Fill(MVAoutputJerUp,weight_lepB );
+    HistsSysUp[ch][3][10][9]->Fill((*selectedJetsJesUp)[0]->pt_,weight_lepB );
+    HistsSysUp[ch][3][11][9]->Fill((*selectedJetsJesUp)[0]->eta_,weight_lepB);
+    HistsSysUp[ch][3][12][9]->Fill((*selectedJetsJesUp)[0]->phi_,weight_lepB);
+    HistsSysUp[ch][3][13][9]->Fill(selectedJetsJesUp->size(),weight_lepB );
+    HistsSysUp[ch][3][14][9]->Fill(nbjetJesUp,weight_lepB);
+    HistsSysUp[ch][3][15][9]->Fill(MET_T1SmearJetEnUp_Pt,weight_lepB );
+    HistsSysUp[ch][3][19][9]->Fill(MVAoutputJesUp,weight_lepB );
+    if ((*selectedLeptons)[0]->lep_ == 10) HistsSysUp[ch][3][20][9]->Fill((*selectedLeptons)[0]->pt_   ,weight_lepB);
+    if ((*selectedLeptons)[0]->lep_ == 10) HistsSysUp[ch][3][22][9]->Fill((*selectedLeptons)[0]->eta_  ,weight_lepB);
+    if ((*selectedLeptons)[0]->lep_ == 1)  HistsSysUp[ch][3][21][9]->Fill((*selectedLeptons)[0]->pt_   ,weight_lepB);
+    if ((*selectedLeptons)[0]->lep_ == 1)  HistsSysUp[ch][3][23][9]->Fill((*selectedLeptons)[0]->eta_  ,weight_lepB);
+    if ((*selectedLeptons)[1]->lep_ == 10) HistsSysUp[ch][3][20][9]->Fill((*selectedLeptons)[1]->pt_   ,weight_lepB);
+    if ((*selectedLeptons)[1]->lep_ == 10) HistsSysUp[ch][3][22][9]->Fill((*selectedLeptons)[1]->eta_  ,weight_lepB);
+    if ((*selectedLeptons)[1]->lep_ == 1)  HistsSysUp[ch][3][21][9]->Fill((*selectedLeptons)[1]->pt_   ,weight_lepB);
+    if ((*selectedLeptons)[1]->lep_ == 1)  HistsSysUp[ch][3][23][9]->Fill((*selectedLeptons)[1]->eta_  ,weight_lepB);
   }
-
-  if(nbjetJerDown>1){
+  if(nbjetJesDown>1){
     HistsSysDown[ch][3][0][9]->Fill((*selectedLeptons)[0]->pt_,weight_lepB);
     HistsSysDown[ch][3][1][9]->Fill((*selectedLeptons)[0]->eta_,weight_lepB);
     HistsSysDown[ch][3][2][9]->Fill((*selectedLeptons)[0]->phi_,weight_lepB);
@@ -1709,14 +2188,82 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     HistsSysDown[ch][3][16][9]->Fill(MET_FinalCollection_phi,weight_lepB);
     HistsSysDown[ch][3][17][9]->Fill(pv_n,weight_lepB);
     HistsSysDown[ch][3][18][9]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M(),weight_lepB);
+    HistsSysDown[ch][3][10][9]->Fill((*selectedJetsJesDown)[0]->pt_,weight_lepB );
+    HistsSysDown[ch][3][11][9]->Fill((*selectedJetsJesDown)[0]->eta_,weight_lepB);
+    HistsSysDown[ch][3][12][9]->Fill((*selectedJetsJesDown)[0]->phi_,weight_lepB);
+    HistsSysDown[ch][3][13][9]->Fill(selectedJetsJesDown->size(),weight_lepB );
+    HistsSysDown[ch][3][14][9]->Fill(nbjetJesDown,weight_lepB);
+    HistsSysDown[ch][3][15][9]->Fill(MET_T1SmearJetEnDown_Pt,weight_lepB );
+    HistsSysDown[ch][3][19][9]->Fill(MVAoutputJesDown,weight_lepB );
+    if ((*selectedLeptons)[0]->lep_ == 10) HistsSysDown[ch][3][20][9]->Fill((*selectedLeptons)[0]->pt_   ,weight_lepB);
+    if ((*selectedLeptons)[0]->lep_ == 10) HistsSysDown[ch][3][22][9]->Fill((*selectedLeptons)[0]->eta_  ,weight_lepB);
+    if ((*selectedLeptons)[0]->lep_ == 1)  HistsSysDown[ch][3][21][9]->Fill((*selectedLeptons)[0]->pt_   ,weight_lepB);
+    if ((*selectedLeptons)[0]->lep_ == 1)  HistsSysDown[ch][3][23][9]->Fill((*selectedLeptons)[0]->eta_  ,weight_lepB);
+    if ((*selectedLeptons)[1]->lep_ == 10) HistsSysDown[ch][3][20][9]->Fill((*selectedLeptons)[1]->pt_   ,weight_lepB);
+    if ((*selectedLeptons)[1]->lep_ == 10) HistsSysDown[ch][3][22][9]->Fill((*selectedLeptons)[1]->eta_  ,weight_lepB);
+    if ((*selectedLeptons)[1]->lep_ == 1)  HistsSysDown[ch][3][21][9]->Fill((*selectedLeptons)[1]->pt_   ,weight_lepB);
+    if ((*selectedLeptons)[1]->lep_ == 1)  HistsSysDown[ch][3][23][9]->Fill((*selectedLeptons)[1]->eta_  ,weight_lepB);
+  }
+  if(nbjetJerUp>1){
+    HistsSysUp[ch][3][0][10]->Fill((*selectedLeptons)[0]->pt_,weight_lepB);
+    HistsSysUp[ch][3][1][10]->Fill((*selectedLeptons)[0]->eta_,weight_lepB);
+    HistsSysUp[ch][3][2][10]->Fill((*selectedLeptons)[0]->phi_,weight_lepB);
+    HistsSysUp[ch][3][3][10]->Fill((*selectedLeptons)[1]->pt_,weight_lepB);
+    HistsSysUp[ch][3][4][10]->Fill((*selectedLeptons)[1]->eta_,weight_lepB);
+    HistsSysUp[ch][3][5][10]->Fill((*selectedLeptons)[1]->phi_,weight_lepB);
+    HistsSysUp[ch][3][6][10]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M(),weight_lepB);
+    HistsSysUp[ch][3][7][10]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).Pt(),weight_lepB);
+    HistsSysUp[ch][3][8][10]->Fill(deltaR((*selectedLeptons)[0]->eta_,(*selectedLeptons)[0]->phi_,(*selectedLeptons)[1]->eta_,(*selectedLeptons)[1]->phi_),weight_lepB);
+    HistsSysUp[ch][3][9][10]->Fill(deltaPhi((*selectedLeptons)[0]->phi_,(*selectedLeptons)[1]->phi_),weight_lepB);
+    HistsSysUp[ch][3][16][10]->Fill(MET_FinalCollection_phi,weight_lepB);
+    HistsSysUp[ch][3][17][10]->Fill(pv_n,weight_lepB);
+    HistsSysUp[ch][3][18][10]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M(),weight_lepB);
+    HistsSysUp[ch][3][10][10]->Fill((*selectedJetsJerUp)[0]->pt_,weight_lepB );
+    HistsSysUp[ch][3][11][10]->Fill((*selectedJetsJerUp)[0]->eta_,weight_lepB);
+    HistsSysUp[ch][3][12][10]->Fill((*selectedJetsJerUp)[0]->phi_,weight_lepB);
+    HistsSysUp[ch][3][13][10]->Fill(selectedJetsJerUp->size(),weight_lepB );
+    HistsSysUp[ch][3][14][10]->Fill(nbjetJerUp,weight_lepB);
+    HistsSysUp[ch][3][15][10]->Fill(MET_T1SmearJetResUp_Pt,weight_lepB );
+    HistsSysUp[ch][3][19][10]->Fill(MVAoutputJerUp,weight_lepB );
+    if ((*selectedLeptons)[0]->lep_ == 10) HistsSysUp[ch][3][20][10]->Fill((*selectedLeptons)[0]->pt_   ,weight_lepB);
+    if ((*selectedLeptons)[0]->lep_ == 10) HistsSysUp[ch][3][22][10]->Fill((*selectedLeptons)[0]->eta_  ,weight_lepB);
+    if ((*selectedLeptons)[0]->lep_ == 1)  HistsSysUp[ch][3][21][10]->Fill((*selectedLeptons)[0]->pt_   ,weight_lepB);
+    if ((*selectedLeptons)[0]->lep_ == 1)  HistsSysUp[ch][3][23][10]->Fill((*selectedLeptons)[0]->eta_  ,weight_lepB);
+    if ((*selectedLeptons)[1]->lep_ == 10) HistsSysUp[ch][3][20][10]->Fill((*selectedLeptons)[1]->pt_   ,weight_lepB);
+    if ((*selectedLeptons)[1]->lep_ == 10) HistsSysUp[ch][3][22][10]->Fill((*selectedLeptons)[1]->eta_  ,weight_lepB);
+    if ((*selectedLeptons)[1]->lep_ == 1)  HistsSysUp[ch][3][21][10]->Fill((*selectedLeptons)[1]->pt_   ,weight_lepB);
+    if ((*selectedLeptons)[1]->lep_ == 1)  HistsSysUp[ch][3][23][10]->Fill((*selectedLeptons)[1]->eta_  ,weight_lepB);
+  }
 
-    HistsSysDown[ch][3][10][9]->Fill((*selectedJetsJerDown)[0]->pt_,weight_lepB );
-    HistsSysDown[ch][3][11][9]->Fill((*selectedJetsJerDown)[0]->eta_,weight_lepB);
-    HistsSysDown[ch][3][12][9]->Fill((*selectedJetsJerDown)[0]->phi_,weight_lepB);
-    HistsSysDown[ch][3][13][9]->Fill(selectedJetsJerDown->size(),weight_lepB );
-    HistsSysDown[ch][3][14][9]->Fill(nbjetJerDown,weight_lepB);
-    HistsSysDown[ch][3][15][9]->Fill(MET_T1SmearJetResDown_Pt,weight_lepB );
-    HistsSysDown[ch][3][19][9]->Fill(MVAoutputJerDown,weight_lepB );
+  if(nbjetJerDown>1){
+    HistsSysDown[ch][3][0][10]->Fill((*selectedLeptons)[0]->pt_,weight_lepB);
+    HistsSysDown[ch][3][1][10]->Fill((*selectedLeptons)[0]->eta_,weight_lepB);
+    HistsSysDown[ch][3][2][10]->Fill((*selectedLeptons)[0]->phi_,weight_lepB);
+    HistsSysDown[ch][3][3][10]->Fill((*selectedLeptons)[1]->pt_,weight_lepB);
+    HistsSysDown[ch][3][4][10]->Fill((*selectedLeptons)[1]->eta_,weight_lepB);
+    HistsSysDown[ch][3][5][10]->Fill((*selectedLeptons)[1]->phi_,weight_lepB);
+    HistsSysDown[ch][3][6][10]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M(),weight_lepB);
+    HistsSysDown[ch][3][7][10]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).Pt(),weight_lepB);
+    HistsSysDown[ch][3][8][10]->Fill(deltaR((*selectedLeptons)[0]->eta_,(*selectedLeptons)[0]->phi_,(*selectedLeptons)[1]->eta_,(*selectedLeptons)[1]->phi_),weight_lepB);
+    HistsSysDown[ch][3][9][10]->Fill(deltaPhi((*selectedLeptons)[0]->phi_,(*selectedLeptons)[1]->phi_),weight_lepB);
+    HistsSysDown[ch][3][16][10]->Fill(MET_FinalCollection_phi,weight_lepB);
+    HistsSysDown[ch][3][17][10]->Fill(pv_n,weight_lepB);
+    HistsSysDown[ch][3][18][10]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M(),weight_lepB);
+    HistsSysDown[ch][3][10][10]->Fill((*selectedJetsJerDown)[0]->pt_,weight_lepB );
+    HistsSysDown[ch][3][11][10]->Fill((*selectedJetsJerDown)[0]->eta_,weight_lepB);
+    HistsSysDown[ch][3][12][10]->Fill((*selectedJetsJerDown)[0]->phi_,weight_lepB);
+    HistsSysDown[ch][3][13][10]->Fill(selectedJetsJerDown->size(),weight_lepB );
+    HistsSysDown[ch][3][14][10]->Fill(nbjetJerDown,weight_lepB);
+    HistsSysDown[ch][3][15][10]->Fill(MET_T1SmearJetResDown_Pt,weight_lepB );
+    HistsSysDown[ch][3][19][10]->Fill(MVAoutputJerDown,weight_lepB );
+    if ((*selectedLeptons)[0]->lep_ == 10) HistsSysDown[ch][3][20][10]->Fill((*selectedLeptons)[0]->pt_   ,weight_lepB);
+    if ((*selectedLeptons)[0]->lep_ == 10) HistsSysDown[ch][3][22][10]->Fill((*selectedLeptons)[0]->eta_  ,weight_lepB);
+    if ((*selectedLeptons)[0]->lep_ == 1)  HistsSysDown[ch][3][21][10]->Fill((*selectedLeptons)[0]->pt_   ,weight_lepB);
+    if ((*selectedLeptons)[0]->lep_ == 1)  HistsSysDown[ch][3][23][10]->Fill((*selectedLeptons)[0]->eta_  ,weight_lepB);
+    if ((*selectedLeptons)[1]->lep_ == 10) HistsSysDown[ch][3][20][10]->Fill((*selectedLeptons)[1]->pt_   ,weight_lepB);
+    if ((*selectedLeptons)[1]->lep_ == 10) HistsSysDown[ch][3][22][10]->Fill((*selectedLeptons)[1]->eta_  ,weight_lepB);
+    if ((*selectedLeptons)[1]->lep_ == 1)  HistsSysDown[ch][3][21][10]->Fill((*selectedLeptons)[1]->pt_   ,weight_lepB);
+    if ((*selectedLeptons)[1]->lep_ == 1)  HistsSysDown[ch][3][23][10]->Fill((*selectedLeptons)[1]->eta_  ,weight_lepB);
   }
   for (int n=0;n<sysJecNames.size();++n){
     if ((*JECsysNbtagUp)[n]>1) {
@@ -1740,6 +2287,14 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
       HistsJECUp[ch][3][14][n]->Fill((*JECsysNbtagUp)[n],weight_lepB);
       HistsJECUp[ch][3][15][n]->Fill((*JECsysMETUp)[n],weight_lepB );
       HistsJECUp[ch][3][19][n]->Fill((*JECsysMVAUp)[n],weight_lepB );
+      if ((*selectedLeptons)[0]->lep_ == 10) HistsJECUp[ch][3][20][n]->Fill((*selectedLeptons)[0]->pt_   ,weight_lepB);
+      if ((*selectedLeptons)[0]->lep_ == 10) HistsJECUp[ch][3][22][n]->Fill((*selectedLeptons)[0]->eta_  ,weight_lepB);
+      if ((*selectedLeptons)[0]->lep_ == 1)  HistsJECUp[ch][3][21][n]->Fill((*selectedLeptons)[0]->pt_   ,weight_lepB);
+      if ((*selectedLeptons)[0]->lep_ == 1)  HistsJECUp[ch][3][23][n]->Fill((*selectedLeptons)[0]->eta_  ,weight_lepB);
+      if ((*selectedLeptons)[1]->lep_ == 10) HistsJECUp[ch][3][20][n]->Fill((*selectedLeptons)[1]->pt_   ,weight_lepB);
+      if ((*selectedLeptons)[1]->lep_ == 10) HistsJECUp[ch][3][22][n]->Fill((*selectedLeptons)[1]->eta_  ,weight_lepB);
+      if ((*selectedLeptons)[1]->lep_ == 1)  HistsJECUp[ch][3][21][n]->Fill((*selectedLeptons)[1]->pt_   ,weight_lepB);
+      if ((*selectedLeptons)[1]->lep_ == 1)  HistsJECUp[ch][3][23][n]->Fill((*selectedLeptons)[1]->eta_  ,weight_lepB);
       }
     if ((*JECsysNbtagDown)[n]>1) {
       HistsJECDown[ch][3][0][n]->Fill((*selectedLeptons)[0]->pt_,weight_lepB);
@@ -1762,6 +2317,14 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
       HistsJECDown[ch][3][14][n]->Fill((*JECsysNbtagDown)[n],weight_lepB);
       HistsJECDown[ch][3][15][n]->Fill((*JECsysMETDown)[n],weight_lepB );
       HistsJECDown[ch][3][19][n]->Fill((*JECsysMVADown)[n],weight_lepB );
+      if ((*selectedLeptons)[0]->lep_ == 10) HistsJECDown[ch][3][20][n]->Fill((*selectedLeptons)[0]->pt_   ,weight_lepB);
+      if ((*selectedLeptons)[0]->lep_ == 10) HistsJECDown[ch][3][22][n]->Fill((*selectedLeptons)[0]->eta_  ,weight_lepB);
+      if ((*selectedLeptons)[0]->lep_ == 1)  HistsJECDown[ch][3][21][n]->Fill((*selectedLeptons)[0]->pt_   ,weight_lepB);
+      if ((*selectedLeptons)[0]->lep_ == 1)  HistsJECDown[ch][3][23][n]->Fill((*selectedLeptons)[0]->eta_  ,weight_lepB);
+      if ((*selectedLeptons)[1]->lep_ == 10) HistsJECDown[ch][3][20][n]->Fill((*selectedLeptons)[1]->pt_   ,weight_lepB);
+      if ((*selectedLeptons)[1]->lep_ == 10) HistsJECDown[ch][3][22][n]->Fill((*selectedLeptons)[1]->eta_  ,weight_lepB);
+      if ((*selectedLeptons)[1]->lep_ == 1)  HistsJECDown[ch][3][21][n]->Fill((*selectedLeptons)[1]->pt_   ,weight_lepB);
+      if ((*selectedLeptons)[1]->lep_ == 1)  HistsJECDown[ch][3][23][n]->Fill((*selectedLeptons)[1]->eta_  ,weight_lepB);
     }
   }
 
@@ -1769,6 +2332,46 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     for (int l=0;l<selectedLeptons->size();l++){
       delete (*selectedLeptons)[l];
     }
+    for (int l=0;l<selectedLeptonsMuScaleUp->size();l++){
+      delete (*selectedLeptonsMuScaleUp)[l];
+    }
+    for (int l=0;l<selectedLeptonsMuScaleDown->size();l++){
+      delete (*selectedLeptonsMuScaleDown)[l];
+    }
+    for (int l=0;l<selectedLeptonsEleScaleUp->size();l++){
+      delete (*selectedLeptonsEleScaleUp)[l];
+    }
+    for (int l=0;l<selectedLeptonsEleScaleDown->size();l++){
+      delete (*selectedLeptonsEleScaleDown)[l];
+    }
+    for (int l=0;l<selectedLeptonsMuResUp->size();l++){
+      delete (*selectedLeptonsMuResUp)[l];
+    }
+    for (int l=0;l<selectedLeptonsMuResDown->size();l++){
+      delete (*selectedLeptonsMuResDown)[l];
+    }
+    selectedLeptons->clear();
+    selectedLeptons->shrink_to_fit();
+    delete selectedLeptons;
+    selectedLeptonsMuScaleUp->clear();
+    selectedLeptonsMuScaleUp->shrink_to_fit();
+    delete selectedLeptonsMuScaleUp;
+    selectedLeptonsMuScaleDown->clear();
+    selectedLeptonsMuScaleDown->shrink_to_fit();
+    delete selectedLeptonsMuScaleDown;
+    selectedLeptonsMuResUp->clear();
+    selectedLeptonsMuResUp->shrink_to_fit();
+    delete selectedLeptonsMuResUp;
+    selectedLeptonsMuResDown->clear();
+    selectedLeptonsMuResDown->shrink_to_fit();
+    delete selectedLeptonsMuResDown;
+    selectedLeptonsEleScaleUp->clear();
+    selectedLeptonsEleScaleUp->shrink_to_fit();
+    delete selectedLeptonsEleScaleUp;
+    selectedLeptonsEleScaleDown->clear();
+    selectedLeptonsEleScaleDown->shrink_to_fit();
+    delete selectedLeptonsEleScaleDown;
+
     for (int l=0;l<selectedJets->size();l++){
       delete (*selectedJets)[l];
     }
@@ -1785,9 +2388,6 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
       delete (*selectedJetsJesDown)[l];
     }
 
-    selectedLeptons->clear();
-    selectedLeptons->shrink_to_fit();
-    delete selectedLeptons;
     selectedJets->clear();
     selectedJets->shrink_to_fit();
     delete selectedJets;
@@ -1875,7 +2475,7 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
 
   file_out.cd("");  
 
-  if (fname.Contains("TTTo2L2Nu")){
+  if (fname.Contains("TTTo2L2Nu") || fname.Contains("LFV")){
     file_out.mkdir("reweightingSys");
     file_out.cd("reweightingSys/");
     for (int i=0;i<channels.size();++i){

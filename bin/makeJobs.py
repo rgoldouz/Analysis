@@ -54,7 +54,7 @@ for key, value in SAMPLES.items():
                 for filename in seq:
                     text += '    ch ->Add("' + S+ filename + '");\n'
                 text += '    MyAnalysis t1(ch);\n'
-                text += '    t1.Loop("/user/rgoldouz/NewAnalysis2020/Analysis/hists/' + value[3] + '/' + key +'_' + str(idx) +'_' +str(num)  + '.root", "' + value[1] + '" , "'+ value[2] + '" , "'+ value[3] + '" , "'+ value[4] + '" , ' + value[5] + ' , '+ value[6] + ' , '+ value[7] + ');\n'
+                text += '    t1.Loop("/user/rgoldouz/NewAnalysis2020/Analysis/hists/' + value[3] + '/' + key +'_' + str(idx) +'_' +str(num)  + '.root", "' + key + '" , "' + value[1] + '" , "'+ value[2] + '" , "'+ value[3] + '" , "'+ value[4] + '" , ' + value[5] + ' , '+ value[6] + ' , '+ value[7] + ');\n'
                 text += '  return 0;\n'
                 SHNAME1 = 'Y' + key +'_' + str(idx) +'_' +str(num) + '.C'
                 SHFILE1='#include "../../include/MyAnalysis.h"\n' +\

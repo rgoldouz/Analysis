@@ -5,12 +5,12 @@ kmax * number of nuisance parameters
 shapes * * 2017_llBg1.root $PROCESS $PROCESS_$SYSTEMATIC
 ------------
 bin                                          LFVVecU_2017_llBg1
-observation                                  75495.0
+observation                                  80561.0
 ------------
 bin                                          LFVVecU_2017_llBg1       LFVVecU_2017_llBg1       LFVVecU_2017_llBg1       LFVVecU_2017_llBg1       LFVVecU_2017_llBg1       LFVVecU_2017_llBg1       
 process                                      0                        1                        2                        3                        4                        5                        
 process                                      LfvVectorEmutu           Jets                     Others                   DY                       tt                       tW                       
-rate                                         353.732894283            0.0                      156.7548365              93.4932711124            74000.4142094            2184.43112263            
+rate                                         367.298946593            0.0                      168.689378769            94.4998791218            78460.0101492            2304.24338156            
 ------------
 lumi                               lnN       1.025                    1.025                    1.025                    1.025                    1.025                    1.025                    
 Jets_norm                          lnN       -                        1.5                      -                        -                        -                        -                        
@@ -59,6 +59,12 @@ muIsoSf                            shape     1                        1         
 bcTagSF                            shape     1                        1                        1                        1                        1                        1                        
 udsgTagSF                          shape     1                        1                        1                        1                        1                        1                        
 pu                                 shape     1                        1                        1                        1                        1                        1                        
+trigSF                             shape     1                        1                        1                        1                        1                        1                        
+jes                                shape     1                        1                        1                        1                        1                        1                        
+unclusMET                          shape     1                        1                        1                        1                        1                        1                        
+muonScale                          shape     1                        1                        1                        1                        1                        1                        
+electronScale                      shape     1                        1                        1                        1                        1                        1                        
+muonRes                            shape     1                        1                        1                        1                        1                        1                        
 Y2017jer                           shape     1                        1                        1                        1                        1                        1                        
 prefiring                          shape     1                        1                        1                        1                        1                        1                        
 tt_pdf                             shape     -                        -                        -                        -                        1                        -                        
@@ -68,6 +74,10 @@ tt_FSR                             shape     -                        -         
 tt_CR                              shape     -                        -                        -                        -                        1                        -                        
 tt_Tune                            shape     -                        -                        -                        -                        1                        -                        
 tt_hdamp                           shape     -                        -                        -                        -                        1                        -                        
+Signal_pdf                         shape     1                        -                        -                        -                        -                        -                        
+Signal_QS                          shape     1                        -                        -                        -                        -                        -                        
+Signal_ISR                         shape     1                        -                        -                        -                        -                        -                        
+Signal_FSR                         shape     1                        -                        -                        -                        -                        -                        
 Y2017llBg1tWStatBin8               shape     -                        -                        -                        -                        -                        1                        
 Y2017llBg1tWStatBin9               shape     -                        -                        -                        -                        -                        1                        
 Y2017llBg1tWStatBin10              shape     -                        -                        -                        -                        -                        1                        
@@ -100,3 +110,4 @@ Y2017llBg1DYStatBin9               shape     -                        -         
 Y2017llBg1DYStatBin10              shape     -                        -                        -                        1                        -                        -                        
 Y2017llBg1DYStatBin11              shape     -                        -                        -                        1                        -                        -                        
 Y2017llBg1DYStatBin12              shape     -                        -                        -                        1                        -                        -                        
+Y2017llBg1DYStatBin13              shape     -                        -                        -                        1                        -                        -                        

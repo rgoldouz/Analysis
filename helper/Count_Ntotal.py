@@ -47,8 +47,19 @@ path = []
 #path.append('/pnfs/iihe/cms/store/user/schenara/SYS_RunII_2016/TTTo2L2Nu_hdampDOWN_TuneCP5_PSweights_13TeV-powheg-pythia8/crab_TTTo2L2Nu_hdampDOWN_v3_ext1/200311_144755/0000/')
 #path.append('/pnfs/iihe/cms/store/user/schenara/SYS_RunII_2016/TTTo2L2Nu_hdampUP_TuneCP5_PSweights_13TeV-powheg-pythia8/crab_TTTo2L2Nu_hdampUP_v3_v1/200311_144425/0000/')
 #path.append('/pnfs/iihe/cms/store/user/schenara/SYS_RunII_2016/TTTo2L2Nu_hdampUP_TuneCP5_PSweights_13TeV-powheg-pythia8/crab_TTTo2L2Nu_hdampUP_v3_ext1/200311_144331/0000/')
-path.append('/pnfs/iihe/cms/store/user/schenara/SYS_RunII_2016/TTTo2L2Nu_TuneCP5CR2_GluonMove_PSweights_13TeV-powheg-pythia8/crab_TTTo2L2Nu_TuneCP5CR2_GluonMove_2016/200514_062950/0000/')
-
+#path.append('/pnfs/iihe/cms/store/user/schenara/SYS_RunII_2016/TTTo2L2Nu_TuneCP5CR2_GluonMove_PSweights_13TeV-powheg-pythia8/crab_TTTo2L2Nu_TuneCP5CR2_GluonMove_2016/200514_062950/0000/')
+#path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2016/IIHE_Ntuple/ntuple_SMEFTfr_ST_vector_emutc/')
+#path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2016/IIHE_Ntuple/ntuple_SMEFTfr_ST_vector_emutu/')
+#path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2016/IIHE_Ntuple/ntuple_SMEFTfr_TT_vector_emutc/')
+#path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2016/IIHE_Ntuple/ntuple_SMEFTfr_TT_vector_emutu/')
+#path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2016/IIHE_Ntuple/ntuple_SMEFTfr_ST_clequ1_emutc//')
+#path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2016/IIHE_Ntuple/ntuple_SMEFTfr_ST_clequ1_emutu/')
+#path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2016/IIHE_Ntuple/ntuple_SMEFTfr_TT_clequ1_emutc/')
+#path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2016/IIHE_Ntuple/ntuple_SMEFTfr_TT_clequ1_emutu/')
+#path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2016/IIHE_Ntuple/ntuple_SMEFTfr_ST_clequ3_emutc/')
+#path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2016/IIHE_Ntuple/ntuple_SMEFTfr_ST_clequ3_emutu/')
+#path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2016/IIHE_Ntuple/ntuple_SMEFTfr_TT_clequ3_emutc/')
+#path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2016/IIHE_Ntuple/ntuple_SMEFTfr_TT_clequ3_emutu/')
 
 #path.append('/pnfs/iihe/cms/store/user/schenara/MC_RunII_2017/DYJetsToLL_M-10to50_TuneCP5_13TeV-madgraphMLM-pythia8/crab_DYJetsToLL_M-10to50_v14-v1/191201_123859/0000/')
 #path.append('/pnfs/iihe/cms/store/user/schenara/MC_RunII_2017/DYJetsToLL_M-10to50_TuneCP5_13TeV-madgraphMLM-pythia8/crab_DYJetsToLL_M-10to50_v14_ext1_v2/191201_123656/0000/')
@@ -129,6 +140,19 @@ path.append('/pnfs/iihe/cms/store/user/schenara/SYS_RunII_2016/TTTo2L2Nu_TuneCP5
 #path.append('/pnfs/iihe/cms/store/user/schenara/SYS_RunII_2018/TTTo2L2Nu_TuneCP5_erdON_13TeV-powheg-pythia8/crab_TTTo2L2Nu_TuneCP5_erdON_v15_v1/200311_155126/0000/')
 #path.append('/pnfs/iihe/cms/store/user/schenara/SYS_RunII_2018/TTTo2L2Nu_TuneCP5_erdON_13TeV-powheg-pythia8/crab_TTTo2L2Nu_TuneCP5_erdON_v15_ext1_v1/200311_155018/0000/')
 #path.append('/pnfs/iihe/cms/store/user/schenara/SYS_RunII_2018/TTTo2L2Nu_TuneCP5CR2_GluonMove_13TeV-powheg-pythia8/crab_TTTo2L2Nu_TuneCP5CR2_GluonMove_v15_v1/200408_073151/0000/')
+#path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2018/IIHE_Ntuple/ntuple_SMEFTfr_ST_vector_emutc/') 
+#path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2018/IIHE_Ntuple/ntuple_SMEFTfr_ST_vector_emutu/')
+#path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2018/IIHE_Ntuple/ntuple_SMEFTfr_TT_vector_emutc/')
+#path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2018/IIHE_Ntuple/ntuple_SMEFTfr_TT_vector_emutu/')
+#path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2018/IIHE_Ntuple/ntuple_SMEFTfr_ST_clequ1_emutc/')
+#path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2018/IIHE_Ntuple/ntuple_SMEFTfr_ST_clequ1_emutu/')
+#path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2018/IIHE_Ntuple/ntuple_SMEFTfr_TT_clequ1_emutc/')
+#path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2018/IIHE_Ntuple/ntuple_SMEFTfr_TT_clequ1_emutu/')
+#path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2018/IIHE_Ntuple/ntuple_SMEFTfr_ST_clequ3_emutc/')
+#path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2018/IIHE_Ntuple/ntuple_SMEFTfr_ST_clequ3_emutu/')
+#path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2018/IIHE_Ntuple/ntuple_SMEFTfr_TT_clequ3_emutc/')
+#path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2018/IIHE_Ntuple/ntuple_SMEFTfr_TT_clequ3_emutu/')
+
 
 nEventsraw = 0
 neventsweight = 0

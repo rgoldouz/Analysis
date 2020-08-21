@@ -5,12 +5,12 @@ kmax * number of nuisance parameters
 shapes * * 2018_llBg1.root $PROCESS $PROCESS_$SYSTEMATIC
 ------------
 bin                                          LFVTensorC_2018_llBg1
-observation                                  118676.0
+observation                                  125050.0
 ------------
 bin                                          LFVTensorC_2018_llBg1    LFVTensorC_2018_llBg1    LFVTensorC_2018_llBg1    LFVTensorC_2018_llBg1    LFVTensorC_2018_llBg1    LFVTensorC_2018_llBg1    
 process                                      0                        1                        2                        3                        4                        5                        
 process                                      LfvTensorEmutc           Jets                     Others                   DY                       tt                       tW                       
-rate                                         423.393041253            0.0                      257.689034244            131.881707668            119858.312534            3553.74521995            
+rate                                         590.225881815            0.0                      272.689516529            132.022321701            125984.275053            3697.1298641             
 ------------
 lumi                               lnN       1.025                    1.025                    1.025                    1.025                    1.025                    1.025                    
 Jets_norm                          lnN       -                        1.5                      -                        -                        -                        -                        
@@ -56,6 +56,12 @@ muIsoSf                            shape     1                        1         
 bcTagSF                            shape     1                        1                        1                        1                        1                        1                        
 udsgTagSF                          shape     1                        1                        1                        1                        1                        1                        
 pu                                 shape     1                        1                        1                        1                        1                        1                        
+trigSF                             shape     1                        1                        1                        1                        1                        1                        
+jes                                shape     1                        1                        1                        1                        1                        1                        
+unclusMET                          shape     1                        1                        1                        1                        1                        1                        
+muonScale                          shape     1                        1                        1                        1                        1                        1                        
+electronScale                      shape     1                        1                        1                        1                        1                        1                        
+muonRes                            shape     1                        1                        1                        1                        1                        1                        
 Y2018jer                           shape     1                        1                        1                        1                        1                        1                        
 tt_pdf                             shape     -                        -                        -                        -                        1                        -                        
 tt_QS                              shape     -                        -                        -                        -                        1                        -                        
@@ -64,6 +70,10 @@ tt_FSR                             shape     -                        -         
 tt_CR                              shape     -                        -                        -                        -                        1                        -                        
 tt_Tune                            shape     -                        -                        -                        -                        1                        -                        
 tt_hdamp                           shape     -                        -                        -                        -                        1                        -                        
+Signal_pdf                         shape     1                        -                        -                        -                        -                        -                        
+Signal_QS                          shape     1                        -                        -                        -                        -                        -                        
+Signal_ISR                         shape     1                        -                        -                        -                        -                        -                        
+Signal_FSR                         shape     1                        -                        -                        -                        -                        -                        
 Y2018llBg1DYStatBin8               shape     -                        -                        -                        1                        -                        -                        
 Y2018llBg1DYStatBin9               shape     -                        -                        -                        1                        -                        -                        
 Y2018llBg1DYStatBin10              shape     -                        -                        -                        1                        -                        -                        
