@@ -14,7 +14,7 @@ class jet_candidate {
   
 public:
   jet_candidate(float, float, float, float, float, TString, int );
-  ~jet_candidate();
+  virtual ~jet_candidate();
   float pt_;
   float eta_;
   float phi_;

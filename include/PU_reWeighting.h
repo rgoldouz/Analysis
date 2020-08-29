@@ -7,6 +7,7 @@ class PU {
 
   public:
   PU();
+  virtual ~PU();
   double PU_2016(int, TString);
   double PU_2017(int, TString);
   double PU_2018(int, TString);

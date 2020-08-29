@@ -9,6 +9,7 @@ class sumOfWeightsSignal {
 
   public:
   sumOfWeightsSignal();
+  virtual ~sumOfWeightsSignal();
   std::vector<float> LHEWeightSignal(TString);
   std::vector<float> GenWeightSignal(TString);
 

@@ -1,6 +1,7 @@
 #include "sumOfWeights.h"
 
 sumOfWeights::sumOfWeights(){};
+sumOfWeights::~sumOfWeights(){};
 
 std::vector<float> sumOfWeights::LHEWeight(TString year){
   if (year == "2016") return sumOfLHEWeight_2016;

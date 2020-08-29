@@ -14,7 +14,7 @@ class lepton_candidate {
   
 public:
   lepton_candidate(float, float, float, int, int, int );
-  ~lepton_candidate();
+  virtual ~lepton_candidate();
   float pt_;
   float eta_;
   float phi_;

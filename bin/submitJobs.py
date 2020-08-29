@@ -38,12 +38,12 @@ for key, value in SAMPLES.items():
 #    if '2017' in key:
 #        continue
     year = value[3]
-    nf = 72
+    nf = 50
     for idx, S in enumerate(value[0]):
-        if 'TTTo2L2Nu' in key or 'tw' in key or 'DY' in key:
-            nf = 35
+        if 'TTTo2L2Nu' in key or 'tw' in key or 'DY' in key or 'TTsys' in key:
+            nf = 25
         if value[1]=='data':
-            nf = 205
+            nf = 175
         for subdir, dirs, files in os.walk(S):
             sequance = [files[i:i+nf] for i in range(0,len(files),nf)]
             for num,  seq in enumerate(sequance):

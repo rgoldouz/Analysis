@@ -1,6 +1,7 @@
 #include "PU_reWeighting.h"
 
 PU::PU(){}
+PU::~PU(){}
 
 double PU::PU_2016(int NumTrueInteraction, TString type_str){
 if (NumTrueInteraction < 0 || NumTrueInteraction > 74 ) {return 1;}

@@ -9,6 +9,7 @@ class sumOfWeights {
 
   public:
   sumOfWeights();
+   virtual ~sumOfWeights();
   std::vector<float> LHEWeight(TString);
   std::vector<float> GenWeight(TString);
 

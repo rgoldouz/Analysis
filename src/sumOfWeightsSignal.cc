@@ -1,6 +1,7 @@
 #include "sumOfWeightsSignal.h"
 
 sumOfWeightsSignal::sumOfWeightsSignal(){};
+sumOfWeightsSignal::~sumOfWeightsSignal(){};
 
 std::vector<float> sumOfWeightsSignal::LHEWeightSignal(TString Name){
   if (Name = "2016_LFVStVecC") return sumOfLHEWeight_2016_LFVStVecC;
