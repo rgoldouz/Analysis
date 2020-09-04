@@ -103,9 +103,6 @@ float getLFVTopmass(lepton_candidate *a,lepton_candidate *b,std::vector<jet_cand
   TLorentzVector lv_elmujet;
 
   for(int ij = 1;ij < selectedJets->size();ij++){
-      float dr1 = deltaR(a->eta_,a->phi_,(*selectedJets)[ij]->eta_,(*selectedJets)[ij]->phi_);
-      float dr2 = deltaR(b->eta_,b->phi_,(*selectedJets)[ij]->eta_,(*selectedJets)[ij]->phi_);
-      if(dr1<0.4 || dr2<0.4) continue;
       lv_elmujet = a->p4_ + b->p4_ + (*selectedJets)[ij]->p4_;
       temp.ij=ij;
       temp.mass=lv_elmujet.M();
@@ -622,7 +619,7 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
          if ((*mu_mc_index)[l]<0) muPtSFRochester = rc.kSmearMC((*mu_gt_charge)[l], (*mu_gt_pt)[l],(*mu_gt_eta)[l],(*mu_gt_phi)[l], (*mu_trackerLayersWithMeasurement)[l] , gRandom->Rndm(),0, 0);
       }
       if(muPtSFRochester * (*mu_gt_pt)[l] <20 || abs((*mu_gt_eta)[l]) > 2.4) continue;
-      if(!(*mu_isTightMuon)[l]) continue;
+      if ((!(*mu_MvaMedium)[l]) || (!(*mu_CutBasedIdMedium)[l]))
       if((*mu_pfIsoDbCorrected04)[l] > 0.15) continue;
       selectedLeptons->push_back(new lepton_candidate(muPtSFRochester * (*mu_gt_pt)[l],(*mu_gt_eta)[l],(*mu_gt_phi)[l],(*mu_gt_charge)[l],l,10));
       selectedLeptons_copy->push_back(new lepton_candidate(muPtSFRochester * (*mu_gt_pt)[l],(*mu_gt_eta)[l],(*mu_gt_phi)[l],(*mu_gt_charge)[l],l,10));
