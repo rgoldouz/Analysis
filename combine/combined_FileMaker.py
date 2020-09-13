@@ -19,7 +19,7 @@ import copy
 TGaxis.SetMaxDigits(2)
 
 
-year=['2016','2017','2018','All']
+year=['2016','2017','2018']
 LumiErr = [0.025, 0.023, 0.025, 0.018]
 regions=["llB1", "llBg1"]
 channels=["emu"]
@@ -35,6 +35,8 @@ Samples = ['data.root','WJetsToLNu.root','others.root', 'DY.root', 'TTTo2L2Nu.ro
 SamplesName = ['Data','Jets','Others', 'DY', 't#bar{t}', 'tW' , 'LFV-vec [c_{e#mutc}=5]', 'LFV-vec [c_{e#mutu}=2]']
 SamplesNameCombined = ['data_obs','Jets','Others', 'DY', 'tt', 'tW',  'LfvVectorEmutc', 'LfvVectorEmutu', 'LfvScalarEmutc', 'LfvScalarEmutu', 'LfvTensorEmutc', 'LfvTensorEmutu']
 NormalizationErr = [0, 0.5, 0.5, 0.3, 0.05, 0.1, 0,0,0,0,0,0]
+
+SignalSamples = ['LFVVecC', 'LFVVecU', 'LFVScalarC', 'LFVScalarU', 'LFVTensorC', 'LFVTensorU']
 
 colors =  [ROOT.kBlack,ROOT.kYellow,ROOT.kGreen,ROOT.kBlue-3,ROOT.kRed-4,ROOT.kOrange-3, ROOT.kOrange-6, ROOT.kCyan-6, ROOT.kOrange-6, ROOT.kCyan-6, ROOT.kOrange-6, ROOT.kCyan-6]
 
@@ -133,6 +135,108 @@ for numyear, nameyear in enumerate(year):
     HistsJecDown.append(JecDownl0)
 
 
+#find signal uncertainties
+
+SIGpdfGraph=[]
+SIGqscaleGraph=[]
+SIGISRGraph=[]
+SIGFSRGraph=[]
+for f in range(len(SignalSamples)):
+    SIG1Pdf=[]
+    SIG1Qscale=[]
+    SIG1ISR=[]
+    SIG1FSR=[]
+    for numyear, nameyear in enumerate(year):
+        sysfile = ROOT.TFile.Open(HistAddress + nameyear+ '_'+ SignalSamples[f]+'.root')
+        SIG2Pdf=[]
+        SIG2Qscale=[]
+        SIG2ISR=[]
+        SIG2FSR=[]
+        for numreg, namereg in enumerate(regions):
+            pdfHists=[]
+            QscaleHists=[]
+            for numsys in range(45):
+                h=sysfile.Get('reweightingSys/emu' + '_' + namereg + '_BDT_QscalePDF_'+str(numsys))
+                h.SetBinContent(h.GetXaxis().GetNbins(), h.GetBinContent(h.GetXaxis().GetNbins()) + h.GetBinContent(h.GetXaxis().GetNbins()+1))
+                QscaleHists.append(h)
+            for numsys in range(50,145):
+                h=sysfile.Get('reweightingSys/emu' +'_' + namereg + '_BDT_QscalePDF_'+str(numsys))
+                h.SetBinContent(h.GetXaxis().GetNbins(), h.GetBinContent(h.GetXaxis().GetNbins()) + h.GetBinContent(h.GetXaxis().GetNbins()+1))
+                pdfHists.append(h)
+            hISRup = sysfile.Get('reweightingSys/emu' + '_' + namereg + '_' + namevar+ '_PS_8')
+            hISRup.SetBinContent(hISRup.GetXaxis().GetNbins(), hISRup.GetBinContent(hISRup.GetXaxis().GetNbins()) + hISRup.GetBinContent(hISRup.GetXaxis().GetNbins()+1))
+            hISRdown = sysfile.Get('reweightingSys/emu' + '_' + namereg + '_' + namevar+ '_PS_6')
+            hISRdown .SetBinContent(hISRdown.GetXaxis().GetNbins(), hISRdown.GetBinContent(hISRdown.GetXaxis().GetNbins()) + hISRdown.GetBinContent(hISRdown.GetXaxis().GetNbins()+1))
+            hFSRup = sysfile.Get('reweightingSys/emu' + '_' + namereg + '_' + namevar+ '_PS_9')
+            hFSRup.SetBinContent(hFSRup.GetXaxis().GetNbins(), hFSRup.GetBinContent(hFSRup.GetXaxis().GetNbins()) + hFSRup.GetBinContent(hFSRup.GetXaxis().GetNbins()+1))
+            hFSRdown = sysfile.Get('reweightingSys/emu' + '_' + namereg + '_' + namevar+ '_PS_7')
+            hFSRdown .SetBinContent(hFSRdown.GetXaxis().GetNbins(), hFSRdown.GetBinContent(hFSRdown.GetXaxis().GetNbins()) + hFSRdown.GetBinContent(hFSRdown.GetXaxis().GetNbins()+1))
+            binwidth= array( 'd' )
+            bincenter= array( 'd' )
+            yvalue= array( 'd' )
+            yerrupQscale= array( 'd' )
+            yerrdownQscale= array( 'd' )
+            yerrupPDF= array( 'd' )
+            yerrdownPDF= array( 'd' )
+            yerrupISR = array( 'd' )
+            yerrdownISR = array( 'd' )
+            yerrupFSR = array( 'd' )
+            yerrdownFSR = array( 'd' )
+            for b in range(QscaleHists[0].GetNbinsX()):
+                QS=np.zeros(45)
+                PDF=0
+                binwidth.append(QscaleHists[0].GetBinWidth(b+1)/2)
+                bincenter.append(QscaleHists[0].GetBinCenter(b+1))
+                yvalue.append(0)
+                nomRatio = 1
+                for numsys in range(45):
+                    if numsys==5 or numsys==10 or numsys==15 or numsys==20 or numsys==30 or numsys==40:
+                        QS[numsys] = QscaleHists[numsys].GetBinContent(b+1) - QscaleHists[0].GetBinContent(b+1)
+                yerrupQscale.append((abs(max(QS)))*nomRatio)
+                yerrdownQscale.append((abs(min(QS)))*nomRatio)
+                for numsys in range(50,140):
+                    PDF = PDF + (pdfHists[numsys-50].GetBinContent(b+1) - QscaleHists[0].GetBinContent(b+1))**2
+                yerrupPDF.append((math.sqrt(PDF))*nomRatio)
+                yerrdownPDF.append((math.sqrt(PDF))*nomRatio)
+                yerrupISR.append((abs(max(hISRup.GetBinContent(b+1)- QscaleHists[0].GetBinContent(b+1) , hISRdown.GetBinContent(b+1)- QscaleHists[0].GetBinContent(b+1),0)))*nomRatio)
+                yerrdownISR.append((abs(min(hISRup.GetBinContent(b+1)- QscaleHists[0].GetBinContent(b+1) , hISRdown.GetBinContent(b+1)- QscaleHists[0].GetBinContent(b+1),0)))*nomRatio)
+                yerrupFSR.append((abs(max(hFSRup.GetBinContent(b+1)- QscaleHists[0].GetBinContent(b+1) , hFSRdown.GetBinContent(b+1)- QscaleHists[0].GetBinContent(b+1,0),0)))*nomRatio)
+                yerrdownFSR.append((abs(min(hFSRup.GetBinContent(b+1)- QscaleHists[0].GetBinContent(b+1) , hFSRdown.GetBinContent(b+1)- QscaleHists[0].GetBinContent(b+1),0)))*nomRatio)
+            SIG2Qscale.append(ROOT.TGraphAsymmErrors(len(bincenter),bincenter,yvalue,binwidth,binwidth,yerrdownQscale,yerrupQscale))
+            SIG2Pdf.append(ROOT.TGraphAsymmErrors(len(bincenter),bincenter,yvalue,binwidth,binwidth,yerrdownPDF,yerrupPDF))
+            SIG2ISR.append(ROOT.TGraphAsymmErrors(len(bincenter),bincenter,yvalue,binwidth,binwidth,yerrdownISR,yerrupISR))
+            SIG2FSR.append(ROOT.TGraphAsymmErrors(len(bincenter),bincenter,yvalue,binwidth,binwidth,yerrdownFSR,yerrupFSR))
+            del binwidth
+            del bincenter
+            del yvalue
+            del yerrupQscale
+            del yerrdownQscale
+            del yerrupPDF
+            del yerrdownPDF
+            del yerrupISR
+            del yerrdownISR
+            del yerrupFSR
+            del yerrdownFSR
+            del pdfHists
+            del QscaleHists
+            gc.collect()
+        SIG1Qscale.append(SIG2Qscale)
+        SIG1Pdf.append(SIG2Pdf)
+        SIG1ISR.append(SIG2ISR)
+        SIG1FSR.append(SIG2FSR)
+    SIGpdfGraph.append(SIG1Pdf)
+    SIGqscaleGraph.append(SIG1Qscale)
+    SIGISRGraph.append(SIG1ISR)
+    SIGFSRGraph.append(SIG1FSR)
+GSIGsys = []
+GSIGsys.append(SIGpdfGraph)
+GSIGsys.append(SIGqscaleGraph)
+GSIGsys.append(SIGISRGraph)
+GSIGsys.append(SIGFSRGraph)
+SIGsys =  ['pdf','QS','ISR','FSR']
+
+
+# find ttbar modeling uncertaintis
 pdfGraph=[]
 qscaleGraph=[]
 ISRGraph=[]
@@ -151,6 +255,7 @@ for numyear, nameyear in enumerate(year):
     t1hdamp=[]
     sysfile = ROOT.TFile.Open(HistAddress + nameyear+ '_TTTo2L2Nu.root')
     CR1file = ROOT.TFile.Open(HistAddress + nameyear+ '_TTsys_CR1QCDbased.root')
+    CR2file = ROOT.TFile.Open(HistAddress + nameyear+ '_TTsys_CR2QCDbased.root')
     erdfile = ROOT.TFile.Open(HistAddress + nameyear+ '_TTsys_CRerdON.root')
     TuneCP5upfile = ROOT.TFile.Open(HistAddress + nameyear+ '_TTsys_TuneCP5up.root')
     TuneCP5downfile = ROOT.TFile.Open(HistAddress + nameyear+ '_TTsys_TuneCP5down.root')
@@ -189,6 +294,8 @@ for numyear, nameyear in enumerate(year):
             hFSRdown .SetBinContent(hFSRdown.GetXaxis().GetNbins(), hFSRdown.GetBinContent(hFSRdown.GetXaxis().GetNbins()) + hFSRdown.GetBinContent(hFSRdown.GetXaxis().GetNbins()+1))
             hCR1 = CR1file.Get('emu' + '_' + namereg + '_' + namevar)
             hCR1.SetBinContent(hCR1.GetXaxis().GetNbins(), hCR1.GetBinContent(hCR1.GetXaxis().GetNbins()) + hCR1.GetBinContent(hCR1.GetXaxis().GetNbins()+1))
+            hCR2 = CR2file.Get('emu' + '_' + namereg + '_' + namevar)
+            hCR2.SetBinContent(hCR2.GetXaxis().GetNbins(), hCR2.GetBinContent(hCR2.GetXaxis().GetNbins()) + hCR2.GetBinContent(hCR2.GetXaxis().GetNbins()+1))
             herd = erdfile.Get('emu' + '_' + namereg + '_' + namevar)
             herd.SetBinContent(herd.GetXaxis().GetNbins(), herd.GetBinContent(herd.GetXaxis().GetNbins()) + herd.GetBinContent(herd.GetXaxis().GetNbins()+1))
             hTuneCP5up = TuneCP5upfile.Get('emu' + '_' + namereg + '_' + namevar)
@@ -239,8 +346,8 @@ for numyear, nameyear in enumerate(year):
                 yerrdownISR.append((abs(min(hISRup.GetBinContent(b+1)- QscaleHists[0].GetBinContent(b+1) , hISRdown.GetBinContent(b+1)- QscaleHists[0].GetBinContent(b+1),0)))*nomRatio)
                 yerrupFSR.append((abs(max(hFSRup.GetBinContent(b+1)- QscaleHists[0].GetBinContent(b+1) , hFSRdown.GetBinContent(b+1)- QscaleHists[0].GetBinContent(b+1,0),0)))*nomRatio)
                 yerrdownFSR.append((abs(min(hFSRup.GetBinContent(b+1)- QscaleHists[0].GetBinContent(b+1) , hFSRdown.GetBinContent(b+1)- QscaleHists[0].GetBinContent(b+1),0)))*nomRatio)
-                yerrupCR.append((abs(max(herd.GetBinContent(b+1)- QscaleHists[0].GetBinContent(b+1) , hCR1.GetBinContent(b+1)- QscaleHists[0].GetBinContent(b+1),0)))*nomRatio)
-                yerrdownCR.append((abs(min(herd.GetBinContent(b+1)- QscaleHists[0].GetBinContent(b+1) , hCR1.GetBinContent(b+1)- QscaleHists[0].GetBinContent(b+1),0)))*nomRatio)
+                yerrupCR.append((abs(max(herd.GetBinContent(b+1)- QscaleHists[0].GetBinContent(b+1) , hCR1.GetBinContent(b+1)- QscaleHists[0].GetBinContent(b+1), hCR2.GetBinContent(b+1)- QscaleHists[0].GetBinContent(b+1),0)))*nomRatio)
+                yerrdownCR.append((abs(min(herd.GetBinContent(b+1)- QscaleHists[0].GetBinContent(b+1) , hCR1.GetBinContent(b+1)- QscaleHists[0].GetBinContent(b+1), hCR2.GetBinContent(b+1)- QscaleHists[0].GetBinContent(b+1),0)))*nomRatio)
                 yerrupTune.append((abs(max(hTuneCP5up.GetBinContent(b+1)- QscaleHists[0].GetBinContent(b+1) , hTuneCP5down.GetBinContent(b+1)- QscaleHists[0].GetBinContent(b+1),0)))*nomRatio)
                 yerrdownTune.append((abs(min(hTuneCP5up.GetBinContent(b+1)- QscaleHists[0].GetBinContent(b+1) , hTuneCP5down.GetBinContent(b+1)- QscaleHists[0].GetBinContent(b+1),0)))*nomRatio)
                 yerruphdamp.append((abs(max(hhdampup.GetBinContent(b+1)- QscaleHists[0].GetBinContent(b+1) , hhdampdown.GetBinContent(b+1)- QscaleHists[0].GetBinContent(b+1),0)))*nomRatio)
@@ -315,6 +422,10 @@ if not os.path.exists('CombinedFiles'):
     os.makedirs('CombinedFiles')
 
 for numyear, nameyear in enumerate(year):
+    TuneCP5upfile = ROOT.TFile.Open(HistAddress + nameyear+ '_TTsys_TuneCP5up.root')
+    TuneCP5downfile = ROOT.TFile.Open(HistAddress + nameyear+ '_TTsys_TuneCP5down.root')
+    hdampupfile = ROOT.TFile.Open(HistAddress + nameyear+ '_TTsys_hdampUP.root')
+    hdampdownfile = ROOT.TFile.Open(HistAddress + nameyear+ '_TTsys_hdampDOWN.root')    
     for numreg, namereg in enumerate(regions):
         hfile = ROOT.TFile( 'CombinedFiles/' + nameyear+'_'+namereg+'.root', 'RECREATE', 'combine input histograms' )
         for f in range(len(Samples)):
@@ -342,7 +453,10 @@ for numyear, nameyear in enumerate(year):
                     HistsJecDown[numyear][f][0][numreg][0][numsys].SetName(SamplesNameCombined[f] + '_' + 'Y'+ nameyear + 'jes' + namesys + 'Down')
                     HistsJecUp[numyear][f][0][numreg][0][numsys].Write()
                     HistsJecDown[numyear][f][0][numreg][0][numsys].Write()
+#ttbar modeling uncertainties
         for g in range(len(Gttsys)):
+            if ttsys[g]=='Tune' or ttsys[g]=='hdamp':
+                continue
             hup = Hists[numyear][4][0][numreg][0].Clone()
             hdown = Hists[numyear][4][0][numreg][0].Clone()
             for b in range(hup.GetNbinsX()):
@@ -353,7 +467,31 @@ for numyear, nameyear in enumerate(year):
             hdown.SetName(SamplesNameCombined[4] + '_tt_' + ttsys[g] + 'Down')
             hup.Write()
             hdown.Write()
-
+        hTuneCP5up = TuneCP5upfile.Get('emu' + '_' + namereg + '_' + namevar)
+        hTuneCP5up.SetName(SamplesNameCombined[4] + '_tt_TuneUp') 
+        hTuneCP5up.Write()
+        hTuneCP5down = TuneCP5downfile.Get('emu' + '_' + namereg + '_' + namevar)
+        hTuneCP5down.SetName(SamplesNameCombined[4] + '_tt_TuneDown')
+        hTuneCP5down.Write()
+        hhdampup = hdampupfile.Get('emu' + '_' + namereg + '_' + namevar)
+        hhdampup.SetName(SamplesNameCombined[4] + '_tt_hdampUp')
+        hhdampup.Write()
+        hhdampdown = hdampdownfile.Get('emu' + '_' + namereg + '_' + namevar)
+        hhdampdown.SetName(SamplesNameCombined[4] + '_tt_hdampDown')
+        hhdampdown.Write()
+#Signal Modeling
+        for f in range(6,len(Samples)):
+            for g in range(len(GSIGsys)):
+                hup = Hists[numyear][f][0][numreg][0].Clone()
+                hdown = Hists[numyear][f][0][numreg][0].Clone()
+                for b in range(hup.GetNbinsX()):
+#                print nameyear + namereg + ttsys[g] + str(hup.GetBinContent(b+1)) + '  ' + str(Gttsys[g][numyear][numreg][0].GetErrorYhigh(b)) + '  ' + str(Gttsys[g][numyear][numreg][0].GetErrorYlow(b))
+                    hup.SetBinContent(b+1,hup.GetBinContent(b+1) + GSIGsys[g][f-6][numyear][numreg].GetErrorYhigh(b))
+                    hdown.SetBinContent(b+1,hdown.GetBinContent(b+1) - GSIGsys[g][f-6][numyear][numreg].GetErrorYlow(b))
+                hup.SetName(SamplesNameCombined[f] + '_Signal_' + SIGsys[g] + 'Up')
+                hdown.SetName(SamplesNameCombined[f] + '_Signal_' + SIGsys[g] + 'Down')
+                hup.Write()
+                hdown.Write()
 #add MC stat error
         for f in range(len(Samples)):
             if f==0:
@@ -368,6 +506,8 @@ for numyear, nameyear in enumerate(year):
                 HstatUp.Write()
                 HstatDown = Hists[numyear][f][0][numreg][0].Clone()
                 HstatDown.SetBinContent(b+1,HstatDown.GetBinContent(b+1) - HstatDown.GetBinError(b+1))
+                if HstatDown.GetBinContent(b+1) < 0.001:
+                    HstatDown.SetBinContent(b+1,0.001)
                 HstatDown.SetName(SamplesNameCombined[f]+ '_' + 'Y'+ nameyear + namereg + SamplesNameCombined[f]+'StatBin' +str(b+1)+ 'Down')
                 HstatDown.Write()
                 stat.append('Y' + nameyear+namereg+SamplesNameCombined[f]+'StatBin' +str(b+1))
@@ -375,7 +515,6 @@ for numyear, nameyear in enumerate(year):
         hfile.Write()
         hfile.Close()
 
-SignalSamples = ['LFVVecC', 'LFVVecU', 'LFVScalarC', 'LFVScalarU', 'LFVTensorC', 'LFVTensorU']
 
 for namesig in SignalSamples:
     for numyear, nameyear in enumerate(year):
@@ -437,6 +576,9 @@ for namesig in SignalSamples:
             for b in ttsys:
                 bpb= 'tt_' + b
                 T1 = T1 +  bpb.ljust(35)  +'shape'.ljust(10)  + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '1'.ljust(25) + '-'.ljust(25) +'\n'
+            for b in SIGsys:
+                bpb= 'Signal_' + b
+                T1 = T1 +  bpb.ljust(35)  +'shape'.ljust(10)  + '1'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) +'\n'
             for key, value in statName.items():
                 if namereg in key and nameyear in key and namesig in key:
                     for e in value:

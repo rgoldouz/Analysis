@@ -481,6 +481,7 @@ void MyAnalysis::Loop(TString fname, TString sname, TString data, TString datase
   double P_bjet_data;
   double P_bjet_mc;
   int nAccept=0;
+  int nbjetGen;
   int nbjet;
   int nbjetJesUp;
   int nbjetJesDown;
@@ -526,6 +527,7 @@ void MyAnalysis::Loop(TString fname, TString sname, TString data, TString datase
     P_bjet_data =1;
     P_bjet_mc =1;
     MVAoutput=0;
+    nbjetGen=0;
     nbjet=0;
     nbjetJerUp=0;
     nbjetJerDown=0;
@@ -1036,6 +1038,7 @@ void MyAnalysis::Loop(TString fname, TString sname, TString data, TString datase
       if((*selectedJets)[l]->btag_) nbjet++;
       if(data == "data") continue;
       if( abs((*selectedJets)[l]->flavor_) == 5){
+        nbjetGen++;
         h2_BTaggingEff_Denom_b->Fill((*selectedJets)[l]->pt_, abs((*selectedJets)[l]->eta_));
         if( (*selectedJets)[l]->btag_ ) {
           h2_BTaggingEff_Num_b->Fill((*selectedJets)[l]->pt_, abs((*selectedJets)[l]->eta_));
@@ -1115,7 +1118,6 @@ void MyAnalysis::Loop(TString fname, TString sname, TString data, TString datase
       }
     }
 
-
 //PU reweighting
     if (data == "mc" && year == "2016") {
       weight_PU = wPU.PU_2016(mc_trueNumInteractions,"nominal");
@@ -1178,11 +1180,9 @@ void MyAnalysis::Loop(TString fname, TString sname, TString data, TString datase
     }
 
     if (data == "mc") weight_lep = sf_Ele_Reco * sf_Ele_ID * sf_Mu_ID * sf_Mu_ISO * sf_Trigger * weight_PU * weight_Lumi  * mc_w_sign * weight_prefiring * weight_topPt;
-//    if (data == "mc") weight_lepB = sf_Ele_Reco * sf_Ele_ID * sf_Mu_ID * sf_Mu_ISO * sf_Trigger * weight_PU * weight_Lumi * mc_w_sign *  weight_prefiring * weight_topPt * (P_bjet_data/P_bjet_mc);
-    if (data == "mc") weight_lepB = sf_Ele_Reco * sf_Ele_ID * sf_Mu_ID * sf_Mu_ISO * sf_Trigger * weight_PU * weight_Lumi * mc_w_sign *  weight_prefiring * weight_topPt;
+    if (data == "mc") weight_lepB = sf_Ele_Reco * sf_Ele_ID * sf_Mu_ID * sf_Mu_ISO * sf_Trigger * weight_PU * weight_Lumi * mc_w_sign *  weight_prefiring * weight_topPt * (P_bjet_data/P_bjet_mc);
 
 
-cout<<P_bjet_data/P_bjet_mc<<endl;
 //fill histograms
 //dilepton step
     Hists[ch][0][0]->Fill((*selectedLeptons)[0]->pt_,weight_lep);
