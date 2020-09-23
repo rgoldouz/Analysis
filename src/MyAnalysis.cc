@@ -672,7 +672,9 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
  
       }    
 // Muon
+    int genMuIdx =0;  
     for (int l=0;l< nMuon ;l++){
+      genMuIdx = Muon_genPartIdx[l];
 
       //if (verbose ){
       //    cout << "loop over Muon  number  " << l << " has pt  " << Muon_pt[l] << " and eta " <<  Muon_eta[l] << endl;   
@@ -683,16 +685,29 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
       }
       if (data == "mc"){
          /// ??? I think mu_mc_index = Muon_genPartIdx
-         if (Muon_genPartIdx[l]!=-1 && abs(Muon_pdgId[Muon_genPartIdx[l]]) == 13) muPtSFRochester = rc.kSpreadMC(Muon_charge[l], Muon_pt[l],Muon_eta[l],Muon_phi[l], GenPart_pt[(Muon_genPartIdx[l])],0, 0);
-         if (Muon_genPartIdx[l]<0) muPtSFRochester = rc.kSmearMC(Muon_charge[l], Muon_pt[l],Muon_eta[l],Muon_phi[l], Muon_nTrackerLayers[l] , gRandom->Rndm(),0, 0);
-       
+         if (verbose ){
+          cout << "loop over Muon  number  " << l << " has pt  " << Muon_pt[l] << " and eta " <<  Muon_eta[l] << endl;   
+          cout << "Muon_genPartIdx[l] = genMuIdx = " << genMuIdx  << "  abs(GenPart_pdgId[Muon_genPartIdx[l]])   " <<  abs(GenPart_pdgId[Muon_genPartIdx[l]]) << endl  ;   
+         }
+         if (genMuIdx!=-1 && abs(GenPart_pdgId[genMuIdx]) == 13) muPtSFRochester = rc.kSpreadMC(Muon_charge[l], Muon_pt[l],Muon_eta[l],Muon_phi[l], GenPart_pt[genMuIdx],0, 0);
+         muPtSFRochester = 1.;
+         if (Muon_nTrackerLayers[l] > 30)  cout << " !!!!!!!!!!!!!!!!!! set muPtSFRochester = 1 ,  Muon has charge " << Muon_charge[l] << " , phi=  " << Muon_phi[l] << " , Muon_nTrackerLayers[l] " <<  Muon_nTrackerLayers[l] << endl;   
+
+         if (genMuIdx<0 &&  Muon_nTrackerLayers[l] < 30 ) {
+          cout << "no gen level muons =(   " << endl;
+          cout << " Muon has charge " << Muon_charge[l] << " , phi=  " << Muon_phi[l] << " , Muon_nTrackerLayers[l] " <<  Muon_nTrackerLayers[l] << endl;   
+
+          muPtSFRochester = rc.kSmearMC(Muon_charge[l], Muon_pt[l] , Muon_eta[l] , Muon_phi[l], Muon_nTrackerLayers[l] , gRandom->Rndm(),0, 0);
+         }
       }
-      if(muPtSFRochester * Muon_pt[l] <20 || abs(Muon_eta[l]) > 2.4) continue;
-      
+      cout << "before pt and eta cut on muons  " << endl;
+      if( (muPtSFRochester * Muon_pt[l] <20) || (abs(Muon_eta[l]) > 2.4) ) continue;
+      cout << "passed pt and eta cut on muons !!! " << endl;
+
       ///  Muon_mvaId == 2 is mu_MvaMedium
       /// https://github.com/Fedespring/cmssw/blob/3f7b3c37caeaaf058bb1c7461b9c3c91a0672f68/PhysicsTools/NanoAOD/python/muons_cff.py#L138
       //if ((!(*mu_MvaMedium)[l]) || (!(*mu_CutBasedIdMedium)[l])) continue;
-      if (  Muon_mvaId[l] < 2 ||   Muon_mediumId[l] < 1     ) continue;
+      //if (  Muon_mvaId[l] < 2 ||   Muon_mediumId[l] < 1     ) continue;
 
       
 
