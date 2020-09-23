@@ -2,7 +2,7 @@
 // This class has been automatically generated on
 // Sat Feb 22 14:33:31 2020 by ROOT version 6.10/05
 // from TTree IIHEAnalysis/IIHEAnalysis
-// found on file: /pnfs/iihe/cms/store/user/schenara/SYS_2018/TTTo2L2Nu_hdampUP_TuneCP5_13TeV-powheg-pythia8/crab_TTTo2L2Nu_hdampUP_2018/200225_122927/0000/outfile_5_2016_71.root
+// found on file: /pnfs/iihe/cms/store/user/schenara/SYS_2018/TTTo2L2Nu_hdampUP_TuneCP5_13TeV-powheg-pythia8/crab_TTTo2L2Nu_hdampUP_2018/200211_122927/0000/outfile_5_2016_71.root
 //////////////////////////////////////////////////////////
 
 #ifndef MyAnalysis_h
@@ -23,219 +23,210 @@ using namespace std;
 class MyAnalysis {
 public :
    TTree          *fChain;   //!pointer to the analyzed TTree or TChain
-   Int_t          fCurrent; //!current Tree number in a TChain
+   Int_t           fCurrent; //!current Tree number in a TChain
 
 // Fixed size dimensions of array or collections stored in the TTree if any.
 
-// max array length is 25 here
+// max array length is 11 here
 // actual array length is nJets or nMuons etc dependig on collection
 
 // Declaration of leaf types
-   int          event;
-   int          run;
-   int          luminosityBlock;
+   UInt_t          event;
+   UInt_t          run;
+   UInt_t          luminosityBlock;
 
 
 
 
-   int            nElectron;
-   float                      Electron_deltaEtaSC[25];
-   float                      Electron_dr03EcalRecHitSumEt[25];
-   float                      Electron_dr03HcalDepth1TowerSumEt[25];
-   float                      Electron_dr03TkSumPt[25];
-   float                      Electron_dr03TkSumPtHEEP[25];
-   float                      Electron_dxy[25];
-   float                      Electron_dxyErr[25];
-   float                      Electron_dz[25];
-   float                      Electron_dzErr[25];
-   float                      Electron_eCorr[25];
-   float                      Electron_eInvMinusPInv[25];
-   float                      Electron_energyErr[25];
-   float                      Electron_eta[25];
-   float                      Electron_hoe[25];
-   float                      Electron_ip3d[25];
-   float                      Electron_jetPtRelv2[25];
-   float                      Electron_jetRelIso[25];
-   float                      Electron_mass[25];
-   float                      Electron_miniPFRelIso_all[25];
-   float                      Electron_miniPFRelIso_chg[25];
-   float                      Electron_mvaFall17V1Iso[25];
-   float                      Electron_mvaFall17V1noIso[25];
-   float                      Electron_mvaFall17V2Iso[25];
-   float                      Electron_mvaFall17V2noIso[25];
-   float                      Electron_pfRelIso03_all[25];
-   float                      Electron_pfRelIso03_chg[25];
-   float                      Electron_phi[25];
-   float                      Electron_pt[25];
-   float                      Electron_r9[25];
-   float                      Electron_sieie[25];
-   float                      Electron_sip3d[25];
-   float                      Electron_mvaTOP[25];
-   float                      Electron_mvaTTH[25];
+   UInt_t            nElectron;
+   Float_t                      Electron_deltaEtaSC[11];
+   Float_t                      Electron_dr03EcalRecHitSumEt[11];
+   Float_t                      Electron_dr03HcalDepth1TowerSumEt[11];
+   Float_t                      Electron_dr03TkSumPt[11];
+   Float_t                      Electron_dr03TkSumPtHEEP[11];
+   Float_t                      Electron_dxy[11];
+   Float_t                      Electron_dxyErr[11];
+   Float_t                      Electron_dz[11];
+   Float_t                      Electron_dzErr[11];
+   Float_t                      Electron_eCorr[11];
+   Float_t                      Electron_eInvMinusPInv[11];
+   Float_t                      Electron_energyErr[11];
+   Float_t                      Electron_eta[11];
+   Float_t                      Electron_hoe[11];
+   Float_t                      Electron_ip3d[11];
+   Float_t                      Electron_jetPtRelv2[11];
+   Float_t                      Electron_jetRelIso[11];
+   Float_t                      Electron_mass[11];
+   Float_t                      Electron_miniPFRelIso_all[11];
+   Float_t                      Electron_miniPFRelIso_chg[11];
+   Float_t                      Electron_mvaFall17V1Iso[11];
+   Float_t                      Electron_mvaFall17V1noIso[11];
+   Float_t                      Electron_mvaFall17V2Iso[11];
+   Float_t                      Electron_mvaFall17V2noIso[11];
+   Float_t                      Electron_pfRelIso03_all[11];
+   Float_t                      Electron_pfRelIso03_chg[11];
+   Float_t                      Electron_phi[11];
+   Float_t                      Electron_pt[11];
+   Float_t                      Electron_r9[11];
+   Float_t                      Electron_sieie[11];
+   Float_t                      Electron_sip3d[11];
+   Float_t                      Electron_mvaTOP[11];
+   Float_t                      Electron_mvaTTH[11];
 
 
-   int           Electron_charge[25];
-   int           Electron_cutBased[25];
-   int           Electron_cutBased_Fall17_V1[25];
-   int           Electron_jetIdx[25];
-   int           Electron_jetNDauChargedMVASel[25];
-   int           Electron_pdgId[25];
-   int           Electron_photonIdx[25];
-   int           Electron_tightCharge[25];
-   int           Electron_vidNestedWPBitmap[25];
-   int           Electron_vidNestedWPBitmapHEEP[25];
-   int           Electron_convVeto[25];
-   int           Electron_cutBased_HEEP[25];
-   int           Electron_isPFcand[25];
-   int           Electron_lostHits[25];
-   int           Electron_mvaFall17V1Iso_WP80[25];
-   int           Electron_mvaFall17V1Iso_WP90[25];
-   int           Electron_mvaFall17V1Iso_WPL[25];
-   int           Electron_mvaFall17V1noIso_WP80[25];
-   int           Electron_mvaFall17V1noIso_WP90[25];
-   int           Electron_mvaFall17V1noIso_WPL[25];
-   int           Electron_mvaFall17V2Iso_WP80[25];
-   int           Electron_mvaFall17V2Iso_WP90[25];
-   int           Electron_mvaFall17V2Iso_WPL[25];
-   int           Electron_mvaFall17V2noIso_WP80[25];
-   int           Electron_mvaFall17V2noIso_WP90[25];
-   int           Electron_mvaFall17V2noIso_WPL[25];
-   int           Electron_seedGain[25];
-
-
-
-   int                  nMuon;
-    int                       Muon_genPartIdx[25];
-
-   float                      Muon_dxy[25];
-   float                      Muon_dxyErr[25];
-   float                      Muon_dz[25];
-   float                      Muon_dzErr[25];
-   float                      Muon_eta[25];
-   float                      Muon_ip3d[25];
-   float                      Muon_jetPtRelv2[25];
-   float                      Muon_jetRelIso[25];
-   float                      Muon_mass[25];
-   float                      Muon_miniPFRelIso_all[25];
-   float                      Muon_miniPFRelIso_chg[25];
-   float                      Muon_pfRelIso03_all[25];
-   float                      Muon_pfRelIso03_chg[25];
-   float                      Muon_pfRelIso04_all[25];
-   float                      Muon_phi[25];
-   float                      Muon_pt[25];
-   float                      Muon_ptErr[25];
-   float                      Muon_segmentComp[25];
-   float                      Muon_sip3d[25];
-   float                      Muon_tkRelIso[25];
-   float                      Muon_tunepRelPt[25];
-   float                      Muon_mvaLowPt[25];
-   float                      Muon_mvaTOP[25];
-   float                      Muon_mvaTTH[25];
-   int           Muon_charge[25];
-   int           Muon_jetIdx[25];
-   int           Muon_jetNDauChargedMVASel[25];
-   int           Muon_nStations[25];
-   int           Muon_nTrackerLayers[25];
-   int           Muon_pdgId[25];
-   int           Muon_tightCharge[25];
-   int           Muon_fsrPhotonIdx[25];
-   int           Muon_highPtId[25];
-   int           Muon_inTimeMuon[25];
-   int           Muon_isGlobal[25];
-   int           Muon_isPFcand[25];
-   int           Muon_isTracker[25];
-   int           Muon_looseId[25];
-   int           Muon_mediumId[25];
-   int           Muon_mediumPromptId[25];
-   int           Muon_miniIsoId[25];
-   int           Muon_multiIsoId[25];
-   int           Muon_mvaId[25];
-   int           Muon_pfIsoId[25];
-   int           Muon_softId[25];
-   int           Muon_softMvaId[25];
-   int           Muon_tightId[25];
-   int           Muon_tkIsoId[25];
-   int           Muon_triggerIdLoose[25];
-
-   float                  MET_phi;
-   float                  MET_pt;
-
-    int                         nJet; 
-   float                      Jet_area[25];
-   float                      Jet_btagCMVA[25];
-   float                      Jet_btagCSVV2[25]; 
-   int           Jet_btagDeepB[25];
-   int           Jet_btagDeepC[25];
-   float                      Jet_btagDeepFlavB[25];
-   float                      Jet_btagDeepFlavC[25];
-   float                      Jet_chEmEF[25];
-   float                      Jet_chHEF[25];
-   float                      Jet_eta[25];
-   float                      Jet_jercCHF[25]; 
-   float                      Jet_jercCHPUF[25];
-   float                      Jet_mass[25];
-   float                      Jet_muEF[25];
-   float                      Jet_muonSubtrFactor[25];
-   float                      Jet_neEmEF[25];
-   float                      Jet_neHEF[25];
-   float                      Jet_phi[25];
-   float                      Jet_pt[25];
-   float                      Jet_qgl[25];
-   float                      Jet_rawFactor[25];
-
-   float                      Jet_bRegCorr[25];
-   float                      Jet_bRegRes[25];
-   int           Jet_electronIdx1[25];
-   int           Jet_electronIdx2[25];
-   int           Jet_jetId[25];
-   int           Jet_muonIdx1[25];
-   int           Jet_muonIdx2[25];
-   int           Jet_nConstituents[25];
-   int           Jet_nElectrons[25];
-   int           Jet_nMuons[25];
-   int           Jet_puId[25];
-   int           Jet_partonFlavour[25];
+   Int_t           Electron_charge[11];
+   Int_t           Electron_cutBased[11];
+   Int_t           Electron_cutBased_Fall17_V1[11];
+   Int_t           Electron_jetIdx[11];
+   Int_t           Electron_jetNDauChargedMVASel[11];
+   Int_t           Electron_pdgId[11];
+   Int_t           Electron_photonIdx[11];
+   Int_t           Electron_tightCharge[11];
+   Int_t           Electron_vidNestedWPBitmap[11];
+   Int_t           Electron_vidNestedWPBitmapHEEP[11];
+   Int_t           Electron_convVeto[11];
+   Int_t           Electron_cutBased_HEEP[11];
+   Int_t           Electron_isPFcand[11];
+   Int_t           Electron_lostHits[11];
+   Int_t           Electron_mvaFall17V1Iso_WP80[11];
+   Int_t           Electron_mvaFall17V1Iso_WP90[11];
+   Int_t           Electron_mvaFall17V1Iso_WPL[11];
+   Int_t           Electron_mvaFall17V1noIso_WP80[11];
+   Int_t           Electron_mvaFall17V1noIso_WP90[11];
+   Int_t           Electron_mvaFall17V1noIso_WPL[11];
+   Int_t           Electron_mvaFall17V2Iso_WP80[11];
+   Int_t           Electron_mvaFall17V2Iso_WP90[11];
+   Int_t           Electron_mvaFall17V2Iso_WPL[11];
+   Int_t           Electron_mvaFall17V2noIso_WP80[11];
+   Int_t           Electron_mvaFall17V2noIso_WP90[11];
+   Int_t           Electron_mvaFall17V2noIso_WPL[11];
+   Int_t           Electron_seedGain[11];
 
 
 
-      bool        HLT_Ele35_WPTight_Gsf;
+   UInt_t                  nMuon;
+    Int_t                       Muon_genPartIdx[11];
 
-      bool        HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL;
+   Float_t                      Muon_dxy[11];
+   Float_t                      Muon_dxyErr[11];
+   Float_t                      Muon_dz[11];
+   Float_t                      Muon_dzErr[11];
+   Float_t                      Muon_eta[11];
+   Float_t                      Muon_ip3d[11];
+   Float_t                      Muon_jetPtRelv2[11];
+   Float_t                      Muon_jetRelIso[11];
+   Float_t                      Muon_mass[11];
+   Float_t                      Muon_miniPFRelIso_all[11];
+   Float_t                      Muon_miniPFRelIso_chg[11];
+   Float_t                      Muon_pfRelIso03_all[11];
+   Float_t                      Muon_pfRelIso03_chg[11];
+   Float_t                      Muon_pfRelIso04_all[11];
+   Float_t                      Muon_phi[11];
+   Float_t                      Muon_pt[11];
+   Float_t                      Muon_ptErr[11];
+   Float_t                      Muon_segmentComp[11];
+   Float_t                      Muon_sip3d[11];
+   Float_t                      Muon_tkRelIso[11];
+   Float_t                      Muon_tunepRelPt[11];
+   Float_t                      Muon_mvaLowPt[11];
+   Float_t                      Muon_mvaTOP[11];
+   Float_t                      Muon_mvaTTH[11];
+   Int_t           Muon_charge[11];
+   Int_t           Muon_jetIdx[11];
+   Int_t           Muon_jetNDauChargedMVASel[11];
+   Int_t           Muon_nStations[11];
+   Int_t           Muon_nTrackerLayers[11];
+   Int_t           Muon_pdgId[11];
+   Int_t           Muon_tightCharge[11];
+   Int_t           Muon_fsrPhotonIdx[11];
+   Int_t           Muon_highPtId[11];
+   Int_t           Muon_inTimeMuon[11];
+   Int_t           Muon_isGlobal[11];
+   Int_t           Muon_isPFcand[11];
+   Int_t           Muon_isTracker[11];
+   Int_t           Muon_looseId[11];
+   Int_t           Muon_mediumId[11];
+   Int_t           Muon_mediumPromptId[11];
+   Int_t           Muon_miniIsoId[11];
+   Int_t           Muon_multiIsoId[11];
+   Int_t           Muon_mvaId[11];
+   Int_t           Muon_pfIsoId[11];
+   Int_t           Muon_softId[11];
+   Int_t           Muon_softMvaId[11];
+   Int_t           Muon_tightId[11];
+   Int_t           Muon_tkIsoId[11];
+   Int_t           Muon_triggerIdLoose[11];
 
-      bool        HLT_IsoMu27;
+   Float_t                  MET_phi;
+   Float_t                  MET_pt;
 
-      bool        HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8;
+    UInt_t                         nJet; 
+   Float_t                      Jet_area[11];
+   Float_t                      Jet_btagCMVA[11];
+   Float_t                      Jet_btagCSVV2[11]; 
+   Int_t           Jet_btagDeepB[11];
+   Int_t           Jet_btagDeepC[11];
+   Float_t                      Jet_btagDeepFlavB[11];
+   Float_t                      Jet_btagDeepFlavC[11];
+   Float_t                      Jet_chEmEF[11];
+   Float_t                      Jet_chHEF[11];
+   Float_t                      Jet_eta[11];
+   Float_t                      Jet_jercCHF[11]; 
+   Float_t                      Jet_jercCHPUF[11];
+   Float_t                      Jet_mass[11];
+   Float_t                      Jet_muEF[11];
+   Float_t                      Jet_muonSubtrFactor[11];
+   Float_t                      Jet_neEmEF[11];
+   Float_t                      Jet_neHEF[11];
+   Float_t                      Jet_phi[11];
+   Float_t                      Jet_pt[11];
+   Float_t                      Jet_qgl[11];
+   Float_t                      Jet_rawFactor[11];
+
+   Float_t                      Jet_bRegCorr[11];
+   Float_t                      Jet_bRegRes[11];
+   Int_t           Jet_electronIdx1[11];
+   Int_t           Jet_electronIdx2[11];
+   Int_t           Jet_jetId[11];
+   Int_t           Jet_muonIdx1[11];
+   Int_t           Jet_muonIdx2[11];
+   Int_t           Jet_nConstituents[11];
+   Int_t           Jet_nElectrons[11];
+   Int_t           Jet_nMuons[11];
+   Int_t           Jet_puId[11];
+   Int_t           Jet_partonFlavour[11];
 
 
-      bool        HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ; 
-      bool        HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL;
 
-      bool        HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ;
+      Bool_t        HLT_Ele35_WPTight_Gsf;
 
-      bool        Flag_goodVertices;
-      bool        Flag_globalSuperTightHalo2016Filter;
-      bool        Flag_HBHENoiseIsoFilter;
-      bool        Flag_HBHENoiseFilter;
-      bool        Flag_EcalDeadCellTriggerPrimitiveFilter;
-      bool        Flag_BadPFMuonFilter;
-      bool        Flag_eeBadScFilter;
-      bool        Flag_ecalBadCalibFilterV2;
+      Bool_t        HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL;
 
-      int         PV_npvsGood;
+      Bool_t        HLT_IsoMu27;
 
-   float             L1PreFiringWeight_Dn;
-   float             L1PreFiringWeight_Nom;
-   float             L1PreFiringWeight_Up;
+      Bool_t        HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8;
 
-    int             nGenPart;
-   float             GenPart_mass[25];
-   float             GenPart_phi[25];
-   float             GenPart_pt[25];
-   float             GenPart_eta[25];
-   int           GenPart_genPartIdxMother[25];
-   int           GenPart_pdgId[25];
-   int           GenPart_status[25];
-   float         Pileup_nTrueInt;
+
+      Bool_t        HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ; 
+      Bool_t        HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL;
+
+      Bool_t        HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ;
+
+      Int_t         PV_npvsGood;
+
+   Float_t             L1PreFiringWeight_Dn;
+   Float_t             L1PreFiringWeight_Nom;
+   Float_t             L1PreFiringWeight_Up;
+
+    UInt_t             nGenPart;
+   Float_t             GenPart_mass[11];
+   Float_t             GenPart_phi[11];
+   Float_t             GenPart_pt[11];
+   Float_t             GenPart_eta[11];
+   Int_t           GenPart_genPartIdxMother[11];
+   Int_t           GenPart_pdgId[11];
+   Int_t           GenPart_status[11];
+   Float_t         Pileup_nTrueInt;
 
    // List of branches
    TBranch        *b_event;
@@ -416,16 +407,6 @@ public :
 
    TBranch        *b_PV_npvsGood;
 
-   TBranch        *b_Flag_goodVertices;
-   TBranch        *b_Flag_globalSuperTightHalo2016Filter;
-   TBranch        *b_Flag_HBHENoiseIsoFilter;
-   TBranch        *b_Flag_HBHENoiseFilter;
-   TBranch        *b_Flag_EcalDeadCellTriggerPrimitiveFilter;
-   TBranch        *b_Flag_BadPFMuonFilter;
-   TBranch        *b_Flag_eeBadScFilter;
-   TBranch        *b_Flag_ecalBadCalibFilterV2;
-
-
    TBranch        *b_L1PreFiringWeight_Dn;
    TBranch        *b_L1PreFiringWeight_Nom;
    TBranch        *b_L1PreFiringWeight_Up;
@@ -444,12 +425,12 @@ public :
 
    MyAnalysis(TTree *tree=0);
    virtual ~MyAnalysis();
-   virtual int    Cut(Long64_t entry);
-   virtual int    GetEntry(Long64_t entry);
+   virtual Int_t    Cut(Long64_t entry);
+   virtual Int_t    GetEntry(Long64_t entry);
    virtual Long64_t LoadTree(Long64_t entry);
    virtual void     Init(TTree *tree);
    virtual void     Loop(TString, TString, TString, TString, TString, float,float,float);
-   virtual bool   Notify();
+   virtual Bool_t   Notify();
    virtual void     Show(Long64_t entry = -1);
 };
 
@@ -461,9 +442,9 @@ MyAnalysis::MyAnalysis(TTree *tree) : fChain(0)
 // if parameter tree is not specified (or zero), connect the file
 // used to generate this class and read the Tree.
    if (tree == 0) {
-      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("/pnfs/iihe/cms/store/user/schenara/SYS_2018/TTTo2L2Nu_hdampUP_TuneCP5_13TeV-powheg-pythia8/crab_TTTo2L2Nu_hdampUP_2018/200225_122927/0000/outfile_5_2016_71.root");
+      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("/pnfs/iihe/cms/store/user/schenara/SYS_2018/TTTo2L2Nu_hdampUP_TuneCP5_13TeV-powheg-pythia8/crab_TTTo2L2Nu_hdampUP_2018/200211_122927/0000/outfile_5_2016_71.root");
       if (!f || !f->IsOpen()) {
-         f = new TFile("/pnfs/iihe/cms/store/user/schenara/SYS_2018/TTTo2L2Nu_hdampUP_TuneCP5_13TeV-powheg-pythia8/crab_TTTo2L2Nu_hdampUP_2018/200225_122927/0000/outfile_5_2016_71.root");
+         f = new TFile("/pnfs/iihe/cms/store/user/schenara/SYS_2018/TTTo2L2Nu_hdampUP_TuneCP5_13TeV-powheg-pythia8/crab_TTTo2L2Nu_hdampUP_2018/200211_122927/0000/outfile_5_2016_71.root");
       }
       f->GetObject("IIHEAnalysis",tree);
 
@@ -477,7 +458,7 @@ MyAnalysis::~MyAnalysis()
    delete fChain->GetCurrentFile();
 }
 
-int MyAnalysis::GetEntry(Long64_t entry)
+Int_t MyAnalysis::GetEntry(Long64_t entry)
 {
 // Read contents of entry.
    if (!fChain) return 0;
@@ -592,16 +573,6 @@ void MyAnalysis::Init(TTree *tree)
 
    fChain->SetBranchAddress("PV_npvsGood", &PV_npvsGood, &b_PV_npvsGood);
 
-   fChain->SetBranchAddress("Flag_HBHENoiseFilter", &Flag_HBHENoiseFilter, &b_Flag_HBHENoiseFilter);
-   fChain->SetBranchAddress("Flag_ecalBadCalibFilterV2", &Flag_ecalBadCalibFilterV2, &b_Flag_ecalBadCalibFilterV2);
-   fChain->SetBranchAddress("Flag_eeBadScFilter", &Flag_eeBadScFilter, &b_Flag_eeBadScFilter);
-   fChain->SetBranchAddress("Flag_BadPFMuonFilter", &Flag_BadPFMuonFilter, &b_Flag_BadPFMuonFilter);
-   fChain->SetBranchAddress("Flag_EcalDeadCellTriggerPrimitiveFilter", &Flag_EcalDeadCellTriggerPrimitiveFilter, &b_Flag_EcalDeadCellTriggerPrimitiveFilter);
-   fChain->SetBranchAddress("Flag_HBHENoiseIsoFilter", &Flag_HBHENoiseIsoFilter, &b_Flag_HBHENoiseIsoFilter);
-   fChain->SetBranchAddress("Flag_globalSuperTightHalo2016Filter", &Flag_globalSuperTightHalo2016Filter, &b_Flag_globalSuperTightHalo2016Filter);
-   fChain->SetBranchAddress("Flag_goodVertices", &Flag_goodVertices, &b_Flag_goodVertices);
-
-
    fChain->SetBranchAddress("L1PreFiringWeight_Nom", &L1PreFiringWeight_Nom, &b_L1PreFiringWeight_Nom);
    fChain->SetBranchAddress("L1PreFiringWeight_Dn", &L1PreFiringWeight_Dn, &b_L1PreFiringWeight_Dn);
    fChain->SetBranchAddress("L1PreFiringWeight_Up", &L1PreFiringWeight_Up, &b_L1PreFiringWeight_Up);
@@ -623,7 +594,7 @@ void MyAnalysis::Init(TTree *tree)
 
 }
 
-bool MyAnalysis::Notify()
+Bool_t MyAnalysis::Notify()
 {
    // The Notify() function is called when a new file is opened. This
    // can be either for a new TTree in a TChain or when when a new TTree
@@ -641,7 +612,7 @@ void MyAnalysis::Show(Long64_t entry)
    if (!fChain) return;
    fChain->Show(entry);
 }
-int MyAnalysis::Cut(Long64_t entry)
+Int_t MyAnalysis::Cut(Long64_t entry)
 {
 // This function may be called from Loop.
 // returns  1 if entry is accepted.
