@@ -4,7 +4,7 @@ import subprocess
 import readline
 import string
 import csv, subprocess
-
+from GFAL_GetROOTfiles import *
 
 
 import argparse
@@ -12,8 +12,8 @@ import argparse
 parser = argparse.ArgumentParser()
 
 parser.add_argument('--v', dest='VERBOSE', default=True)
-parser.add_argument('--l', dest = 'LOCATION', default= '/afs/cern.ch/user/a/asparker/public/LFVTopCode_MyFork/nanoVersion/TopLFV/')
-parser.add_argument('--n', dest = 'NAMETAG', default= 'none' )# if NAMETAG == 'none' then make jobs for all files, otherwise specify a nametag e.g. '2017_DYM10to50' or 'SMEFTfr' for signal
+parser.add_argument('--l', dest = 'LOCATION', default= '/afs/cern.ch/user/a/asparker/public/LFVTopCode_MyFork/new_nano/TopLFV/')
+parser.add_argument('--n', dest = 'NAMETAG', default= 'LFV' )# if NAMETAG == 'none' then make jobs for all files, otherwise specify a nametag e.g. '2017_DYM10to50' or 'SMEFTfr' for signal
 
 
 ARGS = parser.parse_args()
@@ -54,6 +54,7 @@ if mc_2018:
 if data_2018:
     SAMPLES.update(Files_2018.data2018_samples)
 
+print "writing submission script for condor..."
 submit = 'universe = vanilla\n' ##writing .sub file
 submit += 'arguments = "$(argument)"\n'
 submit += 'output = submit01.out\n'
@@ -66,6 +67,7 @@ sub1 = open('Jobs/'+submitName,'wt')
 sub1.write(submit+'\n')
 sub1.close()
 
+print "Loop over samples to submit"
 for key, value in SAMPLES.items():
     if name != 'none' :
         if name  not in key:
@@ -75,7 +77,13 @@ for key, value in SAMPLES.items():
     for idx, S in enumerate(value[0]):
         if value[1]=='data':
             nf = 255
-        for subdir, dirs, files in os.walk(S):
+        print idx
+        print "^ idx"
+        print "S"
+        print S
+        filelist = GFAL_GetROOTfiles( S , "srm://ingrid-se02.cism.ucl.ac.be:8444/srm/managerv2?SFN=/storage/data/cms")
+        for files in filelist:
+        #for subdir, dirs, files in os.walk(S):
             sequance = [files[i:i+nf] for i in range(0,len(files),nf)]
             for num,  seq in enumerate(sequance):
                 f = key +'_' + str(idx) +'_' + str(num)

@@ -60,7 +60,7 @@ for key, value in SAMPLES.items():
         addedFilesZZ[year].append(  year + '/' + key + '.root ')
     elif ('TTTo2L2Nu' in key):
         addedFilesTTbar[year].append(  year + '/' + key + '.root ')
-    elif ('SMEFTfr' not in key):
+    elif ('LFV' not in key):
         addedFilesMc[year].append(  year + '/' + key + '.root ')
     else:
         hadd='hadd ' + key + '.root '
@@ -116,13 +116,21 @@ os.system(haddTTbar_2017)
 
 #os.system('rm *_LFV*')
 #os.system('hadd 2016_LFVVecC.root 2017/2016_LFVTtVecC.root 2017/2016_LFVStVecC.root')
-#os.system('hadd 2017_LFVVecC.root 2017/2017_LFVTtVecC.root 2017/2017_LFVStVecC.root')
+os.system('hadd 2017_LFVVecC.root 2017/2017_LFVTtVecC.root 2017/2017_LFVStVecC.root')
 #os.system('hadd 2018_LFVVecC.root 2017/2018_LFVTtVecC.root 2017/2018_LFVStVecC.root')
 #
 #os.system('hadd 2016_LFVVecU.root 2017/2016_LFVTtVecU.root 2017/2016_LFVStVecU.root')
-#os.system('hadd 2017_LFVVecU.root 2017/2017_LFVTtVecU.root 2017/2017_LFVStVecU.root')
+os.system('hadd 2017_LFVVecU.root 2017/2017_LFVTtVecU.root 2017/2017_LFVStVecU.root')
 #os.system('hadd 2018_LFVVecU.root 2017/2018_LFVTtVecU.root 2017/2018_LFVStVecU.root')
 
+os.system('hadd 2017_LFVClequ3U.root 2017/2017_LFVTtClequ3U.root 2017/2017_LFVStClequ3U.root')
+os.system('hadd 2017_LFVClequ1U.root 2017/2017_LFVTtClequ1U.root 2017/2017_LFVStClequ1U.root')
+
+os.system('hadd 2017_LFVClequ3C.root 2017/2017_LFVTtClequ3C.root 2017/2017_LFVStClequ3C.root')
+os.system('hadd 2017_LFVClequ1C.root 2017/2017_LFVTtClequ1C.root 2017/2017_LFVStClequ1C.root')
+
+
+#tensor interaction                                                                                                                          
 
 #Y = ['2017']
 #Sam = ['TTTo2L2Nu','WJetsToLNu']

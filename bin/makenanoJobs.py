@@ -8,16 +8,16 @@ import Files_2016
 import Files_2017
 import Files_2018
 import Files_2017_A
-
-
+from GFAL_GetROOTfiles import *
+from xrootD_GetROOTfiles import *
 
 import argparse
 # set up an argument parser                                                                                                                                                                         
 parser = argparse.ArgumentParser()
 
 parser.add_argument('--v', dest='VERBOSE', default=True)
-parser.add_argument('--l', dest = 'LOCATION', default= '/afs/cern.ch/user/a/asparker/public/LFVTopCode_MyFork/nanoVersion/TopLFV/')
-parser.add_argument('--n', dest = 'NAMETAG', default= 'none' ) # if NAMETAG == 'none' then make jobs for all files, otherwise specify a nametag e.g. '2017_DYM10to50'
+parser.add_argument('--l', dest = 'LOCATION', default= '/afs/cern.ch/user/a/asparker/public/LFVTopCode_MyFork/new_nano/TopLFV/')
+parser.add_argument('--n', dest = 'NAMETAG', default= 'SingleElectron' ) # if NAMETAG == 'none' then make jobs for all files, otherwise specify a nametag e.g. '2017_DYM10to50'
 
 ARGS = parser.parse_args()
 
@@ -56,24 +56,45 @@ rootlib11="".join([s for s in rootlib1.strip().splitlines(True) if s.strip()])
 rootlib2 = subprocess.check_output("root-config --glibs", shell=True)
 rootlib22="".join([s for s in rootlib2.strip().splitlines(True) if s.strip()])
 
-dire = loc+'bin'
+dire = loc+'bin/'
 dire_h = loc+'hists/'
 nf =40
+print SAMPLES.items()
 
 for key, value in SAMPLES.items():
+    print key
+    print "^ Key"
+    print value
+    print "^ Value"
 #########################################
     if name != 'none' :
         if name  not in key:
             continue
-    nf = 40
+    nf = 100
+    print value[0]
+    print "^ value[0]"
+
     for idx, S in enumerate(value[0]):
-        for subdir, dirs, files in os.walk(S):
+        print idx
+        print "idx"
+        print S
+        print "S"
+        #if 'CRAB_UserFiles' not in S:
+        filelist = GFAL_GetROOTfiles( S , "srm://ingrid-se02.cism.ucl.ac.be:8444/srm/managerv2?SFN=/storage/data/cms")
+        #else :
+        #    filelist = xrootD_GetROOTfiles( S )
+        for files in filelist:
+            #print subdirs
+            #print "subdirs"
+            print files
+            print "files"
             if value[1]=='data': 
                 nf = 255
             sequance = [files[i:i+nf] for i in range(0,len(files),nf)]
             print value[0]
 
             print sequance
+            print "^ sequance"
 
 
             for num,  seq in enumerate(sequance):
@@ -82,7 +103,7 @@ for key, value in SAMPLES.items():
 #                    continue
 #############################
                 text = ''
-                text += '    TChain* ch    = new TChain("IIHEAnalysis") ;\n'
+                text += '    TChain* ch    = new TChain("Events") ;\n'
                 for filename in seq:
                     text += '    ch ->Add("' + S+ filename + '");\n'
                 text += '    MyAnalysis t1(ch);\n'
