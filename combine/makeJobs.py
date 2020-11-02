@@ -9,9 +9,10 @@ cms = '/user/rgoldouz/NewAnalysis2020/Limit/CMSSW_8_1_0/src/HiggsAnalysis/Combin
 
 year=['2016','2017','2018']
 regions=["llB1", "llBg1"]
-#SignalSamples = ['LFVVecC', 'LFVVecU', 'LFVScalarC', 'LFVScalarU', 'LFVTensorC', 'LFVTensorU']
-SignalSamples = ['LFVVecU']
+SignalSamples = ['LFVVecC', 'LFVVecU', 'LFVScalarC', 'LFVScalarU', 'LFVTensorC', 'LFVTensorU']
+#SignalSamples = ['LFVVecU']
 for namesig in SignalSamples:
+    print namesig
     os.system('rm -rf ' + cms + namesig + "Combined")
     os.system('mkdir ' + cms + namesig + "Combined")
     os.system('cp CombinedFiles/* ' + cms +  namesig + "Combined")
@@ -26,12 +27,12 @@ for namesig in SignalSamples:
     'combineTool.py -M Impacts -d ' +namesig + '_Combined.root -m 125 -o impacts.json -t -1 --expectSignal=1'+ "\n"+\
     'plotImpacts.py -i impacts.json -o impacts'+ "\n" +\
     'cp impacts.pdf ' + dire + namesig + '_Combined_impacts.pdf'+ "\n"
-    'combine -M MaxLikelihoodFit ' + namesig + '_' + nameyear + '_Combined.txt'+ "\n"+\
-    'PostFitShapesFromWorkspace -o postfit_shapes.root -f fitDiagnostics.root:fit_s --postfit --sampling --print -d ' + namesig + '_' + nameyear + '_Combined.txt '+ namesig + '_' + nameyear + '_Combined.root'+ "\n"+\
-    'cp postfit_shapes.root /user/rgoldouz/NewAnalysis2020/Analysis/combine/PostFit/'+ namesig + '_' + nameyear + '_Combined.root'+ "\n"
+    'combine -M MaxLikelihoodFit ' + namesig + '_Combined.txt'+ "\n"+\
+    'PostFitShapesFromWorkspace -o postfit_shapes.root -f fitDiagnostics.root:fit_s --postfit --sampling --print -d ' + namesig +  '_Combined.txt -w '+ namesig + '_Combined.root'+ "\n"+\
+    'cp postfit_shapes.root /user/rgoldouz/NewAnalysis2020/Analysis/combine/PostFit/'+ namesig +  '_Combined.root'+ "\n"
     open('Jobs/'+SHNAME0, 'wt').write(SHFILE0)
     os.system("chmod +x "+'Jobs/'+SHNAME0)
-    os.system("qsub -q localgrid  -o STDOUT/" + SHNAME0.split('.')[0] + ".stdout -e STDERR/" + SHNAME0.split('.')[0] + ".stderr Jobs/" + SHNAME0)
+#    os.system("qsub -q localgrid  -o STDOUT/" + SHNAME0.split('.')[0] + ".stdout -e STDERR/" + SHNAME0.split('.')[0] + ".stderr Jobs/" + SHNAME0)
     for numyear, nameyear in enumerate(year):
         os.system('rm -rf ' + cms + nameyear + namesig + "llB1")
         os.system('mkdir ' + cms + nameyear + namesig + "llB1")    
@@ -51,7 +52,7 @@ for namesig in SignalSamples:
         'plotImpacts.py -i impacts.json -o impacts'+ "\n" +\
         'cp impacts.pdf ' + dire + namesig + '_' + nameyear + '_llB1_impacts.pdf'+ "\n"+\
         'combine -M MaxLikelihoodFit ' + namesig + '_' + nameyear + '_llB1.txt'+ "\n"+\
-        'PostFitShapesFromWorkspace -o postfit_shapes.root -f fitDiagnostics.root:fit_s --postfit --sampling --print -d ' + namesig + '_' + nameyear + '_llB1.txt '+ namesig + '_' + nameyear + '_llB1.root'+ "\n"+\
+        'PostFitShapesFromWorkspace -o postfit_shapes.root -f fitDiagnostics.root:fit_s --postfit --sampling --print -d ' + namesig + '_' + nameyear + '_llB1.txt  -w '+ namesig + '_' + nameyear + '_llB1.root'+ "\n"+\
         'cp postfit_shapes.root /user/rgoldouz/NewAnalysis2020/Analysis/combine/PostFit/'+ namesig + '_' + nameyear + '_llB1.root'+ "\n"
         
         open('Jobs/'+SHNAME1, 'wt').write(SHFILE1)
@@ -70,7 +71,7 @@ for namesig in SignalSamples:
         'plotImpacts.py -i impacts.json -o impacts'+ "\n" +\
         'cp impacts.pdf ' + dire + namesig + '_' + nameyear + '_com_impacts.pdf'+ "\n"+\
         'combine -M MaxLikelihoodFit ' + namesig + '_' + nameyear + '_com.txt'+ "\n"+\
-        'PostFitShapesFromWorkspace -o postfit_shapes.root -f fitDiagnostics.root:fit_s --postfit --sampling --print -d ' + namesig + '_' + nameyear + '_com.txt '+ namesig + '_' + nameyear + '_com.root'+ "\n"+\
+        'PostFitShapesFromWorkspace -o postfit_shapes.root -f fitDiagnostics.root:fit_s --postfit --sampling --print -d ' + namesig + '_' + nameyear + '_com.txt -w '+ namesig + '_' + nameyear + '_com.root'+ "\n"+\
         'cp postfit_shapes.root /user/rgoldouz/NewAnalysis2020/Analysis/combine/PostFit/'+ namesig + '_' + nameyear + '_com.root'+ "\n"
         open('Jobs/'+SHNAME2, 'wt').write(SHFILE2)
         os.system("chmod +x "+'Jobs/'+SHNAME2)

@@ -93,8 +93,12 @@ float scale_factor( TH2F* h, float X, float Y , TString uncert, bool eff=false, 
   if(uncert=="central") return  h->GetBinContent(binx, biny);
 }
 
-float topPt(float pt){
+float topPtPowheg(float pt){
   return (0.973 - (0.000134 * pt) + (0.103 * exp(pt * (-0.0118))));  
+}
+
+float topPtMGLO(float x){
+  return (0.688 -  0.0000174*x + 0.824*exp(-0.0000253*x)/(pow(x,0.2185)));
 }
 
 void MyAnalysis::Loop(TString fname, TString sname, TString data, TString dataset ,TString year, TString run, float xs, float lumi, float Nevent)
@@ -147,9 +151,10 @@ void MyAnalysis::Loop(TString fname, TString sname, TString data, TString datase
   std::vector<TString> regions{"ll","llOffZ","llB1", "llBg1", };
   std::vector<TString> channels{"ee", "emu", "mumu"};
   std::vector<TString> vars   {"lep1Pt","lep1Eta","lep1Phi","lep2Pt","lep2Eta","lep2Phi","llM","llPt","llDr","llDphi","jet1Pt","jet1Eta","jet1Phi","njet","nbjet","Met","MetPhi","nVtx", "llMZw","BDT","muPt","elePt","muEta","eleEta"};
-  std::vector<int>    nbins   {70      ,20       ,25       ,25      ,20       ,25       ,30   ,20    ,25    ,15      ,20      ,20       ,25       ,10    ,6      ,30   ,20      ,70    ,80      ,20, 70,70,20,20};   
-  std::vector<float> lowEdge  {0       ,-3       ,-4       ,0       ,-3       ,-4       ,0    ,0     ,0     ,0       ,0       ,-3       ,-4       ,0     ,0      ,0    ,-4      ,0     ,70      ,-1, 0,0,-3,-3};
-  std::vector<float> highEdge {1500     ,3        ,4        ,1000     ,3        ,4        ,500  ,200   ,7     ,4       ,300     ,3        ,4        ,10    ,6      ,210  ,4       ,70    ,110     ,1 ,1500,1500,3,3};       
+  std::vector<int>    nbins   {70      ,20       ,25       ,25      ,20       ,25       ,30   ,20    ,25    ,15      ,20      ,20       ,25       ,10    ,6      ,30   ,20      ,70    ,80      ,100, 70,70,20,20};   
+  std::vector<float> lowEdge  {0       ,-3       ,-4       ,0       ,-3       ,-4       ,0    ,0     ,0     ,0       ,0       ,-3       ,-4       ,0     ,0      ,0    ,-4      ,0     ,70      ,-0.4, 0,0,-3,-3};
+  std::vector<float> highEdge {1500     ,3        ,4        ,1000     ,3        ,4        ,500  ,200   ,7     ,4       ,300     ,3        ,4        ,10    ,6      ,210  ,4       ,70    ,110,     0.6 ,1500,1500,3,3};       
+
 
   Dim3 Hists(channels.size(),Dim2(regions.size(),Dim1(vars.size())));  
   std::stringstream name;
@@ -438,7 +443,7 @@ void MyAnalysis::Loop(TString fname, TString sname, TString data, TString datase
   std::vector<float> *JECsysMETUp;
   std::vector<float> *JECsysMETDown;
 
-  TLorentzVector wp, wm, b, ab;
+  TLorentzVector wp, wm, b, ab, top, atop;
   std::vector<float> nominalWeights;
   nominalWeights.assign(sys.size(), 1);
   std::vector<float> sysUpWeights;
@@ -461,7 +466,8 @@ void MyAnalysis::Loop(TString fname, TString sname, TString data, TString datase
   float weight_lep;
   float weight_lepB;
   float weight_prefiring;
-  float weight_topPt;
+  float weight_topPtPowheg;
+  float weight_topPtMGLO;
   float elePt;
   float MVAoutputJerUp;
   float MVAoutputJerDown;
@@ -494,7 +500,7 @@ void MyAnalysis::Loop(TString fname, TString sname, TString data, TString datase
   float pt_res;
   double muPtSFRochester;
 
-  if (fname.Contains("TTTo2L2Nu") || fname.Contains("TTsys")) ifTopPt=true;
+  if (fname.Contains("TTTo2L2Nu") || fname.Contains("TTsys") || fname.Contains("LFVTt")) ifTopPt=true;
 
   if (fChain == 0) return;
   Long64_t nentries = fChain->GetEntriesFast();
@@ -523,7 +529,8 @@ void MyAnalysis::Loop(TString fname, TString sname, TString data, TString datase
     weight_lep =1;
     weight_lepB =1;
     weight_prefiring =1;
-    weight_topPt =1;
+    weight_topPtPowheg =1;
+    weight_topPtMGLO =1;
     P_bjet_data =1;
     P_bjet_mc =1;
     MVAoutput=0;
@@ -976,7 +983,7 @@ void MyAnalysis::Loop(TString fname, TString sname, TString data, TString datase
 
       jet_leading_pt = 0;
       if (selectedJetsJerDown->size()>0) jet_leading_pt = (*selectedJetsJerDown)[0]->pt_;
-      MET = MET_T1SmearJetResUp_Pt;
+      MET = MET_T1SmearJetResDown_Pt;
       n_jet = selectedJetsJerDown->size();
       MVAoutputJerDown = readerMVA->EvaluateMVA( "BDT_1b_tc_BDT");
 
@@ -1175,14 +1182,18 @@ void MyAnalysis::Loop(TString fname, TString sname, TString data, TString datase
         if((*mc_status)[l]<30 && (*mc_status)[l]>20 && (*mc_pdgId)[l]==-24) wm.SetPtEtaPhiE((*mc_pt)[l], (*mc_eta)[l], (*mc_phi)[l], (*mc_energy)[l]) ;
         if((*mc_status)[l]<30 && (*mc_status)[l]>20 && (*mc_pdgId)[l]==5) b.SetPtEtaPhiE((*mc_pt)[l], (*mc_eta)[l], (*mc_phi)[l], (*mc_energy)[l]) ;
         if((*mc_status)[l]<30 && (*mc_status)[l]>20 && (*mc_pdgId)[l]==-5) ab.SetPtEtaPhiE((*mc_pt)[l], (*mc_eta)[l], (*mc_phi)[l], (*mc_energy)[l]) ;
+        if((*mc_status)[l]<30 && (*mc_status)[l]>20 && (*mc_pdgId)[l]==6) top.SetPtEtaPhiE((*mc_pt)[l], (*mc_eta)[l], (*mc_phi)[l], (*mc_energy)[l]) ;
+        if((*mc_status)[l]<30 && (*mc_status)[l]>20 && (*mc_pdgId)[l]==-6) atop.SetPtEtaPhiE((*mc_pt)[l], (*mc_eta)[l], (*mc_phi)[l], (*mc_energy)[l]) ;
       }
-    weight_topPt = sqrt(topPt((wp + b).Pt()) * topPt((wm + ab).Pt()));
+    weight_topPtPowheg = sqrt(topPtPowheg((wp + b).Pt()) * topPtPowheg((wm + ab).Pt()));
+    weight_topPtMGLO = sqrt(topPtMGLO((atop).Pt()) * topPtMGLO((top).Pt()));
     }
 
-    if (data == "mc") weight_lep = sf_Ele_Reco * sf_Ele_ID * sf_Mu_ID * sf_Mu_ISO * sf_Trigger * weight_PU * weight_Lumi  * mc_w_sign * weight_prefiring * weight_topPt;
-    if (data == "mc") weight_lepB = sf_Ele_Reco * sf_Ele_ID * sf_Mu_ID * sf_Mu_ISO * sf_Trigger * weight_PU * weight_Lumi * mc_w_sign *  weight_prefiring * weight_topPt * (P_bjet_data/P_bjet_mc);
+    if (fname.Contains("LFVTt")) weight_topPtPowheg = weight_topPtMGLO;
+    if (data == "mc") weight_lep = sf_Ele_Reco * sf_Ele_ID * sf_Mu_ID * sf_Mu_ISO * sf_Trigger * weight_PU * weight_Lumi  * mc_w_sign * weight_prefiring * weight_topPtPowheg;
+    if (data == "mc") weight_lepB = sf_Ele_Reco * sf_Ele_ID * sf_Mu_ID * sf_Mu_ISO * sf_Trigger * weight_PU * weight_Lumi * mc_w_sign *  weight_prefiring * weight_topPtPowheg * (P_bjet_data/P_bjet_mc);
 
-
+if(isnan(weight_lepB) || isinf(weight_lepB)) cout<<weight_topPtMGLO<<"  "<<weight_topPtPowheg<<endl;
 //fill histograms
 //dilepton step
     Hists[ch][0][0]->Fill((*selectedLeptons)[0]->pt_,weight_lep);

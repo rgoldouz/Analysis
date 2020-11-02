@@ -47,7 +47,7 @@ path = []
 #path.append('/pnfs/iihe/cms/store/user/schenara/SYS_RunII_2016/TTTo2L2Nu_hdampDOWN_TuneCP5_PSweights_13TeV-powheg-pythia8/crab_TTTo2L2Nu_hdampDOWN_v3_ext1/200311_144755/0000/')
 #path.append('/pnfs/iihe/cms/store/user/schenara/SYS_RunII_2016/TTTo2L2Nu_hdampUP_TuneCP5_PSweights_13TeV-powheg-pythia8/crab_TTTo2L2Nu_hdampUP_v3_v1/200311_144425/0000/')
 #path.append('/pnfs/iihe/cms/store/user/schenara/SYS_RunII_2016/TTTo2L2Nu_hdampUP_TuneCP5_PSweights_13TeV-powheg-pythia8/crab_TTTo2L2Nu_hdampUP_v3_ext1/200311_144331/0000/')
-#path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2016/IIHE_Ntuple/ntuple_SMEFTfr_ST_vector_emutc/')
+path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2016/IIHE_Ntuple/ntuple_SMEFTfr_ST_vector_emutc/')
 #path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2016/IIHE_Ntuple/ntuple_SMEFTfr_ST_vector_emutu/')
 #path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2016/IIHE_Ntuple/ntuple_SMEFTfr_TT_vector_emutc/')
 #path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2016/IIHE_Ntuple/ntuple_SMEFTfr_TT_vector_emutu/')
@@ -146,7 +146,7 @@ path = []
 #path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2018/IIHE_Ntuple/ntuple_SMEFTfr_ST_clequ3_emutc/')
 #path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2018/IIHE_Ntuple/ntuple_SMEFTfr_ST_clequ3_emutu/')
 #path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2018/IIHE_Ntuple/ntuple_SMEFTfr_TT_clequ3_emutc/')
-path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2018/IIHE_Ntuple/ntuple_SMEFTfr_TT_clequ3_emutu/')
+#path.append('/pnfs/iihe/cms/store/user/rgoldouz/TopLfvFullSim/2018/IIHE_Ntuple/ntuple_SMEFTfr_TT_clequ3_emutu/')
 
 nEventsraw = 0
 neventsweight = 0

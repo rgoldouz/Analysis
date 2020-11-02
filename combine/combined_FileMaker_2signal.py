@@ -24,21 +24,23 @@ LumiErr = [0.025, 0.023, 0.025, 0.018]
 regions=["llB1", "llBg1"]
 channels=["emu"]
 variables=["BDT"]
-sys = ["eleRecoSf", "eleIDSf", "muIdSf", "muIsoSf", "bcTagSF", "udsgTagSF","pu", "prefiring", "trigSF", "jes", "jer", "unclusMET","muonScale","electronScale","muonRes"]
+sys = ["eleRecoSf", "eleIDSf", "muIdSf", "muIsoSf", "bcTagSF", "udsgTagSF","pu", "prefiring", "trigSF", "jer", "unclusMET","muonScale","electronScale","muonRes"]
 sysJecNames = ["AbsoluteMPFBias","AbsoluteScale","AbsoluteStat","FlavorQCD","Fragmentation","PileUpDataMC","PileUpPtBB","PileUpPtEC1","PileUpPtEC2","PileUpPtHF","PileUpPtRef","RelativeFSR","RelativeJEREC1","RelativeJEREC2","RelativeJERHF","RelativePtBB","RelativePtEC1","RelativePtEC2","RelativePtHF","RelativeBal","RelativeSample","RelativeStatEC","RelativeStatFSR","RelativeStatHF","SinglePionECAL","SinglePionHCAL","TimePtEta"]
 sysJecNamesUnCorr = ["AbsoluteStat","RelativeJEREC1","RelativeJEREC2","RelativePtEC1","RelativePtEC2","RelativeSample","RelativeStatEC","RelativeStatFSR","RelativeStatHF","TimePtEta"]
 sysJecNamesCorr =["AbsoluteMPFBias","AbsoluteScale","FlavorQCD","Fragmentation","PileUpDataMC","PileUpPtBB","PileUpPtEC1","PileUpPtEC2","PileUpPtHF","PileUpPtRef","RelativeFSR","RelativeJERHF","RelativePtBB","RelativePtHF","RelativeBal","RelativeStatFSR","RelativeStatHF"]
 
 HistAddress = '/user/rgoldouz/NewAnalysis2020/Analysis/hists/'
 
-Samples = ['data.root','WJetsToLNu.root','others.root', 'DY.root', 'TTTo2L2Nu.root', 'ST_tW.root', 'LFVVecC.root', 'LFVVecU.root', 'LFVScalarC.root', 'LFVScalarU.root', 'LFVTensorC.root', 'LFVTensorU.root']
+Samples = ['data.root','WJetsToLNu.root','others.root', 'DY.root', 'TTTo2L2Nu.root', 'ST_tW.root', 'LFVTtVecC.root','LFVStVecC.root','LFVTtVecU.root','LFVStVecU.root','LFVTtScalarC.root', 'LFVStScalarC.root','LFVTtScalarU.root', 'LFVStScalarU.root','LFVTtTensorC.root','LFVStTensorC.root','LFVTtTensorU.root','LFVStTensorU.root']
+
 SamplesName = ['Data','Jets','Others', 'DY', 't#bar{t}', 'tW' , 'LFV-vec [c_{e#mutc}=5]', 'LFV-vec [c_{e#mutu}=2]']
-SamplesNameCombined = ['data_obs','Jets','Others', 'DY', 'tt', 'tW',  'LfvVectorEmutc', 'LfvVectorEmutu', 'LfvScalarEmutc', 'LfvScalarEmutu', 'LfvTensorEmutc', 'LfvTensorEmutu']
-NormalizationErr = [0, 0.5, 0.5, 0.3, 0.05, 0.1, 0,0,0,0,0,0]
+SamplesNameCombined = ['data_obs','Jets','Others', 'DY', 'tt', 'tW', 'LFVTtVecC','LFVStVecC','LFVTtVecU','LFVStVecU','LFVTtScalarC', 'LFVStScalarC','LFVTtScalarU', 'LFVStScalarU','LFVTtTensorC','LFVStTensorC','LFVTtTensorU','LFVStTensorU']
+NormalizationErr = [0, 0.5, 0.5, 0.3, 0.05, 0.1, 0,0,0,0,0,0, 0,0,0,0,0,0]
 
-SignalSamples = ['LFVVecC', 'LFVVecU', 'LFVScalarC', 'LFVScalarU', 'LFVTensorC', 'LFVTensorU']
+SignalSamples=['LFVTtVecC','LFVStVecC','LFVTtVecU','LFVStVecU','LFVTtScalarC', 'LFVStScalarC','LFVTtScalarU', 'LFVStScalarU','LFVTtTensorC','LFVStTensorC','LFVTtTensorU','LFVStTensorU']
 
-colors =  [ROOT.kBlack,ROOT.kYellow,ROOT.kGreen,ROOT.kBlue-3,ROOT.kRed-4,ROOT.kOrange-3, ROOT.kOrange-6, ROOT.kCyan-6, ROOT.kOrange-6, ROOT.kCyan-6, ROOT.kOrange-6, ROOT.kCyan-6]
+
+colors =  [ROOT.kBlack,ROOT.kYellow,ROOT.kGreen,ROOT.kBlue-3,ROOT.kRed-4,ROOT.kOrange-3, ROOT.kOrange-6, ROOT.kCyan-6, ROOT.kOrange-6, ROOT.kCyan-6, ROOT.kOrange-6, ROOT.kCyan-6, ROOT.kOrange-6, ROOT.kOrange-6,ROOT.kOrange-8, ROOT.kOrange-8,ROOT.kOrange-9, ROOT.kOrange-9,ROOT.kOrange-2, ROOT.kOrange-2]
 
 Hists = []
 HistsSysUp = []
@@ -440,7 +442,7 @@ for numyear, nameyear in enumerate(year):
             for numsys, namesys in enumerate(sys):
                 HistsSysUp[numyear][f][0][numreg][0][numsys].SetName(SamplesNameCombined[f] + '_' + namesys + 'Up')
                 HistsSysDown[numyear][f][0][numreg][0][numsys].SetName(SamplesNameCombined[f] + '_' + namesys + 'Down')
-                if 'jer' in namesys:
+                if 'jer' in namesys or 'unclusMET' in namesys:
                     HistsSysUp[numyear][f][0][numreg][0][numsys].SetName(SamplesNameCombined[f] + '_' + 'Y'+ nameyear +namesys + 'Up')
                     HistsSysDown[numyear][f][0][numreg][0][numsys].SetName(SamplesNameCombined[f] + '_' + 'Y'+ nameyear + namesys + 'Down')
                 HistsSysUp[numyear][f][0][numreg][0][numsys].Write()
@@ -492,8 +494,12 @@ for numyear, nameyear in enumerate(year):
 #                print nameyear + namereg + ttsys[g] + str(hup.GetBinContent(b+1)) + '  ' + str(Gttsys[g][numyear][numreg][0].GetErrorYhigh(b)) + '  ' + str(Gttsys[g][numyear][numreg][0].GetErrorYlow(b))
                     hup.SetBinContent(b+1,hup.GetBinContent(b+1) + GSIGsys[g][f-6][numyear][numreg].GetErrorYhigh(b))
                     hdown.SetBinContent(b+1,hdown.GetBinContent(b+1) - GSIGsys[g][f-6][numyear][numreg].GetErrorYlow(b))
-                hup.SetName(SamplesNameCombined[f] + '_Signal_' + SIGsys[g] + 'Up')
-                hdown.SetName(SamplesNameCombined[f] + '_Signal_' + SIGsys[g] + 'Down')
+                if ('pdf' in ttsys[g] or 'QS' in ttsys[g]) and 'Tt' in SamplesNameCombined[f]:
+                    hup.SetName(SamplesNameCombined[f] + '_tt_' + SIGsys[g] + 'Up')
+                    hdown.SetName(SamplesNameCombined[f] + '_tt_' + SIGsys[g] + 'Down')
+                else:
+                    hup.SetName(SamplesNameCombined[f] + '_Signal_' + SIGsys[g] + 'Up')
+                    hdown.SetName(SamplesNameCombined[f] + '_Signal_' + SIGsys[g] + 'Down')
                 hup.Write()
                 hdown.Write()
 #add MC stat error
@@ -507,26 +513,35 @@ for numyear, nameyear in enumerate(year):
                 HstatUp = Hists[numyear][f][0][numreg][0].Clone()
                 HstatUp.SetBinContent(b+1,HstatUp.GetBinContent(b+1) + HstatUp.GetBinError(b+1))
                 HstatUp.SetName(SamplesNameCombined[f]+ '_' + 'Y'+ nameyear + namereg + SamplesNameCombined[f]+'StatBin' +str(b+1)+ 'Up')
-                HstatUp.Write()
+#                HstatUp.Write()
                 HstatDown = Hists[numyear][f][0][numreg][0].Clone()
                 HstatDown.SetBinContent(b+1,HstatDown.GetBinContent(b+1) - HstatDown.GetBinError(b+1))
                 if HstatDown.GetBinContent(b+1) < 0.001:
                     HstatDown.SetBinContent(b+1,0.001)
                 HstatDown.SetName(SamplesNameCombined[f]+ '_' + 'Y'+ nameyear + namereg + SamplesNameCombined[f]+'StatBin' +str(b+1)+ 'Down')
-                HstatDown.Write()
+#                HstatDown.Write()
                 stat.append('Y' + nameyear+namereg+SamplesNameCombined[f]+'StatBin' +str(b+1))
             statName[ nameyear + namereg + SamplesNameCombined[f]]=stat
         hfile.Write()
         hfile.Close()
 
+SignalSamplesD = {}
 
-for namesig in SignalSamples:
+SignalSamplesD['LFVVecC'] = ['LFVTtVecC','LFVStVecC']
+SignalSamplesD['LFVVecU']= ['LFVTtVecU','LFVStVecU']
+SignalSamplesD['LFVScalarC']= ['LFVTtScalarC', 'LFVStScalarC'] 
+SignalSamplesD['LFVScalarU']= ['LFVTtScalarU', 'LFVStScalarU']
+SignalSamplesD['LFVTensorC']= ['LFVTtTensorC','LFVStTensorC']
+SignalSamplesD['LFVTensorU']= ['LFVTtTensorU','LFVStTensorU']
+
+for namesig, valueD in SignalSamplesD.items():
     for numyear, nameyear in enumerate(year):
         for numreg, namereg in enumerate(regions):
             cardName = namesig+'_'+nameyear+'_' + namereg
-            Sid= Samples.index(namesig + '.root')
+            Sid0= Samples.index(valueD[0] + '.root')
+            Sid1= Samples.index(valueD[1] + '.root')
             T1 = 'max 1 number of categories \n' +\
-                 'jmax 5 number of samples minus one\n' +\
+                 'jmax 6 number of samples minus one\n' +\
                  'kmax * number of nuisance parameters\n' +\
                  '------------\n'+\
                  'shapes * * '  + nameyear+'_'+namereg+'.root' + ' $PROCESS $PROCESS_$SYSTEMATIC\n' +\
@@ -534,75 +549,88 @@ for namesig in SignalSamples:
                  'bin'.ljust(45) + cardName + '\n'+\
                  'observation'.ljust(45) + str(Hists[numyear][0][0][numreg][0].Integral()) +'\n'+\
                  '------------\n'+\
-                 'bin'.ljust(45) + cardName.ljust(25) + cardName.ljust(25) + cardName.ljust(25) + cardName.ljust(25) + cardName.ljust(25) + cardName.ljust(25) +'\n'+\
-                 'process'.ljust(45) +'0'.ljust(25) + '1'.ljust(25) + '2'.ljust(25) + '3'.ljust(25) + '4'.ljust(25) + '5'.ljust(25) +'\n'+\
-                 'process'.ljust(45) +SamplesNameCombined[Sid].ljust(25) + SamplesNameCombined[1].ljust(25) + SamplesNameCombined[2].ljust(25) +\
+                 'bin'.ljust(45) + cardName.ljust(25) + cardName.ljust(25) + cardName.ljust(25) + cardName.ljust(25) + cardName.ljust(25) + cardName.ljust(25) + cardName.ljust(25) +'\n'+\
+                 'process'.ljust(45) +'-1'.ljust(25) +'0'.ljust(25) + '1'.ljust(25) + '2'.ljust(25) + '3'.ljust(25) + '4'.ljust(25) + '5'.ljust(25) +'\n'+\
+                 'process'.ljust(45) +valueD[0].ljust(25) +valueD[1].ljust(25)+ SamplesNameCombined[1].ljust(25) + SamplesNameCombined[2].ljust(25) +\
                  SamplesNameCombined[3].ljust(25) + SamplesNameCombined[4].ljust(25) + SamplesNameCombined[5].ljust(25)+'\n'+\
-                 'rate'.ljust(45)+ str(Hists[numyear][Sid][0][numreg][0].Integral()).ljust(25) + str(Hists[numyear][1][0][numreg][0].Integral()).ljust(25) + str(Hists[numyear][2][0][numreg][0].Integral()).ljust(25)+\
+                 'rate'.ljust(45) + str(Hists[numyear][Sid0][0][numreg][0].Integral()).ljust(25) + str(Hists[numyear][Sid1][0][numreg][0].Integral()).ljust(25) + str(Hists[numyear][1][0][numreg][0].Integral()).ljust(25) + str(Hists[numyear][2][0][numreg][0].Integral()).ljust(25)+\
                  str(Hists[numyear][3][0][numreg][0].Integral()).ljust(25) + str(Hists[numyear][4][0][numreg][0].Integral()).ljust(25) + str(Hists[numyear][5][0][numreg][0].Integral()).ljust(25) + '\n'+\
                  '------------\n'+\
-                 'lumi'.ljust(35)+'lnN'.ljust(10) + '1.025'.ljust(25) + '1.025'.ljust(25) + '1.025'.ljust(25) + '1.025'.ljust(25) + '1.025'.ljust(25) + '1.025'.ljust(25) +'\n'+\
-                 'Jets_norm'.ljust(35)+'lnN'.ljust(10) + '-'.ljust(25) + '1.5'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) +'\n'+\
-                 'Other_norm'.ljust(35)+'lnN'.ljust(10) + '-'.ljust(25) + '-'.ljust(25) + '1.5'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) +'\n'+\
-                 'DY_norm'.ljust(35)+'lnN'.ljust(10) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '1.5'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) +'\n'+\
-                 'tt_norm'.ljust(35)+'lnN'.ljust(10) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '1.05'.ljust(25) + '-'.ljust(25) +'\n'+\
-                 'tW_norm'.ljust(35)+'lnN'.ljust(10) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '1.1'.ljust(25) +'\n'
+                 'Jets_norm'.ljust(35)+'lnN'.ljust(10) + '-'.ljust(25) + '-'.ljust(25) + '1.5'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) +'\n'+\
+                 'Other_norm'.ljust(35)+'lnN'.ljust(10) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '1.5'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) +'\n'+\
+                 'DY_norm'.ljust(35)+'lnN'.ljust(10) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '1.5'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) +'\n'+\
+                 'tt_norm'.ljust(35)+'lnN'.ljust(10) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '1.05'.ljust(25) + '-'.ljust(25) +'\n'+\
+                 'tW_norm'.ljust(35)+'lnN'.ljust(10) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '1.1'.ljust(25) +'\n'
             if '2016' in nameyear:
-                T1 = T1 + 'lumi2016'.ljust(35)+'lnN'.ljust(10) + '1.022'.ljust(25) + '1.022'.ljust(25) + '1.022'.ljust(25) + '1.022'.ljust(25) + '1.022'.ljust(25) + '1.022'.ljust(25) +'\n'    
-                T1 = T1 + 'lumiXY'.ljust(35)+'lnN'.ljust(10) + '1.009'.ljust(25) + '1.009'.ljust(25) + '1.009'.ljust(25) + '1.009'.ljust(25) + '1.009'.ljust(25) + '1.009'.ljust(25) +'\n'
-                T1 = T1 + 'lumiBBDef'.ljust(35)+'lnN'.ljust(10) + '1.004'.ljust(25) + '1.004'.ljust(25) + '1.004'.ljust(25) + '1.004'.ljust(25) + '1.004'.ljust(25) + '1.004'.ljust(25) +'\n'
-                T1 = T1 + 'lumiDynamicB'.ljust(35)+'lnN'.ljust(10) + '1.005'.ljust(25) + '1.005'.ljust(25) + '1.005'.ljust(25) + '1.005'.ljust(25) + '1.005'.ljust(25) + '1.005'.ljust(25) +'\n'
-                T1 = T1 + 'lumiGhostS'.ljust(35)+'lnN'.ljust(10) + '1.004'.ljust(25) + '1.004'.ljust(25) + '1.004'.ljust(25) + '1.004'.ljust(25) + '1.004'.ljust(25) + '1.004'.ljust(25) +'\n'
+                T1 = T1 + 'lumi2016'.ljust(35)+'lnN'.ljust(10) + '1.022'.ljust(25) + '1.022'.ljust(25) + '1.022'.ljust(25) + '1.022'.ljust(25) + '1.022'.ljust(25) + '1.022'.ljust(25) + '1.022'.ljust(25) +'\n'    
+                T1 = T1 + 'lumiXY'.ljust(35)+'lnN'.ljust(10) + '1.009'.ljust(25) + '1.009'.ljust(25) + '1.009'.ljust(25) + '1.009'.ljust(25) + '1.009'.ljust(25) + '1.009'.ljust(25) + '1.009'.ljust(25) +'\n'
+                T1 = T1 + 'lumiBBDef'.ljust(35)+'lnN'.ljust(10) + '1.004'.ljust(25) + '1.004'.ljust(25) + '1.004'.ljust(25) + '1.004'.ljust(25) + '1.004'.ljust(25) + '1.004'.ljust(25) + '1.004'.ljust(25) +'\n'
+                T1 = T1 + 'lumiDynamicB'.ljust(35)+'lnN'.ljust(10) + '1.005'.ljust(25) + '1.005'.ljust(25) + '1.005'.ljust(25) + '1.005'.ljust(25) + '1.005'.ljust(25) + '1.005'.ljust(25) + '1.005'.ljust(25) +'\n'
+                T1 = T1 + 'lumiGhostS'.ljust(35)+'lnN'.ljust(10) + '1.004'.ljust(25) + '1.004'.ljust(25) + '1.004'.ljust(25) + '1.004'.ljust(25) + '1.004'.ljust(25) + '1.004'.ljust(25) + '1.004'.ljust(25) +'\n'
             if '2017' in nameyear:
-                T1 = T1 + 'lumi2017'.ljust(35)+'lnN'.ljust(10) + '1.02'.ljust(25) + '1.02'.ljust(25) + '1.02'.ljust(25) + '1.02'.ljust(25) + '1.02'.ljust(25) + '1.02'.ljust(25) +'\n'
-                T1 = T1 + 'lumiXY'.ljust(35)+'lnN'.ljust(10) + '1.008'.ljust(25) + '1.008'.ljust(25) + '1.008'.ljust(25) + '1.008'.ljust(25) + '1.008'.ljust(25) + '1.008'.ljust(25) +'\n'
-                T1 = T1 + 'lumiBBDef'.ljust(35)+'lnN'.ljust(10) + '1.004'.ljust(25) + '1.004'.ljust(25) + '1.004'.ljust(25) + '1.004'.ljust(25) + '1.004'.ljust(25) + '1.004'.ljust(25) +'\n'
-                T1 = T1 + 'lumiDynamicB'.ljust(35)+'lnN'.ljust(10) + '1.005'.ljust(25) + '1.005'.ljust(25) + '1.005'.ljust(25) + '1.005'.ljust(25) + '1.005'.ljust(25) + '1.005'.ljust(25) +'\n'
-                T1 = T1 + 'lumiGhostS'.ljust(35)+'lnN'.ljust(10) + '1.001'.ljust(25) + '1.001'.ljust(25) + '1.001'.ljust(25) + '1.001'.ljust(25) + '1.001'.ljust(25) + '1.001'.ljust(25) +'\n'
-                T1 = T1 + 'lumiLengthS'.ljust(35)+'lnN'.ljust(10) + '1.003'.ljust(25) + '1.003'.ljust(25) + '1.003'.ljust(25) + '1.003'.ljust(25) + '1.003'.ljust(25) + '1.003'.ljust(25) +'\n'
-                T1 = T1 + 'lumiBeamCC'.ljust(35)+'lnN'.ljust(10) + '1.003'.ljust(25) + '1.003'.ljust(25) + '1.003'.ljust(25) + '1.003'.ljust(25) + '1.003'.ljust(25) + '1.003'.ljust(25) +'\n'
+                T1 = T1 + 'lumi2017'.ljust(35)+'lnN'.ljust(10) + '1.02'.ljust(25) + '1.02'.ljust(25) + '1.02'.ljust(25) + '1.02'.ljust(25) + '1.02'.ljust(25) + '1.02'.ljust(25) + '1.02'.ljust(25) +'\n'
+                T1 = T1 + 'lumiXY'.ljust(35)+'lnN'.ljust(10) + '1.008'.ljust(25) + '1.008'.ljust(25) + '1.008'.ljust(25) + '1.008'.ljust(25) + '1.008'.ljust(25) + '1.008'.ljust(25) + '1.008'.ljust(25) +'\n'
+                T1 = T1 + 'lumiBBDef'.ljust(35)+'lnN'.ljust(10) + '1.004'.ljust(25) + '1.004'.ljust(25) + '1.004'.ljust(25) + '1.004'.ljust(25) + '1.004'.ljust(25) + '1.004'.ljust(25) + '1.004'.ljust(25) +'\n'
+                T1 = T1 + 'lumiDynamicB'.ljust(35)+'lnN'.ljust(10) + '1.005'.ljust(25) + '1.005'.ljust(25) + '1.005'.ljust(25) + '1.005'.ljust(25) + '1.005'.ljust(25) + '1.005'.ljust(25) + '1.005'.ljust(25) +'\n'
+                T1 = T1 + 'lumiGhostS'.ljust(35)+'lnN'.ljust(10) + '1.001'.ljust(25) + '1.001'.ljust(25) + '1.001'.ljust(25) + '1.001'.ljust(25) + '1.001'.ljust(25) + '1.001'.ljust(25) + '1.001'.ljust(25) +'\n'
+                T1 = T1 + 'lumiLengthS'.ljust(35)+'lnN'.ljust(10) + '1.003'.ljust(25) + '1.003'.ljust(25) + '1.003'.ljust(25) + '1.003'.ljust(25) + '1.003'.ljust(25) + '1.003'.ljust(25) + '1.003'.ljust(25) +'\n'
+                T1 = T1 + 'lumiBeamCC'.ljust(35)+'lnN'.ljust(10) + '1.003'.ljust(25) + '1.003'.ljust(25) + '1.003'.ljust(25) + '1.003'.ljust(25) + '1.003'.ljust(25) + '1.003'.ljust(25) + '1.003'.ljust(25) +'\n'
             if '2018' in nameyear:
-                T1 = T1 + 'lumi2018'.ljust(35)+'lnN'.ljust(10) + '1.015'.ljust(25) + '1.015'.ljust(25) + '1.015'.ljust(25) + '1.015'.ljust(25) + '1.015'.ljust(25) + '1.015'.ljust(25) +'\n'
-                T1 = T1 + 'lumiXY'.ljust(35)+'lnN'.ljust(10) + '1.02'.ljust(25) + '1.02'.ljust(25) + '1.02'.ljust(25) + '1.02'.ljust(25) + '1.02'.ljust(25) + '1.02'.ljust(25) +'\n'
-                T1 = T1 + 'lumiLengthS'.ljust(35)+'lnN'.ljust(10) + '1.002'.ljust(25) + '1.002'.ljust(25) + '1.002'.ljust(25) + '1.002'.ljust(25) + '1.002'.ljust(25) + '1.002'.ljust(25) +'\n'
-                T1 = T1 + 'lumiBeamCC'.ljust(35)+'lnN'.ljust(10) + '1.002'.ljust(25) + '1.002'.ljust(25) + '1.002'.ljust(25) + '1.002'.ljust(25) + '1.002'.ljust(25) + '1.002'.ljust(25) +'\n'
+                T1 = T1 + 'lumi2018'.ljust(35)+'lnN'.ljust(10) + '1.015'.ljust(25) + '1.015'.ljust(25) + '1.015'.ljust(25) + '1.015'.ljust(25) + '1.015'.ljust(25) + '1.015'.ljust(25) + '1.015'.ljust(25) +'\n'
+                T1 = T1 + 'lumiXY'.ljust(35)+'lnN'.ljust(10) + '1.02'.ljust(25) + '1.02'.ljust(25) + '1.02'.ljust(25) + '1.02'.ljust(25) + '1.02'.ljust(25) + '1.02'.ljust(25) + '1.02'.ljust(25) +'\n'
+                T1 = T1 + 'lumiLengthS'.ljust(35)+'lnN'.ljust(10) + '1.002'.ljust(25) + '1.002'.ljust(25) + '1.002'.ljust(25) + '1.002'.ljust(25) + '1.002'.ljust(25) + '1.002'.ljust(25) + '1.002'.ljust(25) +'\n'
+                T1 = T1 + 'lumiBeamCC'.ljust(35)+'lnN'.ljust(10) + '1.002'.ljust(25) + '1.002'.ljust(25) + '1.002'.ljust(25) + '1.002'.ljust(25) + '1.002'.ljust(25) + '1.002'.ljust(25) + '1.002'.ljust(25) +'\n'
             for numsys, namesys in enumerate(sysJecNamesCorr):
-                T1 = T1 +  'jes' + namesys.ljust(32)  +'shape'.ljust(10)  + '1'.ljust(25) + '1'.ljust(25) + '1'.ljust(25) + '1'.ljust(25) + '1'.ljust(25) + '1'.ljust(25) +'\n'
+                T1 = T1 +  'jes' + namesys.ljust(32)  +'shape'.ljust(10)  + '1'.ljust(25) + '1'.ljust(25) + '1'.ljust(25) + '1'.ljust(25) + '1'.ljust(25) + '1'.ljust(25) + '1'.ljust(25) +'\n'
             for numsys, namesys in enumerate(sysJecNamesUnCorr):
-                T1 = T1 + 'Y'+  nameyear + 'jes' + namesys.ljust(27)  +'shape'.ljust(10)  + '1'.ljust(25) + '1'.ljust(25) + '1'.ljust(25) + '1'.ljust(25) + '1'.ljust(25) + '1'.ljust(25) +'\n'
+                T1 = T1 + 'Y'+  nameyear + 'jes' + namesys.ljust(27)  +'shape'.ljust(10)  + '1'.ljust(25) + '1'.ljust(25) + '1'.ljust(25) + '1'.ljust(25) + '1'.ljust(25) + '1'.ljust(25) + '1'.ljust(25) +'\n'
             for b in sys:
-                if 'prefiring' in b or 'jer' in b:
+                if 'prefiring' in b or 'jer' in b or 'unclusMET' in b:
                     continue 
-                T1 = T1 +  b.ljust(35)  +'shape'.ljust(10)  + '1'.ljust(25) + '1'.ljust(25) + '1'.ljust(25) + '1'.ljust(25) + '1'.ljust(25) + '1'.ljust(25) +'\n'
-            T1 = T1 + 'Y'+ nameyear + 'jer'.ljust(30)  +'shape'.ljust(10)  + '1'.ljust(25) + '1'.ljust(25) + '1'.ljust(25) + '1'.ljust(25) + '1'.ljust(25) + '1'.ljust(25) +'\n'
+                T1 = T1 +  b.ljust(35)  +'shape'.ljust(10)  + '1'.ljust(25) + '1'.ljust(25) + '1'.ljust(25) + '1'.ljust(25) + '1'.ljust(25) + '1'.ljust(25) + '1'.ljust(25) +'\n'
+            T1 = T1 + 'Y'+ nameyear + 'jer'.ljust(30)  +'shape'.ljust(10)  + '1'.ljust(25) + '1'.ljust(25) + '1'.ljust(25) + '1'.ljust(25) + '1'.ljust(25) + '1'.ljust(25) + '1'.ljust(25) +'\n'
+            T1 = T1 + 'Y'+ nameyear + 'unclusMET'.ljust(30)  +'shape'.ljust(10)  + '1'.ljust(25) + '1'.ljust(25) + '1'.ljust(25) + '1'.ljust(25) + '1'.ljust(25) + '1'.ljust(25) + '1'.ljust(25) +'\n'
             if  '2018' not in nameyear:
-                T1 = T1 +  'prefiring'.ljust(35)  +'shape'.ljust(10)  + '1'.ljust(25) + '1'.ljust(25) + '1'.ljust(25) + '1'.ljust(25) + '1'.ljust(25) + '1'.ljust(25) +'\n'
+                T1 = T1 +  'prefiring'.ljust(35)  +'shape'.ljust(10)  + '1'.ljust(25) + '1'.ljust(25) + '1'.ljust(25) + '1'.ljust(25) + '1'.ljust(25) + '1'.ljust(25) + '1'.ljust(25) +'\n'
             for b in ttsys:
                 bpb= 'tt_' + b
-                T1 = T1 +  bpb.ljust(35)  +'shape'.ljust(10)  + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '1'.ljust(25) + '-'.ljust(25) +'\n'
+                if 'pdf' in b or 'QS' in b:
+                    T1 = T1 +  bpb.ljust(35)  +'shape'.ljust(10)  + '1'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '1'.ljust(25) + '-'.ljust(25) +'\n'                    
+                else:
+                    T1 = T1 +  bpb.ljust(35)  +'shape'.ljust(10)  + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '1'.ljust(25) + '-'.ljust(25) +'\n'
             for b in SIGsys:
                 bpb= 'Signal_' + b
-                T1 = T1 +  bpb.ljust(35)  +'shape'.ljust(10)  + '1'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) +'\n'
-            for key, value in statName.items():
-                if namereg in key and nameyear in key and namesig in key:
-                    for e in value:
-                        T1 = T1 +  e.ljust(35)  +'shape'.ljust(10)  + '1'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) +'\n'
-                if namereg in key and nameyear in key and 'Jets' in key:
-                    for e in value:
-                        T1 = T1 +  e.ljust(35)  +'shape'.ljust(10)  + '-'.ljust(25) + '1'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) +'\n'
-                if namereg in key and nameyear in key and 'Other' in key:
-                    for e in value:
-                        T1 = T1 +  e.ljust(35)  +'shape'.ljust(10)  + '-'.ljust(25) + '-'.ljust(25) + '1'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) +'\n'
-                if namereg in key and nameyear in key and 'DY' in key:
-                    for e in value:
-                        T1 = T1 +  e.ljust(35)  +'shape'.ljust(10)  + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '1'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) +'\n'
-                if namereg in key and nameyear in key and 'tt' in key:
-                    for e in value:
-                        T1 = T1 +  e.ljust(35)  +'shape'.ljust(10)  + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '1'.ljust(25) + '-'.ljust(25) +'\n'
-                if namereg in key and nameyear in key and 'tW' in key:
-                    for e in value:
-                        T1 = T1 +  e.ljust(35)  +'shape'.ljust(10)  + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '1'.ljust(25) +'\n'
-
+                if 'pdf' in b or 'QS' in b:
+                    T1 = T1 +  bpb.ljust(35)  +'shape'.ljust(10)  + '-'.ljust(25) + '1'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) +'\n'
+                else:
+                    T1 = T1 +  bpb.ljust(35)  +'shape'.ljust(10)  + '1'.ljust(25) + '1'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) +'\n'
+            T1 = T1 + '* autoMCStats 10' + '\n'
+#            for key, value in statName.items():
+#                if namereg in key and nameyear in key and namesig in key:
+#                    for e in value:
+#                        T1 = T1 +  e.ljust(35)  +'shape'.ljust(10)  + '1'.ljust(25) + '1'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) +'\n'
+#                if namereg in key and nameyear in key and 'Jets' in key:
+#                    for e in value:
+#                        T1 = T1 +  e.ljust(35)  +'shape'.ljust(10)  + '-'.ljust(25) + '-'.ljust(25) + '1'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) +'\n'
+#                if namereg in key and nameyear in key and 'Other' in key:
+#                    for e in value:
+#                        T1 = T1 +  e.ljust(35)  +'shape'.ljust(10)  + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '1'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) +'\n'
+#                if namereg in key and nameyear in key and 'DY' in key:
+#                    for e in value:
+#                        T1 = T1 +  e.ljust(35)  +'shape'.ljust(10)  + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '1'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) +'\n'
+#                if namereg in key and nameyear in key and 'tt' in key:
+#                    for e in value:
+#                        T1 = T1 +  e.ljust(35)  +'shape'.ljust(10)  + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '1'.ljust(25) + '-'.ljust(25) +'\n'
+#                if namereg in key and nameyear in key and 'tW' in key:
+#                    for e in value:
+#                        T1 = T1 +  e.ljust(35)  +'shape'.ljust(10)  + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '1'.ljust(25) +'\n'
+#                if namereg in key and nameyear in key and valueD[0] in key:
+#                    for e in value:
+#                        T1 = T1 +  e.ljust(35)  +'shape'.ljust(10)  + '1'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) +'\n'
+#                if namereg in key and nameyear in key and valueD[1] in key:
+#                    for e in value:
+#                        T1 = T1 +  e.ljust(35)  +'shape'.ljust(10)  + '-'.ljust(25) + '1'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) +'\n'
+#
             open('CombinedFiles/' + cardName +'.txt', 'wt').write(T1)
 
 
