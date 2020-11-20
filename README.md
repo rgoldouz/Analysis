@@ -126,9 +126,12 @@ git clone -b Trilepton_Selection https://github.com/Jingyan95/Analysis.git TopLF
 cd TopLFV
 make all
 
-This generates an executable "RunAll" to run src/main.cc which is a testing file with signal samples as input.
+To test  use  (put the test files in a txt file like testMC.txt ):
 
-./RunAll
+cd pywrapper
+python runMyAnalysis.py
+
+
 
 It takes 1~2 min to produce test.root file where you can find all the interesting distributions.  
 ```
