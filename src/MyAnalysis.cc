@@ -239,6 +239,7 @@ void MyAnalysis::Loop(TString fname, TString sname, TString data, TString datase
      SLW = SWS.LHEWeightSignal(sname);
      SGW = SWS.GenWeightSignal(sname);
   }
+
   if (fname.Contains("TTTo2L2Nu") || fname.Contains("LFV")){
     for (int i=0;i<channels.size();++i){
       for (int k=0;k<regions.size();++k){
@@ -499,6 +500,7 @@ void MyAnalysis::Loop(TString fname, TString sname, TString data, TString datase
   float JECMETDowny;
   float pt_res;
   double muPtSFRochester;
+  int R;
 
   if (fname.Contains("TTTo2L2Nu") || fname.Contains("TTsys") || fname.Contains("LFVTt")) ifTopPt=true;
 
@@ -1703,34 +1705,36 @@ if(isnan(weight_lepB) || isinf(weight_lepB)) cout<<weight_topPtMGLO<<"  "<<weigh
     HistsSysDown[ch][2][19][14]->Fill(MVAoutputMuResDown,weight_lepB );
     if (fname.Contains("TTTo2L2Nu")|| fname.Contains("LFV")){
        for (int n=0;n<reweightSizeQscalePDF;++n){
-         HistsSysReweightsQscalePDF[ch][2][0][n]->Fill((*selectedLeptons)[0]->pt_,weight_lepB*(SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
-         HistsSysReweightsQscalePDF[ch][2][1][n]->Fill((*selectedLeptons)[0]->eta_,weight_lepB*(SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
-         HistsSysReweightsQscalePDF[ch][2][2][n]->Fill((*selectedLeptons)[0]->phi_,weight_lepB*(SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
-         HistsSysReweightsQscalePDF[ch][2][3][n]->Fill((*selectedLeptons)[1]->pt_,weight_lepB*(SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
-         HistsSysReweightsQscalePDF[ch][2][4][n]->Fill((*selectedLeptons)[1]->eta_,weight_lepB*(SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
-         HistsSysReweightsQscalePDF[ch][2][5][n]->Fill((*selectedLeptons)[1]->phi_,weight_lepB*(SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
-         HistsSysReweightsQscalePDF[ch][2][6][n]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M(),weight_lepB*(SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
-         HistsSysReweightsQscalePDF[ch][2][7][n]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).Pt(),weight_lepB*(SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
-         HistsSysReweightsQscalePDF[ch][2][8][n]->Fill(deltaR((*selectedLeptons)[0]->eta_,(*selectedLeptons)[0]->phi_,(*selectedLeptons)[1]->eta_,(*selectedLeptons)[1]->phi_),weight_lepB*(SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
-         HistsSysReweightsQscalePDF[ch][2][9][n]->Fill(deltaPhi((*selectedLeptons)[0]->phi_,(*selectedLeptons)[1]->phi_),weight_lepB*(SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
-         HistsSysReweightsQscalePDF[ch][2][10][n]->Fill((*selectedJets)[0]->pt_,weight_lepB*(SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
-         HistsSysReweightsQscalePDF[ch][2][11][n]->Fill((*selectedJets)[0]->eta_,weight_lepB*(SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
-         HistsSysReweightsQscalePDF[ch][2][12][n]->Fill((*selectedJets)[0]->phi_,weight_lepB*(SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
-         HistsSysReweightsQscalePDF[ch][2][13][n]->Fill(selectedJets->size(),weight_lepB*(SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
-         HistsSysReweightsQscalePDF[ch][2][14][n]->Fill(nbjet,weight_lepB*(SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
-         HistsSysReweightsQscalePDF[ch][2][15][n]->Fill(MET_FinalCollection_Pt,weight_lepB*(SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
-         HistsSysReweightsQscalePDF[ch][2][16][n]->Fill(MET_FinalCollection_phi,weight_lepB*(SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
-         HistsSysReweightsQscalePDF[ch][2][17][n]->Fill(pv_n,weight_lepB*(SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
-         HistsSysReweightsQscalePDF[ch][2][18][n]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M(),weight_lepB*(SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
-         HistsSysReweightsQscalePDF[ch][2][19][n]->Fill(MVAoutput,weight_lepB*(SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
-         if ((*selectedLeptons)[0]->lep_ == 10) HistsSysReweightsQscalePDF[ch][2][20][n]->Fill((*selectedLeptons)[0]->pt_   ,weight_lepB * (SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
-         if ((*selectedLeptons)[0]->lep_ == 10) HistsSysReweightsQscalePDF[ch][2][22][n]->Fill((*selectedLeptons)[0]->eta_  ,weight_lepB * (SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
-         if ((*selectedLeptons)[0]->lep_ == 1)  HistsSysReweightsQscalePDF[ch][2][21][n]->Fill((*selectedLeptons)[0]->pt_   ,weight_lepB * (SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
-         if ((*selectedLeptons)[0]->lep_ == 1)  HistsSysReweightsQscalePDF[ch][2][23][n]->Fill((*selectedLeptons)[0]->eta_  ,weight_lepB * (SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
-         if ((*selectedLeptons)[1]->lep_ == 10) HistsSysReweightsQscalePDF[ch][2][20][n]->Fill((*selectedLeptons)[1]->pt_   ,weight_lepB * (SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
-         if ((*selectedLeptons)[1]->lep_ == 10) HistsSysReweightsQscalePDF[ch][2][22][n]->Fill((*selectedLeptons)[1]->eta_  ,weight_lepB * (SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
-         if ((*selectedLeptons)[1]->lep_ == 1)  HistsSysReweightsQscalePDF[ch][2][21][n]->Fill((*selectedLeptons)[1]->pt_   ,weight_lepB * (SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
-         if ((*selectedLeptons)[1]->lep_ == 1)  HistsSysReweightsQscalePDF[ch][2][23][n]->Fill((*selectedLeptons)[1]->eta_  ,weight_lepB * (SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
+         R = n;
+         if(fname.Contains("LFV") && n>49) R = 611 + n -50; 
+         HistsSysReweightsQscalePDF[ch][2][0][n]->Fill((*selectedLeptons)[0]->pt_,weight_lepB*(SLW[0]/SLW[R])*((*LHE_weight_sys)[R]/(*LHE_weight_sys)[0]));
+         HistsSysReweightsQscalePDF[ch][2][1][n]->Fill((*selectedLeptons)[0]->eta_,weight_lepB*(SLW[0]/SLW[R])*((*LHE_weight_sys)[R]/(*LHE_weight_sys)[0]));
+         HistsSysReweightsQscalePDF[ch][2][2][n]->Fill((*selectedLeptons)[0]->phi_,weight_lepB*(SLW[0]/SLW[R])*((*LHE_weight_sys)[R]/(*LHE_weight_sys)[0]));
+         HistsSysReweightsQscalePDF[ch][2][3][n]->Fill((*selectedLeptons)[1]->pt_,weight_lepB*(SLW[0]/SLW[R])*((*LHE_weight_sys)[R]/(*LHE_weight_sys)[0]));
+         HistsSysReweightsQscalePDF[ch][2][4][n]->Fill((*selectedLeptons)[1]->eta_,weight_lepB*(SLW[0]/SLW[R])*((*LHE_weight_sys)[R]/(*LHE_weight_sys)[0]));
+         HistsSysReweightsQscalePDF[ch][2][5][n]->Fill((*selectedLeptons)[1]->phi_,weight_lepB*(SLW[0]/SLW[R])*((*LHE_weight_sys)[R]/(*LHE_weight_sys)[0]));
+         HistsSysReweightsQscalePDF[ch][2][6][n]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M(),weight_lepB*(SLW[0]/SLW[R])*((*LHE_weight_sys)[R]/(*LHE_weight_sys)[0]));
+         HistsSysReweightsQscalePDF[ch][2][7][n]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).Pt(),weight_lepB*(SLW[0]/SLW[R])*((*LHE_weight_sys)[R]/(*LHE_weight_sys)[0]));
+         HistsSysReweightsQscalePDF[ch][2][8][n]->Fill(deltaR((*selectedLeptons)[0]->eta_,(*selectedLeptons)[0]->phi_,(*selectedLeptons)[1]->eta_,(*selectedLeptons)[1]->phi_),weight_lepB*(SLW[0]/SLW[R])*((*LHE_weight_sys)[R]/(*LHE_weight_sys)[0]));
+         HistsSysReweightsQscalePDF[ch][2][9][n]->Fill(deltaPhi((*selectedLeptons)[0]->phi_,(*selectedLeptons)[1]->phi_),weight_lepB*(SLW[0]/SLW[R])*((*LHE_weight_sys)[R]/(*LHE_weight_sys)[0]));
+         HistsSysReweightsQscalePDF[ch][2][10][n]->Fill((*selectedJets)[0]->pt_,weight_lepB*(SLW[0]/SLW[R])*((*LHE_weight_sys)[R]/(*LHE_weight_sys)[0]));
+         HistsSysReweightsQscalePDF[ch][2][11][n]->Fill((*selectedJets)[0]->eta_,weight_lepB*(SLW[0]/SLW[R])*((*LHE_weight_sys)[R]/(*LHE_weight_sys)[0]));
+         HistsSysReweightsQscalePDF[ch][2][12][n]->Fill((*selectedJets)[0]->phi_,weight_lepB*(SLW[0]/SLW[R])*((*LHE_weight_sys)[R]/(*LHE_weight_sys)[0]));
+         HistsSysReweightsQscalePDF[ch][2][13][n]->Fill(selectedJets->size(),weight_lepB*(SLW[0]/SLW[R])*((*LHE_weight_sys)[R]/(*LHE_weight_sys)[0]));
+         HistsSysReweightsQscalePDF[ch][2][14][n]->Fill(nbjet,weight_lepB*(SLW[0]/SLW[n])*((*LHE_weight_sys)[R]/(*LHE_weight_sys)[R]));
+         HistsSysReweightsQscalePDF[ch][2][15][n]->Fill(MET_FinalCollection_Pt,weight_lepB*(SLW[0]/SLW[R])*((*LHE_weight_sys)[R]/(*LHE_weight_sys)[0]));
+         HistsSysReweightsQscalePDF[ch][2][16][n]->Fill(MET_FinalCollection_phi,weight_lepB*(SLW[0]/SLW[R])*((*LHE_weight_sys)[R]/(*LHE_weight_sys)[0]));
+         HistsSysReweightsQscalePDF[ch][2][17][n]->Fill(pv_n,weight_lepB*(SLW[0]/SLW[R])*((*LHE_weight_sys)[R]/(*LHE_weight_sys)[0]));
+         HistsSysReweightsQscalePDF[ch][2][18][n]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M(),weight_lepB*(SLW[0]/SLW[R])*((*LHE_weight_sys)[R]/(*LHE_weight_sys)[0]));
+         HistsSysReweightsQscalePDF[ch][2][19][n]->Fill(MVAoutput,weight_lepB*(SLW[0]/SLW[R])*((*LHE_weight_sys)[R]/(*LHE_weight_sys)[0]));
+         if ((*selectedLeptons)[0]->lep_ == 10) HistsSysReweightsQscalePDF[ch][2][20][n]->Fill((*selectedLeptons)[0]->pt_   ,weight_lepB * (SLW[0]/SLW[R])*((*LHE_weight_sys)[R]/(*LHE_weight_sys)[0]));
+         if ((*selectedLeptons)[0]->lep_ == 10) HistsSysReweightsQscalePDF[ch][2][22][n]->Fill((*selectedLeptons)[0]->eta_  ,weight_lepB * (SLW[0]/SLW[R])*((*LHE_weight_sys)[R]/(*LHE_weight_sys)[0]));
+         if ((*selectedLeptons)[0]->lep_ == 1)  HistsSysReweightsQscalePDF[ch][2][21][n]->Fill((*selectedLeptons)[0]->pt_   ,weight_lepB * (SLW[0]/SLW[R])*((*LHE_weight_sys)[R]/(*LHE_weight_sys)[0]));
+         if ((*selectedLeptons)[0]->lep_ == 1)  HistsSysReweightsQscalePDF[ch][2][23][n]->Fill((*selectedLeptons)[0]->eta_  ,weight_lepB * (SLW[0]/SLW[R])*((*LHE_weight_sys)[R]/(*LHE_weight_sys)[0]));
+         if ((*selectedLeptons)[1]->lep_ == 10) HistsSysReweightsQscalePDF[ch][2][20][n]->Fill((*selectedLeptons)[1]->pt_   ,weight_lepB * (SLW[0]/SLW[R])*((*LHE_weight_sys)[R]/(*LHE_weight_sys)[0]));
+         if ((*selectedLeptons)[1]->lep_ == 10) HistsSysReweightsQscalePDF[ch][2][22][n]->Fill((*selectedLeptons)[1]->eta_  ,weight_lepB * (SLW[0]/SLW[R])*((*LHE_weight_sys)[R]/(*LHE_weight_sys)[0]));
+         if ((*selectedLeptons)[1]->lep_ == 1)  HistsSysReweightsQscalePDF[ch][2][21][n]->Fill((*selectedLeptons)[1]->pt_   ,weight_lepB * (SLW[0]/SLW[R])*((*LHE_weight_sys)[R]/(*LHE_weight_sys)[0]));
+         if ((*selectedLeptons)[1]->lep_ == 1)  HistsSysReweightsQscalePDF[ch][2][23][n]->Fill((*selectedLeptons)[1]->eta_  ,weight_lepB * (SLW[0]/SLW[R])*((*LHE_weight_sys)[R]/(*LHE_weight_sys)[0]));
        }
        for (int n=0;n<reweightSizePS;++n){
          if ((*gen_weight_sys)[n]/(*gen_weight_sys)[0]>20) continue;
@@ -2108,34 +2112,36 @@ if(isnan(weight_lepB) || isinf(weight_lepB)) cout<<weight_topPtMGLO<<"  "<<weigh
 
     if (fname.Contains("TTTo2L2Nu")|| fname.Contains("LFV")){
        for (int n=0;n<reweightSizeQscalePDF;++n){
-         HistsSysReweightsQscalePDF[ch][3][0][n]->Fill((*selectedLeptons)[0]->pt_,weight_lepB*(SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
-         HistsSysReweightsQscalePDF[ch][3][1][n]->Fill((*selectedLeptons)[0]->eta_,weight_lepB*(SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
-         HistsSysReweightsQscalePDF[ch][3][2][n]->Fill((*selectedLeptons)[0]->phi_,weight_lepB*(SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
-         HistsSysReweightsQscalePDF[ch][3][3][n]->Fill((*selectedLeptons)[1]->pt_,weight_lepB*(SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
-         HistsSysReweightsQscalePDF[ch][3][4][n]->Fill((*selectedLeptons)[1]->eta_,weight_lepB*(SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
-         HistsSysReweightsQscalePDF[ch][3][5][n]->Fill((*selectedLeptons)[1]->phi_,weight_lepB*(SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
-         HistsSysReweightsQscalePDF[ch][3][6][n]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M(),weight_lepB*(SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
-         HistsSysReweightsQscalePDF[ch][3][7][n]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).Pt(),weight_lepB*(SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
-         HistsSysReweightsQscalePDF[ch][3][8][n]->Fill(deltaR((*selectedLeptons)[0]->eta_,(*selectedLeptons)[0]->phi_,(*selectedLeptons)[1]->eta_,(*selectedLeptons)[1]->phi_),weight_lepB*(SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
-         HistsSysReweightsQscalePDF[ch][3][9][n]->Fill(deltaPhi((*selectedLeptons)[0]->phi_,(*selectedLeptons)[1]->phi_),weight_lepB*(SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
-         HistsSysReweightsQscalePDF[ch][3][10][n]->Fill((*selectedJets)[0]->pt_,weight_lepB*(SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
-         HistsSysReweightsQscalePDF[ch][3][11][n]->Fill((*selectedJets)[0]->eta_,weight_lepB*(SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
-         HistsSysReweightsQscalePDF[ch][3][12][n]->Fill((*selectedJets)[0]->phi_,weight_lepB*(SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
-         HistsSysReweightsQscalePDF[ch][3][13][n]->Fill(selectedJets->size(),weight_lepB*(SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
-         HistsSysReweightsQscalePDF[ch][3][14][n]->Fill(nbjet,weight_lepB*(SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
-         HistsSysReweightsQscalePDF[ch][3][15][n]->Fill(MET_FinalCollection_Pt,weight_lepB*(SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
-         HistsSysReweightsQscalePDF[ch][3][16][n]->Fill(MET_FinalCollection_phi,weight_lepB*(SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
-         HistsSysReweightsQscalePDF[ch][3][17][n]->Fill(pv_n,weight_lepB*(SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
-         HistsSysReweightsQscalePDF[ch][3][18][n]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M(),weight_lepB*(SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
-         HistsSysReweightsQscalePDF[ch][3][19][n]->Fill(MVAoutput,weight_lepB*(SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
-         if ((*selectedLeptons)[0]->lep_ == 10) HistsSysReweightsQscalePDF[ch][3][20][n]->Fill((*selectedLeptons)[0]->pt_   ,weight_lepB * (SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
-         if ((*selectedLeptons)[0]->lep_ == 10) HistsSysReweightsQscalePDF[ch][3][22][n]->Fill((*selectedLeptons)[0]->eta_  ,weight_lepB * (SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
-         if ((*selectedLeptons)[0]->lep_ == 1)  HistsSysReweightsQscalePDF[ch][3][21][n]->Fill((*selectedLeptons)[0]->pt_   ,weight_lepB * (SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
-         if ((*selectedLeptons)[0]->lep_ == 1)  HistsSysReweightsQscalePDF[ch][3][23][n]->Fill((*selectedLeptons)[0]->eta_  ,weight_lepB * (SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
-         if ((*selectedLeptons)[1]->lep_ == 10) HistsSysReweightsQscalePDF[ch][3][20][n]->Fill((*selectedLeptons)[1]->pt_   ,weight_lepB * (SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
-         if ((*selectedLeptons)[1]->lep_ == 10) HistsSysReweightsQscalePDF[ch][3][22][n]->Fill((*selectedLeptons)[1]->eta_  ,weight_lepB * (SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
-         if ((*selectedLeptons)[1]->lep_ == 1)  HistsSysReweightsQscalePDF[ch][3][21][n]->Fill((*selectedLeptons)[1]->pt_   ,weight_lepB * (SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
-         if ((*selectedLeptons)[1]->lep_ == 1)  HistsSysReweightsQscalePDF[ch][3][23][n]->Fill((*selectedLeptons)[1]->eta_  ,weight_lepB * (SLW[0]/SLW[n])*((*LHE_weight_sys)[n]/(*LHE_weight_sys)[0]));
+         R = n;
+         if(fname.Contains("LFV") && n>49) R = 611 + n -50;
+         HistsSysReweightsQscalePDF[ch][3][0][n]->Fill((*selectedLeptons)[0]->pt_,weight_lepB*(SLW[0]/SLW[R])*((*LHE_weight_sys)[R]/(*LHE_weight_sys)[0]));
+         HistsSysReweightsQscalePDF[ch][3][1][n]->Fill((*selectedLeptons)[0]->eta_,weight_lepB*(SLW[0]/SLW[R])*((*LHE_weight_sys)[R]/(*LHE_weight_sys)[0]));
+         HistsSysReweightsQscalePDF[ch][3][2][n]->Fill((*selectedLeptons)[0]->phi_,weight_lepB*(SLW[0]/SLW[R])*((*LHE_weight_sys)[R]/(*LHE_weight_sys)[0]));
+         HistsSysReweightsQscalePDF[ch][3][3][n]->Fill((*selectedLeptons)[1]->pt_,weight_lepB*(SLW[0]/SLW[R])*((*LHE_weight_sys)[R]/(*LHE_weight_sys)[0]));
+         HistsSysReweightsQscalePDF[ch][3][4][n]->Fill((*selectedLeptons)[1]->eta_,weight_lepB*(SLW[0]/SLW[R])*((*LHE_weight_sys)[R]/(*LHE_weight_sys)[0]));
+         HistsSysReweightsQscalePDF[ch][3][5][n]->Fill((*selectedLeptons)[1]->phi_,weight_lepB*(SLW[0]/SLW[R])*((*LHE_weight_sys)[R]/(*LHE_weight_sys)[0]));
+         HistsSysReweightsQscalePDF[ch][3][6][n]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M(),weight_lepB*(SLW[0]/SLW[R])*((*LHE_weight_sys)[R]/(*LHE_weight_sys)[0]));
+         HistsSysReweightsQscalePDF[ch][3][7][n]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).Pt(),weight_lepB*(SLW[0]/SLW[R])*((*LHE_weight_sys)[R]/(*LHE_weight_sys)[0]));
+         HistsSysReweightsQscalePDF[ch][3][8][n]->Fill(deltaR((*selectedLeptons)[0]->eta_,(*selectedLeptons)[0]->phi_,(*selectedLeptons)[1]->eta_,(*selectedLeptons)[1]->phi_),weight_lepB*(SLW[0]/SLW[R])*((*LHE_weight_sys)[R]/(*LHE_weight_sys)[0]));
+         HistsSysReweightsQscalePDF[ch][3][9][n]->Fill(deltaPhi((*selectedLeptons)[0]->phi_,(*selectedLeptons)[1]->phi_),weight_lepB*(SLW[0]/SLW[R])*((*LHE_weight_sys)[R]/(*LHE_weight_sys)[0]));
+         HistsSysReweightsQscalePDF[ch][3][10][n]->Fill((*selectedJets)[0]->pt_,weight_lepB*(SLW[0]/SLW[R])*((*LHE_weight_sys)[R]/(*LHE_weight_sys)[0]));
+         HistsSysReweightsQscalePDF[ch][3][11][n]->Fill((*selectedJets)[0]->eta_,weight_lepB*(SLW[0]/SLW[R])*((*LHE_weight_sys)[R]/(*LHE_weight_sys)[0]));
+         HistsSysReweightsQscalePDF[ch][3][12][n]->Fill((*selectedJets)[0]->phi_,weight_lepB*(SLW[0]/SLW[R])*((*LHE_weight_sys)[R]/(*LHE_weight_sys)[0]));
+         HistsSysReweightsQscalePDF[ch][3][13][n]->Fill(selectedJets->size(),weight_lepB*(SLW[0]/SLW[R])*((*LHE_weight_sys)[R]/(*LHE_weight_sys)[0]));
+         HistsSysReweightsQscalePDF[ch][3][14][n]->Fill(nbjet,weight_lepB*(SLW[0]/SLW[R])*((*LHE_weight_sys)[R]/(*LHE_weight_sys)[0]));
+         HistsSysReweightsQscalePDF[ch][3][15][n]->Fill(MET_FinalCollection_Pt,weight_lepB*(SLW[0]/SLW[R])*((*LHE_weight_sys)[R]/(*LHE_weight_sys)[0]));
+         HistsSysReweightsQscalePDF[ch][3][16][n]->Fill(MET_FinalCollection_phi,weight_lepB*(SLW[0]/SLW[R])*((*LHE_weight_sys)[R]/(*LHE_weight_sys)[0]));
+         HistsSysReweightsQscalePDF[ch][3][17][n]->Fill(pv_n,weight_lepB*(SLW[0]/SLW[R])*((*LHE_weight_sys)[R]/(*LHE_weight_sys)[0]));
+         HistsSysReweightsQscalePDF[ch][3][18][n]->Fill(((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M(),weight_lepB*(SLW[0]/SLW[R])*((*LHE_weight_sys)[R]/(*LHE_weight_sys)[0]));
+         HistsSysReweightsQscalePDF[ch][3][19][n]->Fill(MVAoutput,weight_lepB*(SLW[0]/SLW[R])*((*LHE_weight_sys)[R]/(*LHE_weight_sys)[0]));
+         if ((*selectedLeptons)[0]->lep_ == 10) HistsSysReweightsQscalePDF[ch][3][20][n]->Fill((*selectedLeptons)[0]->pt_   ,weight_lepB * (SLW[0]/SLW[R])*((*LHE_weight_sys)[R]/(*LHE_weight_sys)[0]));
+         if ((*selectedLeptons)[0]->lep_ == 10) HistsSysReweightsQscalePDF[ch][3][22][n]->Fill((*selectedLeptons)[0]->eta_  ,weight_lepB * (SLW[0]/SLW[R])*((*LHE_weight_sys)[R]/(*LHE_weight_sys)[0]));
+         if ((*selectedLeptons)[0]->lep_ == 1)  HistsSysReweightsQscalePDF[ch][3][21][n]->Fill((*selectedLeptons)[0]->pt_   ,weight_lepB * (SLW[0]/SLW[R])*((*LHE_weight_sys)[R]/(*LHE_weight_sys)[0]));
+         if ((*selectedLeptons)[0]->lep_ == 1)  HistsSysReweightsQscalePDF[ch][3][23][n]->Fill((*selectedLeptons)[0]->eta_  ,weight_lepB * (SLW[0]/SLW[R])*((*LHE_weight_sys)[R]/(*LHE_weight_sys)[0]));
+         if ((*selectedLeptons)[1]->lep_ == 10) HistsSysReweightsQscalePDF[ch][3][20][n]->Fill((*selectedLeptons)[1]->pt_   ,weight_lepB * (SLW[0]/SLW[R])*((*LHE_weight_sys)[R]/(*LHE_weight_sys)[0]));
+         if ((*selectedLeptons)[1]->lep_ == 10) HistsSysReweightsQscalePDF[ch][3][22][n]->Fill((*selectedLeptons)[1]->eta_  ,weight_lepB * (SLW[0]/SLW[R])*((*LHE_weight_sys)[R]/(*LHE_weight_sys)[0]));
+         if ((*selectedLeptons)[1]->lep_ == 1)  HistsSysReweightsQscalePDF[ch][3][21][n]->Fill((*selectedLeptons)[1]->pt_   ,weight_lepB * (SLW[0]/SLW[R])*((*LHE_weight_sys)[R]/(*LHE_weight_sys)[0]));
+         if ((*selectedLeptons)[1]->lep_ == 1)  HistsSysReweightsQscalePDF[ch][3][23][n]->Fill((*selectedLeptons)[1]->eta_  ,weight_lepB * (SLW[0]/SLW[R])*((*LHE_weight_sys)[R]/(*LHE_weight_sys)[0]));
        }
        for (int n=0;n<reweightSizePS;++n){
          if ((*gen_weight_sys)[n]/(*gen_weight_sys)[0]>20) continue;

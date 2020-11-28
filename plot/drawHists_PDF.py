@@ -158,7 +158,8 @@ SamplesNameLatex = ['Data','Jets','Others', 'DY', 'tt', 'tW',  'LFV-vector(emutc
 NormalizationErr = [0, 0.5, 0.5, 0.3, 0.05, 0.1, 0,0]
 
 colors =  [ROOT.kBlack,ROOT.kYellow,ROOT.kGreen,ROOT.kBlue-3,ROOT.kRed-4,ROOT.kOrange-3, ROOT.kOrange-6, ROOT.kCyan-6]
-SignalSamples = ['LFVVecC', 'LFVVecU', 'LFVScalarC', 'LFVScalarU', 'LFVTensorC', 'LFVTensorU']
+#SignalSamples = ['LFVVecC', 'LFVVecU', 'LFVScalarC', 'LFVScalarU', 'LFVTensorC', 'LFVTensorU']
+SignalSamples = ['LFVStVecU']
 pdfHists = []
 
 for f in range(len(SignalSamples)):
@@ -166,7 +167,7 @@ for f in range(len(SignalSamples)):
         sysfile = ROOT.TFile.Open(HistAddress + nameyear+ '_'+ SignalSamples[f]+'.root')
         for numreg, namereg in enumerate(regions):
             for numvar, namevar in enumerate(variables):
-                hNom=sysfile.Get('reweightingSys/emu' + '_' + namereg + '_' + namevar + '_QscalePDF_0')
+                hNom=sysfile.Get('reweightingSys/emu' + '_' + namereg + '_' + namevar + '_QscalePDF_50')
                 pdfHists=[]
                 for numsys in range(50,145):
                     h=sysfile.Get('reweightingSys/emu' +'_' + namereg +  '_' + namevar + '_QscalePDF_'+str(numsys))

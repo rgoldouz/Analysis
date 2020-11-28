@@ -198,10 +198,14 @@ for f in range(len(SignalSamples)):
                 yerrupQscale.append((abs(max(QS)))*nomRatio)
                 yerrdownQscale.append((abs(min(QS)))*nomRatio)
                 for numsys in range(50,140):
-                    if pdfHists[numsys-50].GetBinContent(b+1) - QscaleHists[0].GetBinContent(b+1) >0:
-                        PDFup = PDFup + (pdfHists[numsys-50].GetBinContent(b+1) - QscaleHists[0].GetBinContent(b+1))**2
+                    if(pdfHists[0].GetBinContent(b+1)==0):
+                        continue
+                    if (pdfHists[numsys-50].GetBinContent(b+1) - pdfHists[0].GetBinContent(b+1))/pdfHists[0].GetBinContent(b+1) > 0.05*pdfHists[0].GetBinContent(b+1):
+                        continue
+                    if pdfHists[numsys-50].GetBinContent(b+1) - pdfHists[0].GetBinContent(b+1) >0:
+                        PDFup = PDFup + (pdfHists[numsys-50].GetBinContent(b+1) - pdfHists[0].GetBinContent(b+1))**2
                     else:
-                        PDFdown = PDFdown + (pdfHists[numsys-50].GetBinContent(b+1) - QscaleHists[0].GetBinContent(b+1))**2
+                        PDFdown = PDFdown + (pdfHists[numsys-50].GetBinContent(b+1) - pdfHists[0].GetBinContent(b+1))**2
                 yerrupPDF.append((math.sqrt(PDFup))*nomRatio)
                 yerrdownPDF.append((math.sqrt(PDFdown))*nomRatio)
                 yerrupISR.append((abs(max(hISRup.GetBinContent(b+1)- QscaleHists[0].GetBinContent(b+1) , hISRdown.GetBinContent(b+1)- QscaleHists[0].GetBinContent(b+1),0)))*nomRatio)
@@ -424,8 +428,8 @@ ttsys =  ['pdf','QS','ISR','FSR','CR','Tune','hdamp']
 
 statName={}
 
-if not os.path.exists('CombinedFiles'):
-    os.makedirs('CombinedFiles')
+if not os.path.exists('CombinedFilesOriginal'):
+    os.makedirs('CombinedFilesOriginal')
 
 for numyear, nameyear in enumerate(year):
     TuneCP5upfile = ROOT.TFile.Open(HistAddress + nameyear+ '_TTsys_TuneCP5up.root')
@@ -433,7 +437,7 @@ for numyear, nameyear in enumerate(year):
     hdampupfile = ROOT.TFile.Open(HistAddress + nameyear+ '_TTsys_hdampUP.root')
     hdampdownfile = ROOT.TFile.Open(HistAddress + nameyear+ '_TTsys_hdampDOWN.root')    
     for numreg, namereg in enumerate(regions):
-        hfile = ROOT.TFile( 'CombinedFiles/' + nameyear+'_'+namereg+'.root', 'RECREATE', 'combine input histograms' )
+        hfile = ROOT.TFile( 'CombinedFilesOriginal/' + nameyear+'_'+namereg+'.root', 'RECREATE', 'combine input histograms' )
         for f in range(len(Samples)):
             Hists[numyear][f][0][numreg][0].SetName(SamplesNameCombined[f])
             Hists[numyear][f][0][numreg][0].Write()
@@ -631,7 +635,7 @@ for namesig, valueD in SignalSamplesD.items():
 #                    for e in value:
 #                        T1 = T1 +  e.ljust(35)  +'shape'.ljust(10)  + '-'.ljust(25) + '1'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) + '-'.ljust(25) +'\n'
 #
-            open('CombinedFiles/' + cardName +'.txt', 'wt').write(T1)
+            open('CombinedFilesOriginal/' + cardName +'.txt', 'wt').write(T1)
 
 
 

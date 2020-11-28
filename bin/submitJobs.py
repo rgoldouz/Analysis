@@ -35,8 +35,8 @@ if data_2018:
 
 
 for key, value in SAMPLES.items():
-#    if 'LFVTt' not in key:
-#        continue
+    if 'LFV' not in key:
+        continue
     year = value[3]
     nf = 50
     for idx, S in enumerate(value[0]):
@@ -49,7 +49,7 @@ for key, value in SAMPLES.items():
             for num,  seq in enumerate(sequance):
                 f = key +'_' + str(idx) +'_' + str(num)
                 qsub = "qsub -q localgrid  -o STDOUT/" + f + ".stdout -e STDERR/" + f + ".stderr Jobs/" + f + '.sh'
-#                subprocess.call('rm /user/rgoldouz/NewAnalysis2020/Analysis/hists/' + year + '/' + f + '.root', shell=True)
-                subprocess.call(qsub, shell=True)
+                subprocess.call('rm /user/rgoldouz/NewAnalysis2020/Analysis/hists/' + year + '/' + f + '.root', shell=True)
+#                subprocess.call(qsub, shell=True)
             break
 

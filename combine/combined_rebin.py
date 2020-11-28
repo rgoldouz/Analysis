@@ -128,6 +128,13 @@ def compare3Hist(A, B, C, textA="A", textB="B", textC="C",label_name="sample", c
     canvas.Print("3H_" + can_name + ".png")
     del canvas
     gc.collect()
+
+
+if not os.path.exists('CombinedFilesRebinned'):
+    os.makedirs('CombinedFilesRebinned')
+if not os.path.exists('CombinedFilesRebinnedSmooth'):
+    os.makedirs('CombinedFilesRebinnedSmooth')
+
 year=['2016','2017','2018']
 regions=["llB1", "llBg1"]
 
@@ -138,7 +145,7 @@ nominalHists=['tt']
 bins = array( 'd',[-1,-0.4,-0.25,-0.2,-0.15,-0.1,-0.05,0,0.05,0.1,0.15,0.2,0.25,0.35,0.6,1] )
 for numyear, nameyear in enumerate(year):
     for numreg, namereg in enumerate(regions):
-        f1 = ROOT.TFile.Open('CombinedFiles/' + nameyear + '_' + namereg +'.root')
+        f1 = ROOT.TFile.Open('CombinedFilesOriginal/' + nameyear + '_' + namereg +'.root')
         hfile = ROOT.TFile( 'CombinedFilesRebinned/' + nameyear+'_'+namereg+'.root', 'RECREATE', 'combine input histograms' )
         my_list = f1.GetListOfKeys()
         Hists=[]
@@ -169,8 +176,8 @@ for numyear, nameyear in enumerate(year):
                 RA1.Divide(A1)
                 RA2.Divide(A1)
                 RA3.Divide(A1) 
-                SRA2 = Smoothing(RA2,0.05)
-                SRA3 = Smoothing(RA3,0.05)      
+                SRA2 = Smoothing(RA2,0.1)
+                SRA3 = Smoothing(RA3,0.1)      
                 SRA22 = Rebin(SRA2,bins)
                 SRA22.Divide(Rebin(RA1,bins))
                 SRA33 = Rebin(SRA3,bins)
