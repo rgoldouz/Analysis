@@ -1,8 +1,8 @@
 #define MyAnalysis_cxx
-#include "MyAnalysis.h"
-#include "PU_reWeighting.h"
-#include "lepton_candidate.h"
-#include "jet_candidate.h"
+#include "../include/MyAnalysis.h"
+#include "../include/PU_reWeighting.h"
+#include "../include/lepton_candidate.h"
+#include "../include/jet_candidate.h"
 #include "TRandom.h"
 #include "TRandom3.h"
 #include <TH2.h>
@@ -14,8 +14,8 @@
 #include <iostream>
 #include <cmath>
 #include <vector>
-#include "RoccoR.h"
-#include "BTagCalibrationStandalone.h"
+#include "../include/RoccoR.h"
+#include "../include/BTagCalibrationStandalone.h"
 // test
 void displayProgress(long current, long max){
   using std::cerr;
@@ -48,7 +48,7 @@ Double_t deltaR(Double_t eta1, Double_t phi1, Double_t eta2, Double_t phi2) {
   return sqrt(dEta*dEta+dPhi*dPhi);
 }
 
-bool verbose=true;
+bool verbose=false;
 
 bool ComparePtLep(lepton_candidate *a, lepton_candidate *b) { return a->pt_ > b->pt_; }
 bool CompareFlavourLep(lepton_candidate *a, lepton_candidate *b) { return a->lep_ < b->lep_; }
@@ -104,7 +104,7 @@ float getLFVTopmass(lepton_candidate *a,lepton_candidate *b,std::vector<jet_cand
 
   TLorentzVector lv_elmujet;
 
-  for(int ij = 1;ij < selectedJets->size();ij++){
+  for(int ij = 1;ij < (int)selectedJets->size();ij++){
     lv_elmujet = a->p4_ + b->p4_ + (*selectedJets)[ij]->p4_;
     temp.ij=ij;
     temp.mass=lv_elmujet.M();
@@ -184,9 +184,9 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
   Dim3 Hists(channels.size(),Dim2(regions.size(),Dim1(vars.size())));  
   std::stringstream name;
   TH1F *h_test;
-  for (int i=0;i<channels.size();++i){
-    for (int k=0;k<regions.size();++k){
-      for (int l=0;l<vars.size();++l){
+  for (int i=0;i<(int)channels.size();++i){
+    for (int k=0;k<(int)regions.size();++k){
+      for (int l=0;l<(int)vars.size();++l){
         name<<channels[i]<<"_"<<regions[k]<<"_"<<vars[l];
         h_test = new TH1F((name.str()).c_str(),(name.str()).c_str(),nbins[l],lowEdge[l],highEdge[l]);
         h_test->StatOverflows(kTRUE);
@@ -201,10 +201,10 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
   Dim4 HistsSysUp(channels.size(),Dim3(regions.size(),Dim2(vars.size(),Dim1(sys.size()))));
   Dim4 HistsSysDown(channels.size(),Dim3(regions.size(),Dim2(vars.size(),Dim1(sys.size()))));
 
-  for (int i=0;i<channels.size();++i){
-    for (int k=0;k<regions.size();++k){
-      for (int l=0;l<vars.size();++l){
-	for (int n=0;n<sys.size();++n){
+  for (int i=0;i<(int)channels.size();++i){
+    for (int k=0;k<(int)regions.size();++k){
+      for (int l=0;l<(int)vars.size();++l){
+	for (int n=0;n<(int)sys.size();++n){
 	  name<<channels[i]<<"_"<<regions[k]<<"_"<<vars[l]<<"_"<<sys[n]<<"_Up";
 	  h_test = new TH1F((name.str()).c_str(),(name.str()).c_str(),nbins[l],lowEdge[l],highEdge[l]);
 	  h_test->StatOverflows(kTRUE);
@@ -239,14 +239,19 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
   std::string btagFile;
   BTagCalibrationReader reader(BTagEntry::OP_MEDIUM, "central", {"up", "down"});
 
+  std::string CMSSW_BASE(getenv("CMSSW_BASE"));
+  //char* cmschar(getenv("CMSSW_BASE"));
   RoccoR  rc;
-  if(year == "2016")    rochesterFile = "input/RoccoR2016.txt";
-  if(year == "2017")    rochesterFile = "input/RoccoR2017.txt";
-  if(year == "2018")    rochesterFile = "input/RoccoR2018.txt";
+  if(year == "2016")    rochesterFile = CMSSW_BASE + std::string("/src/data/TopLFV/input/RoccoR2016.txt");
+  if(year == "2017")    rochesterFile = CMSSW_BASE + std::string("/src/data/TopLFV/input/RoccoR2017.txt");
+  if(year == "2018")    rochesterFile = CMSSW_BASE + std::string("/src/data/TopLFV/input/RoccoR2018.txt");
   rc.init(rochesterFile);
 
   if(data == "mc"){
-    TFile *f_btagEff_Map = new TFile("input/btagEff.root");
+    //std::string btf = CMSSW_BASE  + std::string("/src/data/TopLFV/input/btagEff.root");
+    //const char* btagrootFile;
+    //btagrootFile =  (const char*)btf ;
+    TFile *f_btagEff_Map = new TFile(  ( CMSSW_BASE  + std::string("/src/data/TopLFV/input/btagEff.root") ).c_str()  ); 
     if(year == "2016"){
       btagEff_b_H = *(TH2F*)f_btagEff_Map->Get("2016_h2_BTaggingEff_b");
       btagEff_c_H = *(TH2F*)f_btagEff_Map->Get("2016_h2_BTaggingEff_c");
@@ -263,9 +268,9 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
       btagEff_udsg_H = *(TH2F*)f_btagEff_Map->Get("2018_h2_BTaggingEff_udsg");
     }
 
-    if(year == "2016")    btagFile = "input/DeepCSV_2016LegacySF_V1.csv";
-    if(year == "2017")    btagFile = "input/DeepCSV_94XSF_V4_B_F.csv";
-    if(year == "2018")    btagFile = "input/DeepCSV_102XSF_V1.csv";
+    if(year == "2016")    btagFile =  CMSSW_BASE + std::string("/src/data/TopLFV/input/DeepCSV_2016LegacySF_V1.csv");
+    if(year == "2017")    btagFile =  CMSSW_BASE + std::string("/src/data/TopLFV/input/DeepCSV_94XSF_V4_B_F.csv");
+    if(year == "2018")    btagFile =  CMSSW_BASE + std::string("/src/data/TopLFV/input/DeepCSV_102XSF_V1.csv");
 
     BTagCalibration calib("DeepCSV",btagFile);
     reader.load(calib,BTagEntry::FLAV_B,"comb"); 
@@ -273,35 +278,35 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     reader.load(calib,BTagEntry::FLAV_UDSG,"comb");
 
     if(year == "2016"){
-      TFile *f_Ele_Reco_Map = new TFile("input/EGM2D_BtoH_GT20GeV_RecoSF_Legacy2016.root");
+      TFile *f_Ele_Reco_Map = new TFile(( CMSSW_BASE  + std::string("/src/data/TopLFV/input/EGM2D_BtoH_GT20GeV_RecoSF_Legacy2016.root")).c_str() );
       sf_Ele_Reco_H = *(TH2F*)f_Ele_Reco_Map->Get("EGamma_SF2D");
 
-      TFile *f_Ele_ID_Map = new TFile("input/2016LegacyReReco_ElectronTight_Fall17V2.root");
+      TFile *f_Ele_ID_Map = new TFile(( CMSSW_BASE  + std::string("/src/data/TopLFV/input/2016LegacyReReco_ElectronTight_Fall17V2.root")).c_str() ) ;
       sf_Ele_ID_H = *(TH2F*)f_Ele_ID_Map->Get("EGamma_SF2D");
 
-      TFile *f_Mu_ID_Map_1 = new TFile("input/2016_RunBCDEF_SF_ID.root");
+      TFile *f_Mu_ID_Map_1 = new TFile(( CMSSW_BASE  + std::string("/src/data/TopLFV/input/2016_RunBCDEF_SF_ID.root")).c_str() ) ;
       TH2F *sf_Mu_ID_H_1 = (TH2F*)f_Mu_ID_Map_1->Get("NUM_TightID_DEN_genTracks_eta_pt");
-      TFile *f_Mu_ID_Map_2 = new TFile("input/2016_RunGH_SF_ID.root");
+      TFile *f_Mu_ID_Map_2 = new TFile(( CMSSW_BASE  + std::string("/src/data/TopLFV/input/2016_RunGH_SF_ID.root")).c_str() ) ;
       TH2F *sf_Mu_ID_H_2 = (TH2F*)f_Mu_ID_Map_2->Get("NUM_TightID_DEN_genTracks_eta_pt");
       sf_Mu_ID_H_1->Scale(0.55);
       sf_Mu_ID_H_2->Scale(0.45);
       sf_Mu_ID_H_1->Add(sf_Mu_ID_H_2);
       sf_Mu_ID_H = *sf_Mu_ID_H_1;
 
-      TFile *f_Mu_ISO_Map_1 = new TFile("input/2016_RunBCDEF_SF_ISO.root");
+      TFile *f_Mu_ISO_Map_1 = new TFile(( CMSSW_BASE  + std::string("/src/data/TopLFV/input/2016_RunBCDEF_SF_ISO.root")).c_str() ) ;
       TH2F *sf_Mu_ISO_H_1 = (TH2F*)f_Mu_ISO_Map_1->Get("NUM_TightRelIso_DEN_TightIDandIPCut_eta_pt");
-      TFile *f_Mu_ISO_Map_2 = new TFile("input/2016_RunGH_SF_ISO.root");
+      TFile *f_Mu_ISO_Map_2 = new TFile(( CMSSW_BASE  + std::string("/src/data/TopLFV/input/2016_RunGH_SF_ISO.root")).c_str() ) ;
       TH2F *sf_Mu_ISO_H_2 = (TH2F*)f_Mu_ISO_Map_2->Get("NUM_TightRelIso_DEN_TightIDandIPCut_eta_pt");
       sf_Mu_ISO_H_1->Scale(0.55);
       sf_Mu_ISO_H_2->Scale(0.45);
       sf_Mu_ISO_H_1->Add(sf_Mu_ISO_H_2);
       sf_Mu_ISO_H = *sf_Mu_ISO_H_1;
 
-      TFile *f_triggeree = new TFile("input/TriggerSF_ee2016_pt.root");
+      TFile *f_triggeree = new TFile(( CMSSW_BASE  + std::string("/src/data/TopLFV/input/TriggerSF_ee2016_pt.root")).c_str() ) ;
       sf_triggeree_H = *(TH2F*)f_triggeree->Get("h_lep1Pt_lep2Pt_Step6");
-      TFile *f_triggeremu = new TFile("input/TriggerSF_emu2016_pt.root");
+      TFile *f_triggeremu = new TFile(( CMSSW_BASE  + std::string("/src/data/TopLFV/input/TriggerSF_emu2016_pt.root")).c_str() ) ;
       sf_triggeremu_H = *(TH2F*)f_triggeremu->Get("h_lep1Pt_lep2Pt_Step3");
-      TFile *f_triggermumu = new TFile("input/TriggerSF_mumu2016_pt.root");
+      TFile *f_triggermumu = new TFile(( CMSSW_BASE  + std::string("/src/data/TopLFV/input/TriggerSF_mumu2016_pt.root")).c_str() ) ;
       sf_triggermumu_H = *(TH2F*)f_triggermumu->Get("h_lep1Pt_lep2Pt_Step9");
 
       f_Ele_Reco_Map->Close();
@@ -315,23 +320,23 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
       f_triggermumu->Close();
     }
     if(year == "2017"){
-      TFile *f_Ele_Reco_Map = new TFile("input/egammaEffi.txt_EGM2D_runBCDEF_passingRECO.root");
+      TFile *f_Ele_Reco_Map = new TFile(( CMSSW_BASE  + std::string("/src/data/TopLFV/input/egammaEffi.txt_EGM2D_runBCDEF_passingRECO.root")).c_str() ) ;
       sf_Ele_Reco_H = *(TH2F*)f_Ele_Reco_Map->Get("EGamma_SF2D");
 
-      TFile *f_Ele_ID_Map = new TFile("input/2017_ElectronTight.root");
+      TFile *f_Ele_ID_Map = new TFile(( CMSSW_BASE  + std::string("/src/data/TopLFV/input/2017_ElectronTight.root")).c_str() ) ;
       sf_Ele_ID_H = *(TH2F*)f_Ele_ID_Map->Get("EGamma_SF2D");
 
-      TFile *f_Mu_ID_Map = new TFile("input/2017_RunBCDEF_SF_ID_syst.root");
+      TFile *f_Mu_ID_Map = new TFile(( CMSSW_BASE  + std::string("/src/data/TopLFV/input/2017_RunBCDEF_SF_ID_syst.root")).c_str() ) ;
       sf_Mu_ID_H = *(TH2F*)f_Mu_ID_Map->Get("NUM_TightID_DEN_genTracks_pt_abseta");
 
-      TFile *f_Mu_ISO_Map = new TFile("input/2017_RunBCDEF_SF_ISO_syst.root");
+      TFile *f_Mu_ISO_Map = new TFile(( CMSSW_BASE  + std::string("/src/data/TopLFV/input/2017_RunBCDEF_SF_ISO_syst.root")).c_str() ) ;
       sf_Mu_ISO_H = *(TH2F*)f_Mu_ISO_Map->Get("NUM_TightRelIso_DEN_TightIDandIPCut_pt_abseta");
 
-      TFile *f_triggeree = new TFile("input/TriggerSF_ee2017_pt.root");
+      TFile *f_triggeree = new TFile(( CMSSW_BASE  + std::string("/src/data/TopLFV/input/TriggerSF_ee2017_pt.root")).c_str() ) ;
       sf_triggeree_H = *(TH2F*)f_triggeree->Get("h_lep1Pt_lep2Pt_Step6");
-      TFile *f_triggeremu = new TFile("input/TriggerSF_emu2017_pt.root");
+      TFile *f_triggeremu = new TFile(( CMSSW_BASE  + std::string("/src/data/TopLFV/input/TriggerSF_emu2017_pt.root")).c_str() ) ;
       sf_triggeremu_H = *(TH2F*)f_triggeremu->Get("h_lep1Pt_lep2Pt_Step3");
-      TFile *f_triggermumu = new TFile("input/TriggerSF_mumu2017_pt.root");
+      TFile *f_triggermumu = new TFile(( CMSSW_BASE  + std::string("/src/data/TopLFV/input/TriggerSF_mumu2017_pt.root")).c_str() ) ;
       sf_triggermumu_H = *(TH2F*)f_triggermumu->Get("h_lep1Pt_lep2Pt_Step9");
 
       f_Ele_Reco_Map->Close();
@@ -343,23 +348,23 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
       f_triggermumu->Close();
     }
     if(year == "2018"){
-      TFile *f_Ele_Reco_Map = new TFile("input/egammaEffi.txt_EGM2D_updatedAll.root");
+      TFile *f_Ele_Reco_Map = new TFile(( CMSSW_BASE  + std::string("/src/data/TopLFV/input/egammaEffi.txt_EGM2D_updatedAll.root")).c_str() ) ;
       sf_Ele_Reco_H = *(TH2F*)f_Ele_Reco_Map->Get("EGamma_SF2D");
 
-      TFile *f_Ele_ID_Map = new TFile("input/2018_ElectronTight.root");
+      TFile *f_Ele_ID_Map = new TFile(( CMSSW_BASE  + std::string("/src/data/TopLFV/input/2018_ElectronTight.root")).c_str() ) ;
       sf_Ele_ID_H = *(TH2F*)f_Ele_ID_Map->Get("EGamma_SF2D");
 
-      TFile *f_Mu_ID_Map = new TFile("input/2018_RunABCD_SF_ID.root");
+      TFile *f_Mu_ID_Map = new TFile(( CMSSW_BASE  + std::string("/src/data/TopLFV/input/2018_RunABCD_SF_ID.root")).c_str() ) ;
       sf_Mu_ID_H = *(TH2F*)f_Mu_ID_Map->Get("NUM_TightID_DEN_TrackerMuons_pt_abseta");
 
-      TFile *f_Mu_ISO_Map = new TFile("input/2018_RunABCD_SF_ISO.root");
+      TFile *f_Mu_ISO_Map = new TFile(( CMSSW_BASE  + std::string("/src/data/TopLFV/input/2018_RunABCD_SF_ISO.root")).c_str() ) ;
       sf_Mu_ISO_H = *(TH2F*)f_Mu_ISO_Map->Get("NUM_TightRelIso_DEN_TightIDandIPCut_pt_abseta");
 
-      TFile *f_triggeree = new TFile("input/TriggerSF_ee2018_pt.root");
+      TFile *f_triggeree = new TFile(( CMSSW_BASE  + std::string("/src/data/TopLFV/input/TriggerSF_ee2018_pt.root")).c_str() ) ;
       sf_triggeree_H = *(TH2F*)f_triggeree->Get("h_lep1Pt_lep2Pt_Step6");
-      TFile *f_triggeremu = new TFile("input/TriggerSF_emu2018_pt.root");
+      TFile *f_triggeremu = new TFile(( CMSSW_BASE  + std::string("/src/data/TopLFV/input/TriggerSF_emu2018_pt.root")).c_str() ) ;
       sf_triggeremu_H = *(TH2F*)f_triggeremu->Get("h_lep1Pt_lep2Pt_Step3");
-      TFile *f_triggermumu = new TFile("input/TriggerSF_mumu2018_pt.root");
+      TFile *f_triggermumu = new TFile(( CMSSW_BASE  + std::string("/src/data/TopLFV/input/TriggerSF_mumu2018_pt.root")).c_str() ) ;
       sf_triggermumu_H = *(TH2F*)f_triggermumu->Get("h_lep1Pt_lep2Pt_Step9");
 
       f_Ele_Reco_Map->Close();
@@ -462,7 +467,7 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     weight_topPt =1;
     P_bjet_data =1;
     P_bjet_mc =1;
-    for (int n=0;n<sys.size();++n){
+    for (int n=0;n<(int)sys.size();++n){
       nominalWeights[n] =1;
       sysUpWeights[n] =1;
       sysDownWeights[n] =1;
@@ -691,18 +696,18 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
          }
          if (genMuIdx!=-1 && abs(GenPart_pdgId[genMuIdx]) == 13) muPtSFRochester = rc.kSpreadMC(Muon_charge[l], Muon_pt[l],Muon_eta[l],Muon_phi[l], GenPart_pt[genMuIdx],0, 0);
          muPtSFRochester = 1.;
-         if (Muon_nTrackerLayers[l] > 30)  cout << " !!!!!!!!!!!!!!!!!! set muPtSFRochester = 1 ,  Muon has charge " << Muon_charge[l] << " , phi=  " << Muon_phi[l] << " , Muon_nTrackerLayers[l] " <<  Muon_nTrackerLayers[l] << endl;   
+         //if (Muon_nTrackerLayers[l] > 30)  cout << " !!!!!!!!!!!!!!!!!! set muPtSFRochester = 1 ,  Muon has charge " << Muon_charge[l] << " , phi=  " << Muon_phi[l] << " , Muon_nTrackerLayers[l] " <<  Muon_nTrackerLayers[l] << endl;   
 
          if (genMuIdx<0 &&  Muon_nTrackerLayers[l] < 30 ) {
-          cout << "no gen level muons =(   " << endl;
-          cout << " Muon has charge " << Muon_charge[l] << " , phi=  " << Muon_phi[l] << " , Muon_nTrackerLayers[l] " <<  Muon_nTrackerLayers[l] << endl;   
+	   //cout << "no gen level muons =(   " << endl;
+	   //cout << " Muon has charge " << Muon_charge[l] << " , phi=  " << Muon_phi[l] << " , Muon_nTrackerLayers[l] " <<  Muon_nTrackerLayers[l] << endl;   
 
           muPtSFRochester = rc.kSmearMC(Muon_charge[l], Muon_pt[l] , Muon_eta[l] , Muon_phi[l], Muon_nTrackerLayers[l] , gRandom->Rndm(),0, 0);
          }
       }
-      cout << "before pt and eta cut on muons  " << endl;
+      //cout << "before pt and eta cut on muons  " << endl;
       if( (muPtSFRochester * Muon_pt[l] <20) || (abs(Muon_eta[l]) > 2.4) ) continue;
-      cout << "passed pt and eta cut on muons !!! " << endl;
+      //cout << "passed pt and eta cut on muons !!! " << endl;
 
       ///  Muon_mvaId == 2 is mu_MvaMedium
       /// https://github.com/Fedespring/cmssw/blob/3f7b3c37caeaaf058bb1c7461b9c3c91a0672f68/PhysicsTools/NanoAOD/python/muons_cff.py#L138
@@ -753,7 +758,7 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
        (abs((*selectedLeptons)[0]->charge_ + (*selectedLeptons)[1]->charge_ + (*selectedLeptons)[2]->charge_) != 1)) {
       //      ((*selectedLeptons)[0]->lep_ + (*selectedLeptons)[1]->lep_ != 11 && ((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M()<106 && ((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M()>76) ||
       //      ((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M()<20) {
-      for (int l=0;l<selectedLeptons->size();l++){
+      for (int l=0;l<(int)selectedLeptons->size();l++){
         delete (*selectedLeptons)[l];
         delete (*selectedLeptons_copy)[l];
       }
@@ -890,7 +895,7 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
 
 
       jetlepfail = false;
-      for (int i=0;i<selectedLeptons->size();i++){
+      for (int i=0;i<(int)selectedLeptons->size();i++){
         if(deltaR((*selectedLeptons)[i]->eta_,(*selectedLeptons)[i]->phi_,(Jet_eta)[l],(Jet_phi)[l]) < 0.4 ) jetlepfail=true;
       }
       if(jetlepfail) continue; 
@@ -923,7 +928,7 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
 
 
     nbjet=0;
-    for (int l=0;l<selectedJets->size();l++){
+    for (int l=0;l<(int)selectedJets->size();l++){
       if((*selectedJets)[l]->btag_) nbjet++;
       if(data == "data") continue;
       if (verbose ){
@@ -1010,7 +1015,7 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     }
       
     //Two OSOFs ? let's compete
-    if(ch==1&&compete&&selectedJets_copy->size()>0){
+    if(ch==1&&compete&&(int)selectedJets_copy->size()>0){
       (*selectedJets_copy)[0]->setbajet();
       if (ch1==0||ch1==1){
 	t1=getTopmass((*selectedLeptons_copy)[0],(*selectedJets_copy)[0],(MET_pt),(MET_phi));
@@ -1169,8 +1174,8 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
 
       
       for (int l=0;l< nGenPart ;l++){
-        float GenPart_energy;
-        GenPart_energy = GenPart_pt[l];
+        //float GenPart_energy;
+        //GenPart_energy = GenPart_pt[l];
         float GenEnergy;
         TLorentzVector* gen_temp = new TLorentzVector() ;
         gen_temp->SetPtEtaPhiM( GenPart_pt[l],(GenPart_eta)[l],(GenPart_phi)[l], (GenPart_mass)[l] );
@@ -1814,11 +1819,11 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
       Hists[ch][14][32]->Fill(LFVTopmass,weight_lepB);
     }
       
-    for (int l=0;l<selectedLeptons->size();l++){
+    for (int l=0;l<(int)selectedLeptons->size();l++){
       delete (*selectedLeptons)[l];
       delete (*selectedLeptons_copy)[l];
     }
-    for (int l=0;l<selectedJets->size();l++){
+    for (int l=0;l<(int)selectedJets->size();l++){
       delete (*selectedJets)[l];
       delete (*selectedJets_copy)[l];
     }
@@ -1839,11 +1844,11 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
   } //end of event loop
   cout<<endl<<"from "<<ntr<<" events, "<<nAccept<<" events are accepted"<<endl;
 
-  for (int i=0;i<channels.size();++i){
-    for (int k=0;k<regions.size();++k){
-      for (int l=0;l<vars.size();++l){
+  for (int i=0;i<(int)channels.size();++i){
+    for (int k=0;k<(int)regions.size();++k){
+      for (int l=0;l<(int)vars.size();++l){
         Hists[i][k][l]  ->Write("",TObject::kOverwrite);
-        for (int n=0;n<sys.size();++n){
+        for (int n=0;n<(int)sys.size();++n){
 	  if (k==0){
             HistsSysUp[i][k][l][n]->Write("",TObject::kOverwrite);
             HistsSysDown[i][k][l][n]->Write("",TObject::kOverwrite);
@@ -1853,11 +1858,11 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     }
   }
 
-  for (int i=0;i<channels.size();++i){
-    for (int k=0;k<regions.size();++k){
-      for (int l=0;l<vars.size();++l){
+  for (int i=0;i<(int)channels.size();++i){
+    for (int k=0;k<(int)regions.size();++k){
+      for (int l=0;l<(int)vars.size();++l){
         delete Hists[i][k][l];
-        for (int n=0;n<sys.size();++n){
+        for (int n=0;n<(int)sys.size();++n){
 	  delete HistsSysUp[i][k][l][n];
 	  delete HistsSysDown[i][k][l][n];
         }

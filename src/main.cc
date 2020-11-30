@@ -1,4 +1,4 @@
-#include "MyAnalysis.h"
+#include "../include/MyAnalysis.h"
 int main(){
     TChain* ch    = new TChain("Events");  //"IIHEAnalysis") ;
     //ch ->Add("/Users/jingyanli/eclipse-workspace/ROOT/outfile_2017_TT_vector_emutc.root");
