@@ -163,24 +163,33 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
   typedef vector<Dim2> Dim3;
   typedef vector<Dim3> Dim4;
 
-  std::vector<TString> regions{"lll","lllOnZ","lllOffZ","lllB0","lllB1", "lllBgeq2", "lllMetl20", "lllMetg20", "lllMetl20Jet1B1", "lllMetl20Jet2B1", "lllMetg20Jetgeq1B0", "lllMetg20Jet1B1", "lllMetg20Jet2B1", "lllMetg20Jetgeq3B1", "lllMetg20Jetgeq2B2"};
-  std::vector<TString> channels{"eee", "emul", "mumumu"};
-  std::vector<TString> vars   {"lep1Pt","lep1Eta","lep1Phi","lep2Pt","lep2Eta","lep2Phi","lep3Pt","lep3Eta","lep3Phi",
-      "LFVePt","LFVeEta","LFVePhi","LFVmuPt","LFVmuEta","LFVmuPhi","balPt","balEta","balPhi","Topmass",
-      "llM","llPt","llDr","llDphi","jet1Pt","jet1Eta","jet1Phi","njet","nbjet","Met","MetPhi","nVtx","llMZw","LFVTopmass"};
+		
+  std::vector<TString> regions{"lll","lllOnZ","lllOffZ","lllOffZB0","lllOffZB1", "lllOffZBgeq2", "lllOffZMetl20", "lllOffZMetg20", "lllOffZMetg20B1", "lllOffZMetg20Jetleq2B1", "lllOffZMetg20Jetgeq1B0", "lllOffZMetg20Jet1B1", "lllOffZMetg20Jet2B1", "lllOffZMetg20Jetgeq3B1", "lllOffZMetg20Jetgeq2B2", "lllDphil1p6", "lllOnZMetg20B0","lllOffZMetg20Jetgeq1Bleq1","lllOnZMetg20Jetgeq1Bleq1"};	
+  std::vector<TString> channels{"eee", "emul", "mumumu"};	
+  std::vector<TString> vars   {"lep1Pt","lep1Eta","lep1Phi","lep2Pt","lep2Eta","lep2Phi","lep3Pt","lep3Eta","lep3Phi",	
+"LFVePt","LFVeEta","LFVePhi","LFVmuPt","LFVmuEta","LFVmuPhi","balPt","balEta","balPhi","Topmass",	
+"lllM","lllPt","lllHt","lllMt","jet1Pt","jet1Eta","jet1Phi","njet","nbjet","Met","MetPhi","nVtx",	
+"llZM","llZPt","llZDr","llZDphi","LFVTopmass","llM","llPt","llDr","llDphi",	
+"Ht","Ms","ZlDr","ZlDphi","JeDr","JmuDr","tM"};	
 
-  std::vector<int>    nbins   {30      ,20       ,25       ,20      ,20       ,25       ,15      ,20       ,25       ,
-      20      ,20       ,25       ,20       ,20        ,25        ,20     ,20      ,25      ,12       ,
-      30   ,20    ,25    ,15      ,20      ,20       ,25       ,10    ,6      ,30   ,20      ,70    ,80     ,12};
+  std::vector<int>    nbins   {12      ,15       ,15       ,12      ,15       ,15       ,12      ,15       ,15       ,	
+12      ,15       ,15       ,12       ,15        ,15        ,12     ,15      ,15      ,12       ,	
+20    ,20     ,20     ,20     ,15      ,15       ,15       ,10    ,6      ,15   ,15      ,70    ,	
+20    ,12     ,25     ,15       ,12          ,20   ,12    ,25    ,15      ,	
+20  ,10  ,25    ,15      ,25    ,25     ,15};	
 
-  std::vector<float> lowEdge  {0       ,-3       ,-4       ,0       ,-3       ,-4       ,0       ,-3       ,-4       ,
-      0       ,-3       ,-4       ,0        ,-3        ,-4        ,0      ,-3      ,-4      ,100      ,
-      0    ,0     ,0     ,0       ,0       ,-3       ,-4       ,0     ,0      ,0    ,-4      ,0     ,50     ,100};
+  std::vector<float> lowEdge  {30      ,-3       ,-4       ,20      ,-3       ,-4       ,20      ,-3       ,-4       ,	
+20      ,-3       ,-4       ,20       ,-3        ,-4        ,20     ,-3      ,-4      ,100      ,	
+0     ,0      ,0      ,0      ,30      ,-3       ,-4       ,0     ,0      ,0    ,-4      ,0     ,	
+50    ,0      ,0      ,0        ,100         ,50   ,0     ,0     ,0       ,	
+0   ,0   ,0     ,0       ,0     ,0      ,0};	
 
-  std::vector<float> highEdge {300     ,3        ,4        ,200     ,3        ,4        ,150     ,3        ,4        ,
-      200     ,3        ,4        ,200      ,3         ,4         ,200    ,3       ,4       ,340      ,
-      500  ,200   ,7     ,4       ,300     ,3        ,4        ,10    ,6      ,210  ,4       ,70    ,130    ,340};
-
+  std::vector<float> highEdge {300     ,3        ,4        ,200     ,3        ,4        ,150     ,3        ,4        ,	
+240     ,3        ,4        ,240      ,3         ,4         ,120    ,3       ,4       ,340      ,	
+500   ,500    ,500    ,500    ,300     ,3        ,4        ,10    ,6      ,210  ,4       ,70    ,	
+130   ,240    ,7      ,4        ,340         ,130  ,240   ,7     ,4       ,	
+600 ,100 ,7     ,4       ,7     ,7      ,150};
+	
   Dim3 Hists(channels.size(),Dim2(regions.size(),Dim1(vars.size())));  
   std::stringstream name;
   TH1F *h_test;
