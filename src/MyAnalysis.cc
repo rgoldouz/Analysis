@@ -1,5 +1,5 @@
 #define MyAnalysis_cxx
-#include "../include/MyAnalysisData.h"
+#include "../include/MyAnalysis.h"
 #include "../include/PU_reWeighting.h"
 #include "../include/lepton_candidate.h"
 #include "../include/jet_candidate.h"
