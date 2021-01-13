@@ -548,7 +548,7 @@ void MyAnalysis::Init(TTree *tree)
 
 
    fChain->SetBranchAddress("nMuon", &nMuon, &b_nMuon);
-   fChain->SetBranchAddress("Muon_genPartIdx", &Muon_genPartIdx, &b_Muon_genPartIdx);
+   //fChain->SetBranchAddress("Muon_genPartIdx", &Muon_genPartIdx, &b_Muon_genPartIdx);
    fChain->SetBranchAddress("Muon_dxy", &Muon_dxy, &b_Muon_dxy);
    fChain->SetBranchAddress("Muon_dxyErr", &Muon_dxyErr, &b_Muon_dxyErr);
    fChain->SetBranchAddress("Muon_dz", &Muon_dz, &b_Muon_dz);
@@ -574,9 +574,8 @@ void MyAnalysis::Init(TTree *tree)
 
 
    fChain->SetBranchAddress("nJet", &nJet, &b_nJet); 
-   fChain->SetBranchAddress("Jet_partonFlavour", &Jet_partonFlavour, &b_Jet_partonFlavour); 
+   //fChain->SetBranchAddress("Jet_partonFlavour", &Jet_partonFlavour, &b_Jet_partonFlavour); 
    fChain->SetBranchAddress("Jet_mass", &Jet_mass, &b_Jet_mass);
-
    fChain->SetBranchAddress("Jet_pt", &Jet_pt, &b_Jet_pt);
    fChain->SetBranchAddress("Jet_eta", &Jet_eta, &b_Jet_eta);
    fChain->SetBranchAddress("Jet_phi", &Jet_phi, &b_Jet_phi);
@@ -607,17 +606,7 @@ void MyAnalysis::Init(TTree *tree)
    fChain->SetBranchAddress("L1PreFiringWeight_Dn", &L1PreFiringWeight_Dn, &b_L1PreFiringWeight_Dn);
    fChain->SetBranchAddress("L1PreFiringWeight_Up", &L1PreFiringWeight_Up, &b_L1PreFiringWeight_Up);
 
-
-   fChain->SetBranchAddress("nGenPart", &nGenPart, &b_nGenPart);
-   fChain->SetBranchAddress("GenPart_mass", &GenPart_mass, &b_GenPart_mass);
-   fChain->SetBranchAddress("GenPart_phi", &GenPart_phi, &b_GenPart_phi);
-   fChain->SetBranchAddress("GenPart_pt", &GenPart_pt, &b_GenPart_pt);
-   fChain->SetBranchAddress("GenPart_eta", &GenPart_eta, &b_GenPart_eta);
-   fChain->SetBranchAddress("GenPart_pdgId", &GenPart_pdgId, &b_GenPart_pdgId);
-   fChain->SetBranchAddress("GenPart_status", &GenPart_status, &b_GenPart_status);
-   fChain->SetBranchAddress("GenPart_genPartIdxMother", &GenPart_genPartIdxMother, &b_GenPart_genPartIdxMother);
-   fChain->SetBranchAddress("Pileup_nTrueInt", &Pileup_nTrueInt, &b_Pileup_nTrueInt);
-
+   
 
    Notify();
 

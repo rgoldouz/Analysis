@@ -1,5 +1,5 @@
 #define MyAnalysis_cxx
-#include "../include/MyAnalysis.h"
+#include "../include/MyAnalysisData.h"
 #include "../include/PU_reWeighting.h"
 #include "../include/lepton_candidate.h"
 #include "../include/jet_candidate.h"
@@ -688,7 +688,7 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
 // Muon
     int genMuIdx =0;  
     for (int l=0;l< nMuon ;l++){
-      genMuIdx = Muon_genPartIdx[l];
+     
 
       //if (verbose ){
       //    cout << "loop over Muon  number  " << l << " has pt  " << Muon_pt[l] << " and eta " <<  Muon_eta[l] << endl;   
@@ -698,6 +698,7 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
         muPtSFRochester = rc.kScaleDT(Muon_charge[l], Muon_pt[l],Muon_eta[l],Muon_phi[l], 0, 0);
       }
       if (data == "mc"){
+	 genMuIdx = Muon_genPartIdx[l];
          /// ??? I think mu_mc_index = Muon_genPartIdx
          if (verbose ){
           cout << "loop over Muon  number  " << l << " has pt  " << Muon_pt[l] << " and eta " <<  Muon_eta[l] << endl;   
