@@ -1,5 +1,5 @@
 #define MyAnalysis_cxx
-#include "../include/MyAnalysis.h"
+#include "../include/MyAnalysisData.h"
 #include "../include/PU_reWeighting.h"
 #include "../include/lepton_candidate.h"
 #include "../include/jet_candidate.h"
@@ -626,9 +626,9 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     //
     //}
     if(!(triggerPassEE || triggerPassEMu || triggerPassMuMu)) continue;
-    if (verbose ) {
-        cout<<" event passed triggers!  "<<endl;
-    }
+    //if (verbose ) {
+    //    cout<<" event passed triggers!  "<<endl;
+    // }
     if(!metFilterPass) continue;
     //if (verbose ) {
     //    cout<<" event passed MET filters!  "<<endl;
@@ -638,13 +638,13 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
   selectedLeptons_copy = new std::vector<lepton_candidate*>();// ordered by [e, mu , bachelor lepton ]
 
 
-      if (verbose ){
-     cout << ".............................................................................................." << endl;
-     cout << "event " << event << endl;   
-      cout << "There are  " << nElectron << " Electrons and " << nMuon  << " Muons as well as  " <<  nJet << " Jets "<< endl ;   
-     cout << "mass of Jet 0   " << Jet_mass[0] << " phi of electron 0    " << Electron_phi[0] << endl ;   
-      cout << "Electron loop begins"  << endl;   
-      }
+  //   if (verbose ){
+  //   cout << ".............................................................................................." << endl;
+  //  cout << "event " << event << endl;   
+  //    cout << "There are  " << nElectron << " Electrons and " << nMuon  << " Muons as well as  " <<  nJet << " Jets "<< endl ;   
+  //  cout << "mass of Jet 0   " << Jet_mass[0] << " phi of electron 0    " << Electron_phi[0] << endl ;   
+  //   cout << "Electron loop begins"  << endl;   
+  //   }
 
 
 
@@ -681,10 +681,10 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
       }
     }
 
-      if (verbose ){
-          cout << "Muon loop begins"  << endl;   
+    //if (verbose ){
+    //      cout << "Muon loop begins"  << endl;   
  
-      }    
+    //      }    
 // Muon
     int genMuIdx =0;  
     for (int l=0;l< nMuon ;l++){
@@ -722,7 +722,8 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
       ///  Muon_mvaId == 2 is mu_MvaMedium
       /// https://github.com/Fedespring/cmssw/blob/3f7b3c37caeaaf058bb1c7461b9c3c91a0672f68/PhysicsTools/NanoAOD/python/muons_cff.py#L138
       //if ((!(*mu_MvaMedium)[l]) || (!(*mu_CutBasedIdMedium)[l])) continue;
-      if (  Muon_mvaId[l] < 2 ||   Muon_mediumId[l] < 1     ) continue;
+      cout << "Muon_mvaId[l]" << Muon_mvaId[l] << "!(Muon_mediumId[l])" << !(Muon_mediumId[l]) << endl; 
+      if (  Muon_mvaId[l] < 2 ||   !(Muon_mediumId[l])     ) continue;
 
       
 
@@ -730,7 +731,7 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
       selectedLeptons->push_back(new lepton_candidate(muPtSFRochester * Muon_pt[l],Muon_eta[l],Muon_phi[l],Muon_charge[l],l,10));
       selectedLeptons_copy->push_back(new lepton_candidate(muPtSFRochester * Muon_pt[l],Muon_eta[l],Muon_phi[l],Muon_charge[l],l,10));
       if (verbose ){
-          cout << "selected Muon number  " << l << " has pt  " << Muon_pt[l] << " and eta " <<  Muon_eta[l] ;   
+	cout << "selected Muon number  " << l << " has pt  " << Muon_pt[l] << " and eta " <<  Muon_eta[l] << endl ;   
       }
       if (data == "mc" && year == "2016") {
 	sf_Mu_ID = sf_Mu_ID * scale_factor(&sf_Mu_ID_H, Muon_eta[l], Muon_pt[l],"");
@@ -760,7 +761,7 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     if (verbose &&    selectedLeptons->size()==3 ) cout<<event<<" ### has 3 leptons   "<<metFilterPass<<"  "<<selectedLeptons->size()<<endl;
     
       if (verbose ){
-          cout << "event has X lepton, X = " <<  selectedLeptons->size()  << endl;   
+          cout << "event has X leptons, X = " <<  selectedLeptons->size()  << endl;   
  
       }
     if(selectedLeptons->size()!=3 ||
@@ -891,7 +892,7 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
       }
       if(data == "mc" && ((Jet_pt)[l] <30 || abs((Jet_eta)[l]) > 2.4)) continue;
       /// ??? xwhat is jet_smeared_pt in nano? 
-      if(data == "mc" && ((Jet_pt)[l] <30 || abs((Jet_eta)[l]) > 2.4)) continue;
+      //if(data == "mc" && ((Jet_pt)[l] <30 || abs((Jet_eta)[l]) > 2.4)) continue;
 
 
       if(data == "data" && ((Jet_pt)[l] <30 || abs((Jet_eta)[l]) > 2.4)) continue;
@@ -940,10 +941,13 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     nbjet=0;
     for (int l=0;l<(int)selectedJets->size();l++){
       if((*selectedJets)[l]->btag_) nbjet++;
-      if(data == "data") continue;
       if (verbose ){
-       cout << "selected Jet number " << l  <<" has pt  " << (*selectedJets)[l]->pt_ << " and eta " << (*selectedJets)[l]->eta_ ;   
+	cout << "selected Jet number " << l  <<" has pt  " << (*selectedJets)[l]->pt_ << " and eta " << (*selectedJets)[l]->eta_ ;
       }
+      if(data == "data") continue;
+      // if (verbose ){
+      // cout << "selected Jet number " << l  <<" has pt  " << (*selectedJets)[l]->pt_ << " and eta " << (*selectedJets)[l]->eta_ ;   
+      // }
       if( abs((*selectedJets)[l]->flavor_) == 5){
         h2_BTaggingEff_Denom_b->Fill((*selectedJets)[l]->pt_, abs((*selectedJets)[l]->eta_));
         if( (*selectedJets)[l]->btag_ ) {
