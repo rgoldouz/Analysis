@@ -722,7 +722,7 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
       ///  Muon_mvaId == 2 is mu_MvaMedium
       /// https://github.com/Fedespring/cmssw/blob/3f7b3c37caeaaf058bb1c7461b9c3c91a0672f68/PhysicsTools/NanoAOD/python/muons_cff.py#L138
       //if ((!(*mu_MvaMedium)[l]) || (!(*mu_CutBasedIdMedium)[l])) continue;
-      cout << "Muon_mvaId[l]" << Muon_mvaId[l] << "!(Muon_mediumId[l])" << !(Muon_mediumId[l]) << endl; 
+      if (verbose) cout << "Muon_mvaId[l]" << Muon_mvaId[l] << "!(Muon_mediumId[l])" << !(Muon_mediumId[l]) << endl; 
       if (  Muon_mvaId[l] < 2 ||   !(Muon_mediumId[l])     ) continue;
 
       
