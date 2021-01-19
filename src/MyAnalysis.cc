@@ -48,7 +48,7 @@ Double_t deltaR(Double_t eta1, Double_t phi1, Double_t eta2, Double_t phi2) {
   return sqrt(dEta*dEta+dPhi*dPhi);
 }
 
-bool verbose=false;
+bool verbose=true;
 
 bool ComparePtLep(lepton_candidate *a, lepton_candidate *b) { return a->pt_ > b->pt_; }
 bool CompareFlavourLep(lepton_candidate *a, lepton_candidate *b) { return a->lep_ < b->lep_; }
@@ -638,13 +638,13 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
   selectedLeptons_copy = new std::vector<lepton_candidate*>();// ordered by [e, mu , bachelor lepton ]
 
 
-  //   if (verbose ){
-  //   cout << ".............................................................................................." << endl;
-  //  cout << "event " << event << endl;   
-  //    cout << "There are  " << nElectron << " Electrons and " << nMuon  << " Muons as well as  " <<  nJet << " Jets "<< endl ;   
-  //  cout << "mass of Jet 0   " << Jet_mass[0] << " phi of electron 0    " << Electron_phi[0] << endl ;   
-  //   cout << "Electron loop begins"  << endl;   
-  //   }
+     if (verbose ){
+     cout << ".............................................................................................." << endl;
+    cout << "event " << event << endl;   
+      cout << "There are  " << nElectron << " Electrons and " << nMuon  << " Muons as well as  " <<  nJet << " Jets "<< endl ;   
+    cout << "mass of Jet 0   " << Jet_mass[0] << " phi of electron 0    " << Electron_phi[0] << endl ;   
+     cout << "Electron loop begins"  << endl;   
+     }
 
 
 

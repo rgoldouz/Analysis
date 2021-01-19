@@ -516,6 +516,14 @@ void MyAnalysis::Init(TTree *tree)
 
    fChain->SetBranchAddress("event", &event, &b_event);
    fChain->SetBranchAddress("run", &run, &b_run);
+
+   Bool_t isMC =false;
+   tree->GetEntry(1);
+   if( event == 1 )isMC =true;
+   
+   //print isMC
+   //print "isMC" 
+
    fChain->SetBranchAddress("luminosityBlock", &luminosityBlock, &b_luminosityBlock);
 
    fChain->SetBranchAddress("nElectron", &nElectron, &b_nElectron);
@@ -548,7 +556,7 @@ void MyAnalysis::Init(TTree *tree)
 
 
    fChain->SetBranchAddress("nMuon", &nMuon, &b_nMuon);
-   fChain->SetBranchAddress("Muon_genPartIdx", &Muon_genPartIdx, &b_Muon_genPartIdx);
+   if( isMC ) fChain->SetBranchAddress("Muon_genPartIdx", &Muon_genPartIdx, &b_Muon_genPartIdx);
    fChain->SetBranchAddress("Muon_dxy", &Muon_dxy, &b_Muon_dxy);
    fChain->SetBranchAddress("Muon_dxyErr", &Muon_dxyErr, &b_Muon_dxyErr);
    fChain->SetBranchAddress("Muon_dz", &Muon_dz, &b_Muon_dz);
@@ -574,7 +582,7 @@ void MyAnalysis::Init(TTree *tree)
 
 
    fChain->SetBranchAddress("nJet", &nJet, &b_nJet); 
-   fChain->SetBranchAddress("Jet_partonFlavour", &Jet_partonFlavour, &b_Jet_partonFlavour); 
+   if( isMC ) fChain->SetBranchAddress("Jet_partonFlavour", &Jet_partonFlavour, &b_Jet_partonFlavour); 
    fChain->SetBranchAddress("Jet_mass", &Jet_mass, &b_Jet_mass);
    fChain->SetBranchAddress("Jet_pt", &Jet_pt, &b_Jet_pt);
    fChain->SetBranchAddress("Jet_eta", &Jet_eta, &b_Jet_eta);
@@ -590,7 +598,7 @@ void MyAnalysis::Init(TTree *tree)
    fChain->SetBranchAddress("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ", &HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ, &b_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ);
    fChain->SetBranchAddress("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ", &HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ, &b_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ);
 
-
+   if( isMC ){
    fChain->SetBranchAddress("nGenPart", &nGenPart, &b_nGenPart);
    fChain->SetBranchAddress("GenPart_mass", &GenPart_mass, &b_GenPart_mass);
    fChain->SetBranchAddress("GenPart_phi", &GenPart_phi, &b_GenPart_phi);
@@ -599,11 +607,11 @@ void MyAnalysis::Init(TTree *tree)
    fChain->SetBranchAddress("GenPart_pdgId", &GenPart_pdgId, &b_GenPart_pdgId);
    fChain->SetBranchAddress("GenPart_status", &GenPart_status, &b_GenPart_status);
    fChain->SetBranchAddress("GenPart_genPartIdxMother", &GenPart_genPartIdxMother, &b_GenPart_genPartIdxMother);
-
+  
 
    fChain->SetBranchAddress("PV_npvsGood", &PV_npvsGood, &b_PV_npvsGood);
    fChain->SetBranchAddress("Pileup_nTrueInt", &Pileup_nTrueInt, &b_Pileup_nTrueInt);
-
+   };
    fChain->SetBranchAddress("Flag_HBHENoiseFilter", &Flag_HBHENoiseFilter, &b_Flag_HBHENoiseFilter);
    fChain->SetBranchAddress("Flag_ecalBadCalibFilterV2", &Flag_ecalBadCalibFilterV2, &b_Flag_ecalBadCalibFilterV2);
    fChain->SetBranchAddress("Flag_eeBadScFilter", &Flag_eeBadScFilter, &b_Flag_eeBadScFilter);
