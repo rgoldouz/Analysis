@@ -649,7 +649,7 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
 
 
 // electron
-    for (int l=0;l< nElectron ;l++){
+    for (UInt_t l=0;l< nElectron ;l++){
       // nano electron pt is already corrected
       //elePt = (*gsf_ecalTrkEnergyPostCorr)[l]*sin(2.*atan(exp(-1.*(*gsf_eta)[l]))) ;
 
@@ -687,7 +687,7 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     //      }    
 // Muon
     int genMuIdx =0;  
-    for (int l=0;l< nMuon ;l++){
+    for (UInt_t l=0;l< nMuon ;l++){
      
 
       //if (verbose ){
@@ -885,7 +885,7 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     selectedJets = new std::vector<jet_candidate*>();
     selectedJets_copy = new std::vector<jet_candidate*>();
     bool jetlepfail;
-    for (int l=0;l< nJet;l++){
+    for (UInt_t l=0;l< nJet;l++){
       if (verbose ){
           cout << "loop over Jet  number  " << l << " has pt  " << Jet_pt[l] << " and eta " <<  Jet_eta[l] << endl;   
           cout << "mass  " << Jet_mass[l] << " phi   " << Jet_phi[l] << endl  ;   
