@@ -447,10 +447,10 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
 
   
 // test on just 100 events ??? fix this!
-
-  for (Long64_t jentry=0; jentry<nentries;jentry++) {
+  // Long64_t
+  for ( Long64_t  jentry=0; jentry<nentries;jentry++) {
     //for (Long64_t jentry=0; jentry<100;jentry++) {
-    Long64_t ientry = LoadTree(jentry);
+    Long64_t   ientry = LoadTree(jentry);
     if (ientry < 0) break;
     nb = fChain->GetEntry(jentry);   nbytes += nb;
     displayProgress(jentry, ntr) ;
@@ -630,9 +630,9 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     //    cout<<" event passed triggers!  "<<endl;
     // }
     if(!metFilterPass) continue;
-    //if (verbose ) {
-    //    cout<<" event passed MET filters!  "<<endl;
-    //};
+    if (verbose ) {
+        cout<<" event passed MET filters!  "<<endl;
+    };
 // lepton selection
   selectedLeptons = new std::vector<lepton_candidate*>();//typlical ordered by pT
   selectedLeptons_copy = new std::vector<lepton_candidate*>();// ordered by [e, mu , bachelor lepton ]
@@ -642,7 +642,7 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
      cout << ".............................................................................................." << endl;
     cout << "event " << event << endl;   
       cout << "There are  " << nElectron << " Electrons and " << nMuon  << " Muons as well as  " <<  nJet << " Jets "<< endl ;   
-    cout << "mass of Jet 0   " << Jet_mass[0] << " phi of electron 0    " << Electron_phi[0] << endl ;   
+      //cout << "mass of Jet 0   " << Jet_mass[0] << " phi of electron 0    " << Electron_phi[0] << endl ;   
      cout << "Electron loop begins"  << endl;   
      }
 
@@ -722,7 +722,7 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
       ///  Muon_mvaId == 2 is mu_MvaMedium
       /// https://github.com/Fedespring/cmssw/blob/3f7b3c37caeaaf058bb1c7461b9c3c91a0672f68/PhysicsTools/NanoAOD/python/muons_cff.py#L138
       //if ((!(*mu_MvaMedium)[l]) || (!(*mu_CutBasedIdMedium)[l])) continue;
-      if (verbose) cout << "Muon_mvaId[l]" << Muon_mvaId[l] << "!(Muon_mediumId[l])" << !(Muon_mediumId[l]) << endl; 
+      if (verbose) cout << "Muon_mvaId[l] = " << Muon_mvaId[l] << ",  !(Muon_mediumId[l]) = " << !(Muon_mediumId[l]) <<",  Muon_pfRelIso04_all[l] = " << Muon_pfRelIso04_all[l] <<endl; 
       if (  Muon_mvaId[l] < 2 ||   !(Muon_mediumId[l])     ) continue;
 
       

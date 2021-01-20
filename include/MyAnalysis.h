@@ -31,170 +31,170 @@ public :
 // actual array length is nJets or nMuons etc dependig on collection
 
 // Declaration of leaf types
-   Int_t          event;
-   Int_t          run;
-   Int_t          luminosityBlock;
+   ULong64_t          event;
+   UInt_t          run;
+   UInt_t          luminosityBlock;
 
 
 
 
    UInt_t            nElectron;
-   Float_t                      Electron_deltaEtaSC[25];
-   Float_t                      Electron_dr03EcalRecHitSumEt[25];
-   Float_t                      Electron_dr03HcalDepth1TowerSumEt[25];
-   Float_t                      Electron_dr03TkSumPt[25];
-   Float_t                      Electron_dr03TkSumPtHEEP[25];
-   Float_t                      Electron_dxy[25];
-   Float_t                      Electron_dxyErr[25];
-   Float_t                      Electron_dz[25];
-   Float_t                      Electron_dzErr[25];
-   Float_t                      Electron_eCorr[25];
-   Float_t                      Electron_eInvMinusPInv[25];
-   Float_t                      Electron_energyErr[25];
-   Float_t                      Electron_eta[25];
-   Float_t                      Electron_hoe[25];
-   Float_t                      Electron_ip3d[25];
-   Float_t                      Electron_jetPtRelv2[25];
-   Float_t                      Electron_jetRelIso[25];
-   Float_t                      Electron_mass[25];
-   Float_t                      Electron_miniPFRelIso_all[25];
-   Float_t                      Electron_miniPFRelIso_chg[25];
-   Float_t                      Electron_mvaFall17V1Iso[25];
-   Float_t                      Electron_mvaFall17V1noIso[25];
-   Float_t                      Electron_mvaFall17V2Iso[25];
-   Float_t                      Electron_mvaFall17V2noIso[25];
-   Float_t                      Electron_pfRelIso03_all[25];
-   Float_t                      Electron_pfRelIso03_chg[25];
-   Float_t                      Electron_phi[25];
-   Float_t                      Electron_pt[25];
-   Float_t                      Electron_r9[25];
-   Float_t                      Electron_sieie[25];
-   Float_t                      Electron_sip3d[25];
-   Float_t                      Electron_mvaTOP[25];
-   Float_t                      Electron_mvaTTH[25];
+   Float_t                      Electron_deltaEtaSC[6];
+   Float_t                      Electron_dr03EcalRecHitSumEt[6];
+   Float_t                      Electron_dr03HcalDepth1TowerSumEt[6];
+   Float_t                      Electron_dr03TkSumPt[6];
+   Float_t                      Electron_dr03TkSumPtHEEP[6];
+   Float_t                      Electron_dxy[6];
+   Float_t                      Electron_dxyErr[6];
+   Float_t                      Electron_dz[6];
+   Float_t                      Electron_dzErr[6];
+   Float_t                      Electron_eCorr[6];
+   Float_t                      Electron_eInvMinusPInv[6];
+   Float_t                      Electron_energyErr[6];
+   Float_t                      Electron_eta[6];
+   Float_t                      Electron_hoe[6];
+   Float_t                      Electron_ip3d[6];
+   Float_t                      Electron_jetPtRelv2[6];
+   Float_t                      Electron_jetRelIso[6];
+   Float_t                      Electron_mass[6];
+   Float_t                      Electron_miniPFRelIso_all[6];
+   Float_t                      Electron_miniPFRelIso_chg[6];
+   Float_t                      Electron_mvaFall17V1Iso[6];
+   Float_t                      Electron_mvaFall17V1noIso[6];
+   Float_t                      Electron_mvaFall17V2Iso[6];
+   Float_t                      Electron_mvaFall17V2noIso[6];
+   Float_t                      Electron_pfRelIso03_all[6];
+   Float_t                      Electron_pfRelIso03_chg[6];
+   Float_t                      Electron_phi[6];
+   Float_t                      Electron_pt[6];
+   Float_t                      Electron_r9[6];
+   Float_t                      Electron_sieie[6];
+   Float_t                      Electron_sip3d[6];
+   Float_t                      Electron_mvaTOP[6];
+   Float_t                      Electron_mvaTTH[6];
 
 
-   Int_t           Electron_charge[25];
-   Int_t           Electron_cutBased[25];
-   Int_t           Electron_cutBased_Fall17_V1[25];
-   Int_t           Electron_jetIdx[25];
-   Int_t           Electron_jetNDauChargedMVASel[25];
-   Int_t           Electron_pdgId[25];
-   Int_t           Electron_photonIdx[25];
-   Int_t           Electron_tightCharge[25];
-   Int_t           Electron_vidNestedWPBitmap[25];
-   Int_t           Electron_vidNestedWPBitmapHEEP[25];
-   Int_t           Electron_convVeto[25];
-   Int_t           Electron_cutBased_HEEP[25];
-   Int_t           Electron_isPFcand[25];
-   Int_t           Electron_lostHits[25];
-   Int_t           Electron_mvaFall17V1Iso_WP80[25];
-   Int_t           Electron_mvaFall17V1Iso_WP90[25];
-   Int_t           Electron_mvaFall17V1Iso_WPL[25];
-   Int_t           Electron_mvaFall17V1noIso_WP80[25];
-   Int_t           Electron_mvaFall17V1noIso_WP90[25];
-   Int_t           Electron_mvaFall17V1noIso_WPL[25];
-   Int_t           Electron_mvaFall17V2Iso_WP80[25];
-   Int_t           Electron_mvaFall17V2Iso_WP90[25];
-   Int_t           Electron_mvaFall17V2Iso_WPL[25];
-   Int_t           Electron_mvaFall17V2noIso_WP80[25];
-   Int_t           Electron_mvaFall17V2noIso_WP90[25];
-   Int_t           Electron_mvaFall17V2noIso_WPL[25];
-   UChar_t           Electron_seedGain[25];
+   Int_t           Electron_charge[6];
+   Int_t           Electron_cutBased[6];
+   Int_t           Electron_cutBased_Fall17_V1[6];
+   Int_t           Electron_jetIdx[6];
+   Int_t           Electron_jetNDauChargedMVASel[6];
+   Int_t           Electron_pdgId[6];
+   Int_t           Electron_photonIdx[6];
+   Int_t           Electron_tightCharge[6];
+   Int_t           Electron_vidNestedWPBitmap[6];
+   Int_t           Electron_vidNestedWPBitmapHEEP[6];
+   Bool_t          Electron_convVeto[6];
+   Bool_t           Electron_cutBased_HEEP[6];
+   Bool_t           Electron_isPFcand[6];
+   UChar_t           Electron_lostHits[6];
+   Int_t           Electron_mvaFall17V1Iso_WP80[6];
+   Int_t           Electron_mvaFall17V1Iso_WP90[6];
+   Int_t           Electron_mvaFall17V1Iso_WPL[6];
+   Int_t           Electron_mvaFall17V1noIso_WP80[6];
+   Int_t           Electron_mvaFall17V1noIso_WP90[6];
+   Int_t           Electron_mvaFall17V1noIso_WPL[6];
+   Int_t           Electron_mvaFall17V2Iso_WP80[6];
+   Int_t           Electron_mvaFall17V2Iso_WP90[6];
+   Int_t           Electron_mvaFall17V2Iso_WPL[6];
+   Int_t           Electron_mvaFall17V2noIso_WP80[6];
+   Int_t           Electron_mvaFall17V2noIso_WP90[6];
+   Int_t           Electron_mvaFall17V2noIso_WPL[6];
+   UChar_t           Electron_seedGain[6];
 
 
 
    UInt_t                  nMuon;
-    Int_t                       Muon_genPartIdx[25];
+    Int_t                       Muon_genPartIdx[6];
 
-   Float_t                      Muon_dxy[25];
-   Float_t                      Muon_dxyErr[25];
-   Float_t                      Muon_dz[25];
-   Float_t                      Muon_dzErr[25];
-   Float_t                      Muon_eta[25];
-   Float_t                      Muon_ip3d[25];
-   Float_t                      Muon_jetPtRelv2[25];
-   Float_t                      Muon_jetRelIso[25];
-   Float_t                      Muon_mass[25];
-   Float_t                      Muon_miniPFRelIso_all[25];
-   Float_t                      Muon_miniPFRelIso_chg[25];
-   Float_t                      Muon_pfRelIso03_all[25];
-   Float_t                      Muon_pfRelIso03_chg[25];
-   Float_t                      Muon_pfRelIso04_all[25];
-   Float_t                      Muon_phi[25];
-   Float_t                      Muon_pt[25];
-   Float_t                      Muon_ptErr[25];
-   Float_t                      Muon_segmentComp[25];
-   Float_t                      Muon_sip3d[25];
-   Float_t                      Muon_tkRelIso[25];
-   Float_t                      Muon_tunepRelPt[25];
-   Float_t                      Muon_mvaLowPt[25];
-   Float_t                      Muon_mvaTOP[25];
-   Float_t                      Muon_mvaTTH[25];
-   Int_t           Muon_charge[25];
-   Int_t           Muon_jetIdx[25];
-   Int_t           Muon_jetNDauChargedMVASel[25];
-   Int_t           Muon_nStations[25];
-   Int_t           Muon_nTrackerLayers[25];
-   Int_t           Muon_pdgId[25];
-   Int_t           Muon_tightCharge[25];
-   Int_t           Muon_fsrPhotonIdx[25];
-   Int_t           Muon_highPtId[25];
-   Int_t           Muon_Int_timeMuon[25];
-   Int_t           Muon_isGlobal[25];
-   Int_t           Muon_isPFcand[25];
-   Int_t           Muon_isTracker[25];
-   Int_t           Muon_looseId[25];
-   Bool_t           Muon_mediumId[25];
-   Int_t           Muon_mediumPromptId[25];
-   Int_t           Muon_miniIsoId[25];
-   Int_t           Muon_multiIsoId[25];
-   UChar_t           Muon_mvaId[25];
-   Int_t           Muon_pfIsoId[25];
-   Int_t           Muon_softId[25];
-   Int_t           Muon_softMvaId[25];
-   Int_t           Muon_tightId[25];
-   Int_t           Muon_tkIsoId[25];
-   Int_t           Muon_triggerIdLoose[25];
+   Float_t                      Muon_dxy[6];
+   Float_t                      Muon_dxyErr[6];
+   Float_t                      Muon_dz[6];
+   Float_t                      Muon_dzErr[6];
+   Float_t                      Muon_eta[6];
+   Float_t                      Muon_ip3d[6];
+   Float_t                      Muon_jetPtRelv2[6];
+   Float_t                      Muon_jetRelIso[6];
+   Float_t                      Muon_mass[6];
+   Float_t                      Muon_miniPFRelIso_all[6];
+   Float_t                      Muon_miniPFRelIso_chg[6];
+   Float_t                      Muon_pfRelIso03_all[6];
+   Float_t                      Muon_pfRelIso03_chg[6];
+   Float_t                      Muon_pfRelIso04_all[6];
+   Float_t                      Muon_phi[6];
+   Float_t                      Muon_pt[6];
+   Float_t                      Muon_ptErr[6];
+   Float_t                      Muon_segmentComp[6];
+   Float_t                      Muon_sip3d[6];
+   Float_t                      Muon_tkRelIso[6];
+   Float_t                      Muon_tunepRelPt[6];
+   Float_t                      Muon_mvaLowPt[6];
+   Float_t                      Muon_mvaTOP[6];
+   Float_t                      Muon_mvaTTH[6];
+   Int_t           Muon_charge[6];
+   Int_t           Muon_jetIdx[6];
+   Int_t           Muon_jetNDauChargedMVASel[6];
+   Int_t           Muon_nStations[6];
+   Int_t           Muon_nTrackerLayers[6];
+   Int_t           Muon_pdgId[6];
+   Int_t           Muon_tightCharge[6];
+   Int_t           Muon_fsrPhotonIdx[6];
+   Int_t           Muon_highPtId[6];
+   Int_t           Muon_Int_timeMuon[6];
+   Int_t           Muon_isGlobal[6];
+   Int_t           Muon_isPFcand[6];
+   Int_t           Muon_isTracker[6];
+   Bool_t           Muon_looseId[6];
+   Bool_t           Muon_mediumId[6];
+   Int_t           Muon_mediumPromptId[6];
+   Int_t           Muon_miniIsoId[6];
+   Int_t           Muon_multiIsoId[6];
+   UChar_t           Muon_mvaId[6];
+   Int_t           Muon_pfIsoId[6];
+   Int_t           Muon_softId[6];
+   Int_t           Muon_softMvaId[6];
+   Int_t           Muon_tightId[6];
+   Int_t           Muon_tkIsoId[6];
+   Int_t           Muon_triggerIdLoose[6];
 
    Float_t                  MET_phi;
    Float_t                  MET_pt;
 
     UInt_t                         nJet; 
-   Float_t                      Jet_area[25];
-   Float_t                      Jet_btagCMVA[25];
-   Float_t                      Jet_btagCSVV2[25]; 
-   Int_t           Jet_btagDeepB[25];
-   Int_t           Jet_btagDeepC[25];
-   Float_t                      Jet_btagDeepFlavB[25];
-   Float_t                      Jet_btagDeepFlavC[25];
-   Float_t                      Jet_chEmEF[25];
-   Float_t                      Jet_chHEF[25];
-   Float_t                      Jet_eta[25];
-   Float_t                      Jet_jercCHF[25]; 
-   Float_t                      Jet_jercCHPUF[25];
-   Float_t                      Jet_mass[25];
-   Float_t                      Jet_muEF[25];
-   Float_t                      Jet_muonSubtrFactor[25];
-   Float_t                      Jet_neEmEF[25];
-   Float_t                      Jet_neHEF[25];
-   Float_t                      Jet_phi[25];
-   Float_t                      Jet_pt[25];
-   Float_t                      Jet_qgl[25];
-   Float_t                      Jet_rawFactor[25];
+   Float_t                      Jet_area[6];
+   Float_t                      Jet_btagCMVA[6];
+   Float_t                      Jet_btagCSVV2[6]; 
+   Int_t           Jet_btagDeepB[6];
+   Int_t           Jet_btagDeepC[6];
+   Float_t                      Jet_btagDeepFlavB[6];
+   Float_t                      Jet_btagDeepFlavC[6];
+   Float_t                      Jet_chEmEF[6];
+   Float_t                      Jet_chHEF[6];
+   Float_t                      Jet_eta[6];
+   Float_t                      Jet_jercCHF[6]; 
+   Float_t                      Jet_jercCHPUF[6];
+   Float_t                      Jet_mass[6];
+   Float_t                      Jet_muEF[6];
+   Float_t                      Jet_muonSubtrFactor[6];
+   Float_t                      Jet_neEmEF[6];
+   Float_t                      Jet_neHEF[6];
+   Float_t                      Jet_phi[6];
+   Float_t                      Jet_pt[6];
+   Float_t                      Jet_qgl[6];
+   Float_t                      Jet_rawFactor[6];
 
-   Float_t                      Jet_bRegCorr[25];
-   Float_t                      Jet_bRegRes[25];
-   Int_t           Jet_electronIdx1[25];
-   Int_t           Jet_electronIdx2[25];
-   Int_t           Jet_jetId[25];
-   Int_t           Jet_muonIdx1[25];
-   Int_t           Jet_muonIdx2[25];
-   Int_t           Jet_nConstituents[25];
-   Int_t           Jet_nElectrons[25];
-   Int_t           Jet_nMuons[25];
-   Int_t           Jet_puId[25];
-   Int_t           Jet_partonFlavour[25];
+   Float_t                      Jet_bRegCorr[6];
+   Float_t                      Jet_bRegRes[6];
+   Int_t           Jet_electronIdx1[6];
+   Int_t           Jet_electronIdx2[6];
+   Int_t           Jet_jetId[6];
+   Int_t           Jet_muonIdx1[6];
+   Int_t           Jet_muonIdx2[6];
+   Int_t           Jet_nConstituents[6];
+   Int_t           Jet_nElectrons[6];
+   Int_t           Jet_nMuons[6];
+   Int_t           Jet_puId[6];
+   Int_t           Jet_partonFlavour[6];
 
 
 
@@ -216,7 +216,7 @@ public :
       Bool_t        Flag_globalSuperTightHalo2016Filter;
       Bool_t        Flag_HBHENoiseIsoFilter;
       Bool_t        Flag_HBHENoiseFilter;
-      Bool_t        Flag_EcalDeadCellTriggerPrimitiveFilter;
+      Bool_t       Flag_EcalDeadCellTriggerPrimitiveFilter;
       Bool_t        Flag_BadPFMuonFilter;
       Bool_t        Flag_eeBadScFilter;
       Bool_t        Flag_ecalBadCalibFilterV2;
@@ -228,14 +228,14 @@ public :
    Float_t             L1PreFiringWeight_Up;
 
     Int_t             nGenPart;
-   Float_t             GenPart_mass[25];
-   Float_t             GenPart_phi[25];
-   Float_t             GenPart_pt[25];
-   Float_t             GenPart_eta[25];
-   Int_t           GenPart_genPartIdxMother[25];
-   Int_t           GenPart_pdgId[25];
-   Int_t           GenPart_status[25];
-   Float_t         Pileup_nTrueInt;
+   Float_t             GenPart_mass[100];
+   Float_t             GenPart_phi[100];
+   Float_t             GenPart_pt[100];
+   Float_t             GenPart_eta[100];
+   Int_t           GenPart_genPartIdxMother[100];
+   Int_t           GenPart_pdgId[100];
+   Int_t           GenPart_status[100];
+   Int_t         Pileup_nTrueInt;
 
    // List of branches
    TBranch        *b_event;
@@ -517,9 +517,9 @@ void MyAnalysis::Init(TTree *tree)
    fChain->SetBranchAddress("event", &event, &b_event);
    fChain->SetBranchAddress("run", &run, &b_run);
 
-   Bool_t isMC =false;
-   tree->GetEntry(1);
-   if( event == 1 )isMC =true;
+   Bool_t isMC =true;
+   //tree->GetEntry(1);
+   //if( event < 1000 )isMC =true;
    
    //print isMC
    //print "isMC" 
@@ -528,6 +528,7 @@ void MyAnalysis::Init(TTree *tree)
 
    fChain->SetBranchAddress("nElectron", &nElectron, &b_nElectron);
    fChain->SetBranchAddress("Electron_deltaEtaSC", &Electron_deltaEtaSC, &b_Electron_deltaEtaSC);
+   /*
    fChain->SetBranchAddress("Electron_dr03EcalRecHitSumEt", &Electron_dr03EcalRecHitSumEt, &b_Electron_dr03EcalRecHitSumEt);
    fChain->SetBranchAddress("Electron_dr03EcalRecHitSumEt", &Electron_dr03EcalRecHitSumEt, &b_Electron_dr03EcalRecHitSumEt);
    fChain->SetBranchAddress("Electron_dr03HcalDepth1TowerSumEt", &Electron_dr03HcalDepth1TowerSumEt, &b_Electron_dr03HcalDepth1TowerSumEt);
@@ -535,12 +536,14 @@ void MyAnalysis::Init(TTree *tree)
    fChain->SetBranchAddress("Electron_dr03TkSumPtHEEP", &Electron_dr03TkSumPtHEEP, &b_Electron_dr03TkSumPtHEEP);
    fChain->SetBranchAddress("Electron_dxy", &Electron_dxy, &b_Electron_dxy);
    fChain->SetBranchAddress("Electron_dxyErr", &Electron_dxyErr, &b_Electron_dxyErr);
+   */
    fChain->SetBranchAddress("Electron_eta", &Electron_eta, &b_Electron_eta);
    fChain->SetBranchAddress("Electron_mass", &Electron_mass, &b_Electron_mass);
-   fChain->SetBranchAddress("Electron_dz", &Electron_dz, &b_Electron_dz);
-   fChain->SetBranchAddress("Electron_eCorr", &Electron_eCorr, &b_Electron_eCorr);
+   //fChain->SetBranchAddress("Electron_dz", &Electron_dz, &b_Electron_dz);
+   //fChain->SetBranchAddress("Electron_eCorr", &Electron_eCorr, &b_Electron_eCorr);
    fChain->SetBranchAddress("Electron_phi", &Electron_phi, &b_Electron_phi);
    fChain->SetBranchAddress("Electron_pt", &Electron_pt, &b_Electron_pt);
+   /*
    fChain->SetBranchAddress("Electron_miniPFRelIso_all", &Electron_miniPFRelIso_all, &b_Electron_miniPFRelIso_all);
    fChain->SetBranchAddress("Electron_miniPFRelIso_chg", &Electron_miniPFRelIso_chg, &b_Electron_miniPFRelIso_chg);
    fChain->SetBranchAddress("Electron_mvaFall17V2Iso", &Electron_mvaFall17V2Iso, &b_Electron_mvaFall17V2Iso);
@@ -550,31 +553,47 @@ void MyAnalysis::Init(TTree *tree)
    fChain->SetBranchAddress("Electron_mvaTOP", &Electron_mvaTOP, &b_Electron_mvaTOP);
    fChain->SetBranchAddress("Electron_mvaTTH", &Electron_mvaTTH, &b_Electron_mvaTTH);
    fChain->SetBranchAddress("Electron_sip3d", &Electron_sip3d, &b_Electron_sip3d);
-   fChain->SetBranchAddress("Electron_pdgId", &Electron_pdgId, &b_Electron_pdgId);
+   */
+
+   fChain->SetBranchAddress("Electron_pdgId", &Electron_pdgId, &b_Electron_pdgId);                                                                                                
    fChain->SetBranchAddress("Electron_charge", &Electron_charge, &b_Electron_charge);
    fChain->SetBranchAddress("Electron_cutBased", &Electron_cutBased, &b_Electron_cutBased);
 
 
    fChain->SetBranchAddress("nMuon", &nMuon, &b_nMuon);
-   if( isMC ) fChain->SetBranchAddress("Muon_genPartIdx", &Muon_genPartIdx, &b_Muon_genPartIdx);
+   //if( isMC ) 
+   fChain->SetBranchAddress("Muon_genPartIdx", &Muon_genPartIdx, &b_Muon_genPartIdx);
+ 
+   /*
    fChain->SetBranchAddress("Muon_dxy", &Muon_dxy, &b_Muon_dxy);
    fChain->SetBranchAddress("Muon_dxyErr", &Muon_dxyErr, &b_Muon_dxyErr);
    fChain->SetBranchAddress("Muon_dz", &Muon_dz, &b_Muon_dz);
    fChain->SetBranchAddress("Muon_dzErr", &Muon_dzErr, &b_Muon_dzErr);
+   */
    fChain->SetBranchAddress("Muon_eta", &Muon_eta, &b_Muon_eta);
-   fChain->SetBranchAddress("Muon_ip3d", &Muon_ip3d, &b_Muon_ip3d);
+   //fChain->SetBranchAddress("Muon_ip3d", &Muon_ip3d, &b_Muon_ip3d);
    fChain->SetBranchAddress("Muon_mass", &Muon_mass, &b_Muon_mass);
    fChain->SetBranchAddress("Muon_pt", &Muon_pt, &b_Muon_pt);
    fChain->SetBranchAddress("Muon_eta", &Muon_eta, &b_Muon_eta);
    fChain->SetBranchAddress("Muon_phi", &Muon_phi, &b_Muon_phi);
+  
+   /*
    fChain->SetBranchAddress("Muon_miniPFRelIso_all", &Muon_miniPFRelIso_all, &b_Muon_miniPFRelIso_all);
-   fChain->SetBranchAddress("Muon_pfRelIso03_all", &Muon_pfRelIso03_all, &b_Muon_pfRelIso03_all);
-   fChain->SetBranchAddress("Muon_charge", &Muon_charge, &b_Muon_charge);
+
    fChain->SetBranchAddress("Muon_mvaTOP", &Muon_mvaTOP, &b_Muon_mvaTOP);
    fChain->SetBranchAddress("Muon_mvaTTH", &Muon_mvaTTH, &b_Muon_mvaTTH);
+   */
+
+   fChain->SetBranchAddress("Muon_pfRelIso04_all", &Muon_pfRelIso04_all, &b_Muon_pfRelIso04_all);
+
+   fChain->SetBranchAddress("Muon_pfRelIso03_all", &Muon_pfRelIso03_all, &b_Muon_pfRelIso03_all);  
+   fChain->SetBranchAddress("Muon_charge", &Muon_charge, &b_Muon_charge); 
+
    fChain->SetBranchAddress("Muon_mediumId", &Muon_mediumId, &b_Muon_mediumId);
    fChain->SetBranchAddress("Muon_mvaId", &Muon_mvaId, &b_Muon_mvaId);
    fChain->SetBranchAddress("Muon_miniIsoId", &Muon_miniIsoId, &b_Muon_miniIsoId);
+   //if( isMC ) 
+   fChain->SetBranchAddress("Muon_nTrackerLayers", &Muon_nTrackerLayers, &b_Muon_nTrackerLayers);
 
 
    fChain->SetBranchAddress("MET_pt", &MET_pt, &b_MET_pt);
@@ -582,7 +601,8 @@ void MyAnalysis::Init(TTree *tree)
 
 
    fChain->SetBranchAddress("nJet", &nJet, &b_nJet); 
-   if( isMC ) fChain->SetBranchAddress("Jet_partonFlavour", &Jet_partonFlavour, &b_Jet_partonFlavour); 
+   //if( isMC ) 
+   fChain->SetBranchAddress("Jet_partonFlavour", &Jet_partonFlavour, &b_Jet_partonFlavour); 
    fChain->SetBranchAddress("Jet_mass", &Jet_mass, &b_Jet_mass);
    fChain->SetBranchAddress("Jet_pt", &Jet_pt, &b_Jet_pt);
    fChain->SetBranchAddress("Jet_eta", &Jet_eta, &b_Jet_eta);
@@ -598,7 +618,7 @@ void MyAnalysis::Init(TTree *tree)
    fChain->SetBranchAddress("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ", &HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ, &b_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ);
    fChain->SetBranchAddress("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ", &HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ, &b_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ);
 
-   if( isMC ){
+   //if( isMC ){
    fChain->SetBranchAddress("nGenPart", &nGenPart, &b_nGenPart);
    fChain->SetBranchAddress("GenPart_mass", &GenPart_mass, &b_GenPart_mass);
    fChain->SetBranchAddress("GenPart_phi", &GenPart_phi, &b_GenPart_phi);
@@ -611,7 +631,7 @@ void MyAnalysis::Init(TTree *tree)
 
    fChain->SetBranchAddress("PV_npvsGood", &PV_npvsGood, &b_PV_npvsGood);
    fChain->SetBranchAddress("Pileup_nTrueInt", &Pileup_nTrueInt, &b_Pileup_nTrueInt);
-   };
+   //};
    fChain->SetBranchAddress("Flag_HBHENoiseFilter", &Flag_HBHENoiseFilter, &b_Flag_HBHENoiseFilter);
    fChain->SetBranchAddress("Flag_ecalBadCalibFilterV2", &Flag_ecalBadCalibFilterV2, &b_Flag_ecalBadCalibFilterV2);
    fChain->SetBranchAddress("Flag_eeBadScFilter", &Flag_eeBadScFilter, &b_Flag_eeBadScFilter);
