@@ -235,8 +235,8 @@ public :
    Int_t           GenPart_genPartIdxMother[100];
    Int_t           GenPart_pdgId[100];
    Int_t           GenPart_status[100];
-   Int_t         Pileup_nTrueInt;
-
+   Float_t         Pileup_nTrueInt;
+   Int_t           Pileup_nPU;
    // List of branches
    TBranch        *b_event;
    TBranch        *b_run;
@@ -440,6 +440,7 @@ public :
    TBranch        *b_GenPart_pdgId;
    TBranch        *b_GenPart_status;
    TBranch        *b_Pileup_nTrueInt;
+   TBranch        *b_Pileup_nPU;
 
 
    MyAnalysis(TTree *tree=0);
@@ -629,6 +630,7 @@ void MyAnalysis::Init(TTree *tree)
    fChain->SetBranchAddress("GenPart_genPartIdxMother", &GenPart_genPartIdxMother, &b_GenPart_genPartIdxMother);
   
 
+   fChain->SetBranchAddress("Pileup_nPU", &Pileup_nPU, &b_Pileup_nPU);
    fChain->SetBranchAddress("PV_npvsGood", &PV_npvsGood, &b_PV_npvsGood);
    fChain->SetBranchAddress("Pileup_nTrueInt", &Pileup_nTrueInt, &b_Pileup_nTrueInt);
    //};
