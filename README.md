@@ -122,32 +122,78 @@ This framework can be compiled standalone, although it depends on ROOT&&BOOST li
 ## II. To compile & run 
 
 ```sh
-git clone -b Trilepton_Selection https://github.com/Jingyan95/Analysis.git TopLFV
-cd TopLFV
+
+
+
+
+
+cmsrel CMSSW_10_6_4
+cd CMSSW_10_6_4/src/
+cmsenv
+mkdir data
+cd data
+git clone -b nano_Jan20  https://github.com/UBParker/Analysis.git TopLFV
+cd .. (in CMSSW/src/)
+git clone -b nano_Jan20 https://github.com/UBParker/nanoAOD-tools.git PhysicsTools/NanoAODTools
+scram b -j 5
+cd data/TopLFV
 make all
+cd PhysicsTools/NanoAODTools/crab
 
-To test  use  (put the test files in a txt file like testMC.txt ):
+source /cvmfs/cms.cern.ch/common/crab-setup.sh
 
-cd pywrapper
-python runMyAnalysis.py
-
-
-
-It takes 1~2 min to produce test.root file where you can find all the interesting distributions.  
 ```
 
-## III. To write & submit jobs (Condor) 
-
-The first thing you need to do is to modify the --l option below, replacing these with your own paths on lxplus.The --n option tells the name in a given sample you want to run, the one below will give you the signal samples or 2017 would give you all 2017 files, see Files_2017_A.py for the keys to the dictionary in order to choose a different --n option to suit your needs. 
+To do some local file testing :
 
 ```sh
-cd TopLFV/bin
-python makeJobs.py --l /afs/cern.ch/user/a/asparker/public/LFVTopCode_MyFork/TopLFV/ --n SMEFTfr
-python submitJobs.py --l /afs/cern.ch/user/a/asparker/public/LFVTopCode_MyFork/TopLFV/ --n SMEFTfr
+cd PhysicsTools/NanoAODTools/crab
+```
+
+for faster local testing you can download a file to use or just copy mine from here :
+
+```sh
+MC :  scp /afs/cern.ch/user/a/asparker/public/LFVTopCode_MyFork/new_mc_nanocmssw_Jan2021/data/CMSSW_10_6_4/src/PhysicsTools/NanoAODTools/crab/tree_1.root .
+Data:  scp /afs/cern.ch/user/a/asparker/public/LFVTopCode_MyFork/new_mc_nanocmssw_Jan2021/data/CMSSW_10_6_4/src/PhysicsTools/NanoAODTools/crab/tree_15.root .
+```
+
+To perform a local test on MC (make sure PSet.py is pointing to a MC file e.g. tree_1.root https://github.com/UBParker/nanoAOD-tools/blob/nano_Jan20/crab/PSet.py#L13 :
+
+```sh
+python crab_script_test_new.py 0
+```
+
+local test on data (make sure PSet.py is pointing to a data file as in example above): 
+
+```sh
+python crab_script_dm.py 0 
+```
+
+
+## III. To write & submit jobs (CRAB3) 
+
+Mulit-CRAB workflow is not yet finished, for now there is a file to submit data jobs (crab_cfg_doubleMu.py)  and a file to submit MC jobs (crab_cfg_LFVSTVecC.py). If you want to submit a different dataset, just find the one you want here ( https://github.com/cms-top/topNanoAOD-datasets/blob/master/datasets_v6-1-X.yml ) and replace the dataset line in the crab_cfg_doubleMu.py file, then change the job submit name and storage location before you run a new CRAB job. If you want to submit a different MC sample then the crab_cfg_LFVSTVecC.py will work but you need a different input file like LFVtest.txt listing all files you want to run (if the dataset is not published like our signal samples) or just add a datset to process follwing the crab_cfg_doubleMu.py file
+
+If local testing is successful then to run a CRAB job, first edit the script:
+
+- to use your username instead of mine
+https://github.com/UBParker/nanoAOD-tools/blob/nano_cmssw/crab/crab_cfg_TT.py#L28
+
+- to write the files to wherever you have space  : 
+https://github.com/UBParker/nanoAOD-tools/blob/nano_cmssw/crab/crab_cfg_TT.py#L35
+
+-and then change the input dataset to something else we need e.g. https://github.com/cms-top/topNanoAOD-datasets/blob/master/datasets_v6-1-X.yml  sample: 
+https://github.com/UBParker/nanoAOD-tools/blob/nano_cmssw/crab/crab_cfg_TT.py#L20
+
+```sh
+cd PhysicsTools/NanoAODTools/crab
+
+crab submit crab_cfg_doubleMu.py
 
 
 
-Output files can be found at TopLFV/hists/2017/ 
+
+Output files can be found at eos location specified in crab_cfg_doubleMu.py file 
 ```
 
 ### makeJobs.py
