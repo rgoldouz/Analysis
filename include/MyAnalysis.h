@@ -518,7 +518,7 @@ void MyAnalysis::Init(TTree *tree)
    fChain->SetBranchAddress("event", &event, &b_event);
    fChain->SetBranchAddress("run", &run, &b_run);
 
-   Bool_t isMC =true;
+   //Bool_t isMC =true;
    //tree->GetEntry(1);
    //if( event < 1000 )isMC =true;
    
