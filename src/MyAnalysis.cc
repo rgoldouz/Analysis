@@ -490,7 +490,7 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
 	  metFilterPass = true;
       }
       if(year == "2017"){
-        if ( Flag_goodVertices==1  &&  Flag_globalSuperTightHalo2016Filter==1 && Flag_HBHENoiseFilter==1 &&  Flag_HBHENoiseIsoFilter==1 && Flag_EcalDeadCellTriggerPrimitiveFilter==1 && Flag_BadPFMuonFilter==1 && Flag_ecalBadCalibFilterV2 ==1)
+        if ( Flag_goodVertices==1  &&  Flag_globalSuperTightHalo2016Filter==1 && Flag_HBHENoiseFilter==1 &&  Flag_HBHENoiseIsoFilter==1 && Flag_EcalDeadCellTriggerPrimitiveFilter==1 && Flag_BadPFMuonFilter==1 && Flag_ecalBadCalibFilter ==1)
 	  metFilterPass = true;
       }
     }
@@ -501,7 +501,7 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
 	  metFilterPass = true;
       }
       if(year == "2017"){
-        if ( Flag_goodVertices==1  &&  Flag_globalSuperTightHalo2016Filter==1 && Flag_HBHENoiseFilter==1 &&  Flag_HBHENoiseIsoFilter==1 && Flag_EcalDeadCellTriggerPrimitiveFilter==1 && Flag_BadPFMuonFilter==1 && Flag_ecalBadCalibFilterV2 ==1)
+        if ( Flag_goodVertices==1  &&  Flag_globalSuperTightHalo2016Filter==1 && Flag_HBHENoiseFilter==1 &&  Flag_HBHENoiseIsoFilter==1 && Flag_EcalDeadCellTriggerPrimitiveFilter==1 && Flag_BadPFMuonFilter==1 && Flag_ecalBadCalibFilter ==1)
 	  metFilterPass = true;
       }
     }

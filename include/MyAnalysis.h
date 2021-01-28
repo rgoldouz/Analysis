@@ -219,7 +219,7 @@ public :
       Bool_t       Flag_EcalDeadCellTriggerPrimitiveFilter;
       Bool_t        Flag_BadPFMuonFilter;
       Bool_t        Flag_eeBadScFilter;
-      Bool_t        Flag_ecalBadCalibFilterV2;
+      Bool_t        Flag_ecalBadCalibFilter;
 
       Int_t         PV_npvsGood;
 
@@ -423,7 +423,7 @@ public :
    TBranch        *b_Flag_EcalDeadCellTriggerPrimitiveFilter;
    TBranch        *b_Flag_BadPFMuonFilter;
    TBranch        *b_Flag_eeBadScFilter;
-   TBranch        *b_Flag_ecalBadCalibFilterV2;
+   TBranch        *b_Flag_ecalBadCalibFilter;
 
 
    TBranch        *b_L1PreFiringWeight_Dn;
@@ -635,7 +635,7 @@ void MyAnalysis::Init(TTree *tree)
    fChain->SetBranchAddress("Pileup_nTrueInt", &Pileup_nTrueInt, &b_Pileup_nTrueInt);
    //};
    fChain->SetBranchAddress("Flag_HBHENoiseFilter", &Flag_HBHENoiseFilter, &b_Flag_HBHENoiseFilter);
-   fChain->SetBranchAddress("Flag_ecalBadCalibFilterV2", &Flag_ecalBadCalibFilterV2, &b_Flag_ecalBadCalibFilterV2);
+   fChain->SetBranchAddress("Flag_ecalBadCalibFilter", &Flag_ecalBadCalibFilter, &b_Flag_ecalBadCalibFilter);
    fChain->SetBranchAddress("Flag_eeBadScFilter", &Flag_eeBadScFilter, &b_Flag_eeBadScFilter);
    fChain->SetBranchAddress("Flag_BadPFMuonFilter", &Flag_BadPFMuonFilter, &b_Flag_BadPFMuonFilter);
    fChain->SetBranchAddress("Flag_EcalDeadCellTriggerPrimitiveFilter", &Flag_EcalDeadCellTriggerPrimitiveFilter, &b_Flag_EcalDeadCellTriggerPrimitiveFilter);
