@@ -1180,8 +1180,13 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     if (data == "mc") weight_Lumi = (1000*xs*lumi)/Nevent;
     
     if (data == "mc" && (year == "2016" || year == "2017")) { 
-      weight_prefiring = L1PreFiringWeight_Nom;
-      nominalWeights[7] = L1PreFiringWeight_Nom;
+      float weightPre;
+      weightPre = 1;
+      if ( 0.0 <  L1PreFiringWeight_Nom && L1PreFiringWeight_Nom <= 1.0 ){
+      	weightPre =  L1PreFiringWeight_Nom;
+      } 
+      weight_prefiring = weightPre;
+      nominalWeights[7] = weightPre;
       sysUpWeights[7] = L1PreFiringWeight_Up;
       sysDownWeights[7] = L1PreFiringWeight_Dn;
     }
