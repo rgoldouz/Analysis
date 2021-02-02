@@ -164,8 +164,8 @@ public :
    Float_t                      Jet_area[6];
    Float_t                      Jet_btagCMVA[6];
    Float_t                      Jet_btagCSVV2[6]; 
-   Int_t           Jet_btagDeepB[6];
-   Int_t           Jet_btagDeepC[6];
+   Float_t                      Jet_btagDeepB[6];
+   Float_t                      Jet_btagDeepC[6];
    Float_t                      Jet_btagDeepFlavB[6];
    Float_t                      Jet_btagDeepFlavC[6];
    Float_t                      Jet_chEmEF[6];
