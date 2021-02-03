@@ -767,7 +767,7 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
  
       }
     if(selectedLeptons->size()!=3 ||
-       ((*selectedLeptons)[0]->pt_ <27) ||
+       ((*selectedLeptons)[0]->pt_ <30) ||
        (abs((*selectedLeptons)[0]->charge_ + (*selectedLeptons)[1]->charge_ + (*selectedLeptons)[2]->charge_) != 1)) {
       //      ((*selectedLeptons)[0]->lep_ + (*selectedLeptons)[1]->lep_ != 11 && ((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M()<106 && ((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M()>76) ||
       //      ((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M()<20) {
