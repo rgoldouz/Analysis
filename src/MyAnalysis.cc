@@ -419,7 +419,6 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
   int nAccept=0;
   int nbjet;
   float t1,t2,t3,t4;
-  float z1,z2;
   float Topmass=0;
   float LFVTopmass=0;
   float Zmass;
