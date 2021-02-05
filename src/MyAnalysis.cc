@@ -1212,7 +1212,7 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     if (data == "mc" && (year == "2016" || year == "2017")) { 
       float weightPre;
       weightPre = 1;
-      if ( 0.0 <  L1PreFiringWeight_Nom && L1PreFiringWeight_Nom <= 1.0 ){
+      if ( L1PreFiringWeight_Nom >=0 && L1PreFiringWeight_Nom <= 1.0 ){
       	weightPre =  L1PreFiringWeight_Nom;
       } 
       weight_prefiring = weightPre;
