@@ -32,7 +32,7 @@ mc2017_samples['2017_ZZTo4L'] = [['/ZZTo4L_13TeV_powheg_pythia8/piedavid-TopNano
 
 mc2017_samples['2017_WZTo2L2Q'] = [['/WZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/piedavid-TopNanoAODv6-1-1_2017-a11761155c05d04d6fed5a2401fa93e8/USER','/store/user/piedavid/topNanoAOD/v6-1-1/2017/WZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/TopNanoAODv6-1-1_2017/200615_072720/0000/'], 'mc','','2017', '','5.595','41.53','27582164']
 
-mc2017_samples['2017_WZTo3LNu'] = [['/WZTo3LNu_13TeV-powheg-pythia8/piedavid-TopNanoAODv6-1-1_2017-a11761155c05d04d6fed5a2401fa93e8/USER','/store/user/piedavid/topNanoAOD/v6-1-1/2017/WZTo3LNu_13TeV-powheg-pythia8/TopNanoAODv6-1-1_2017/200615_072748/0000/'], 'mc','','2017', '','4.43','41.53','976400']
+mc2017_samples['2017_WZTo3LNu'] = [['/WZTo3LNu_TuneCP5_13TeV-amcatnloFXFX-pythia8/piedavid-TopNanoAODv6-1-1_2017-a11761155c05d04d6fed5a2401fa93e8/USER','/store/user/piedavid/topNanoAOD/v6-1-1/2017/WZTo3LNu_TuneCP5_13TeV-amcatnloFXFX-pythia8/TopNanoAODv6-1-1_2017/200615_072814/0000/'], 'mc','','2017', '','4.43','41.53','10987679]
 
 mc2017_samples['2017_WJetsToLNu'] = [['/WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/piedavid-TopNanoAODv6-1-1_2017-a11761155c05d04d6fed5a2401fa93e8/USER','/store/user/piedavid/topNanoAOD/v6-1-1/2017/WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/TopNanoAODv6-1-1_2017/200615_072257/0000/'], 'mc','','2017', '','61526.7','41.53','74635450']
 
