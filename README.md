@@ -141,6 +141,7 @@ make all
 cd PhysicsTools/NanoAODTools/crab
 
 source /cvmfs/cms.cern.ch/common/crab-setup.sh
+ln -s $CMSSW_BASE/src/PhysicsTools/NanoAODTools/scripts/haddnano.py .
 
 ```
 
@@ -189,6 +190,10 @@ https://github.com/UBParker/nanoAOD-tools/blob/nano_cmssw/crab/crab_cfg_TT.py#L2
 cd PhysicsTools/NanoAODTools/crab
 
 crab submit crab_cfg_doubleMu.py
+
+Then to submit everything you can do :
+
+python crab_submit_all.py --n Feb16
 
 
 
