@@ -623,7 +623,7 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
 
     if (verbose ) {
     cout << ".............................................................................................." << endl;
-    cout << "event " << event << endl;
+    cout << "event " << kentry << endl;
     }
     if(!(triggerPassEE || triggerPassEMu || triggerPassMuMu)) continue;
     //if (verbose ) {
