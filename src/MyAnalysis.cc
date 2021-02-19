@@ -50,7 +50,7 @@ Double_t deltaR(Double_t eta1, Double_t phi1, Double_t eta2, Double_t phi2) {
   return sqrt(dEta*dEta+dPhi*dPhi);
 }
 
-bool verbose=true;
+bool verbose=false;
 
 bool ComparePtLep(lepton_candidate *a, lepton_candidate *b) { return a->pt_ > b->pt_; }
 bool CompareFlavourLep(lepton_candidate *a, lepton_candidate *b) { return a->lep_ < b->lep_; }
@@ -380,7 +380,6 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
   TFile file_out (fname,"RECREATE");
   TTree tree_out("analysis","main analysis") ;
 
-  //    cout<<"ev_event"<<"   "<<"sf_Ele_Reco"<<"   "<<"sf_Ele_ID"<<"      "<<"sf_Mu_ID"<<"   "<<"sf_Mu_ISO"<<"   "<<"sf_trigger"<<"   "<<"PU weight"<<endl;
   std::vector<lepton_candidate*> *selectedLeptons;
   std::vector<lepton_candidate*> *selectedLeptons_copy;
   std::vector<jet_candidate*> *selectedJets;
