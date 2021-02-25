@@ -459,6 +459,8 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     triggerPassMuMu = false;
     metFilterPass = false;
     ch =10;
+    ch1 =10;
+    muPtSFRochester = 1.;
     sf_Ele_Reco =1;
     sf_Ele_ID =1;
     sf_Mu_ID =1;
@@ -628,7 +630,7 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
 
   if (verbose ){
       cout << "There are  " << nElectron << " Electrons and " << nMuon  << " Muons as well as  " <<  nJet << " Jets "<< endl ;
-      cout << "Electron loop begins"  << endl;
+      cout <<endl<< "Electron loop begins"  << endl;
   }
 
 // electron
@@ -640,7 +642,7 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
       eleEta = Electron_eta[l] + Electron_deltaEtaSC[l]; 
 
       if (verbose ){
-      cout <<endl<< "loop over Electron number  " << l << " has pt  " << elePt << " and SC eta " <<  eleEta<< endl;
+      cout << "loop over Electron number  " << l << " has pt  " << elePt << " and SC eta " <<  eleEta<< endl;
       cout << "mass  " << Electron_mass[l] << " phi   " << Electron_phi[l] << endl  ;
        }
         
@@ -669,17 +671,12 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     }
 
     if (verbose ){
-          cout << "Muon loop begins"  << endl;
+          cout <<endl<< "Muon loop begins"  << endl;
     }
       
 // Muon
-    int genMuIdx =0;  
+    int genMuIdx =0;
     for (UInt_t l=0;l< nMuon ;l++){
-     
-      if (verbose ){
-          cout << "loop over Muon number  " << l << " has pt  " << Muon_pt[l] << " and eta " <<  Muon_eta[l] << endl;
-          cout << "mass  " << Muon_mass[l] << " phi   " << Muon_phi[l] << endl  ;
-      }
         
       if(data == "data"){
         muPtSFRochester = rc.kScaleDT(Muon_charge[l], Muon_pt[l],Muon_eta[l],Muon_phi[l], 0, 0);
@@ -688,7 +685,6 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
 	     genMuIdx = Muon_genPartIdx[l];
          /// ??? I think mu_mc_index = Muon_genPartIdx
         
-         muPtSFRochester = 1.;
          if (genMuIdx!=-1 && abs(GenPart_pdgId[genMuIdx]) == 13) muPtSFRochester = rc.kSpreadMC(Muon_charge[l], Muon_pt[l],Muon_eta[l],Muon_phi[l], GenPart_pt[genMuIdx],0, 0);
 
          //if (Muon_nTrackerLayers[l] > 30)  cout << " !!!!!!!!!!!!!!!!!! set muPtSFRochester = 1 ,  Muon has charge " << Muon_charge[l] << " , phi=  " << Muon_phi[l] << " , Muon_nTrackerLayers[l] " <<  Muon_nTrackerLayers[l] << endl;   
@@ -702,7 +698,7 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
       }
       
       if (verbose ){
-         cout <<endl<< "loop over Muon  number  " << l << " has pt  " << muPtSFRochester * Muon_pt[l] << " and eta " <<  Muon_eta[l] << endl;
+         cout << "loop over Muon  number  " << l << " has pt  " << muPtSFRochester * Muon_pt[l] << " and eta " <<  Muon_eta[l] << endl;
          cout << "Muon_genPartIdx[l] = genMuIdx = " << genMuIdx  << "  abs(GenPart_pdgId[Muon_genPartIdx[l]])   " <<  abs(GenPart_pdgId[Muon_genPartIdx[l]]) << endl;
          cout << "Muon_pfRelIso04_all[l] = " << Muon_pfRelIso04_all[l] <<endl;
       }
@@ -752,7 +748,7 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     sort(selectedLeptons->begin(), selectedLeptons->end(), ComparePtLep);
       
     if (verbose ){
-          cout << "event has X leptons, X = " <<  selectedLeptons->size()  << endl;   
+          cout <<endl<< "event has X leptons, X = " <<  selectedLeptons->size()  << endl;   
     }
      
     // trilepton selection
@@ -861,12 +857,12 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     bool jetlepfail;
       
     if (verbose ){
-       cout << "Jet loop begins"  << endl;
+       cout <<endl<< "Jet loop begins"  << endl;
     }
       
     for (UInt_t l=0;l< nJet;l++){
       if (verbose ){
-          cout <<endl<< "loop over Jet number  " << l << " has pt  " << Jet_pt[l] << " and eta " <<  Jet_eta[l] << endl;
+          cout << "loop over Jet number  " << l << " has pt  " << Jet_pt[l] << " and eta " <<  Jet_eta[l] << endl;
           cout << "mass  " << Jet_mass[l] << " phi   " << Jet_phi[l] << endl  ;   
       }
       if(data == "mc" && ((Jet_pt)[l] <30 || abs((Jet_eta)[l]) > 2.4)) continue;
