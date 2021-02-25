@@ -32,14 +32,14 @@ public :
 // actual array length is nJets or nMuons etc dependig on collection
 
 // Declaration of leaf types
-   ULong64_t          event;
+   ULong64_t       event;
    UInt_t          run;
    UInt_t          luminosityBlock;
 
 
 
 
-   UInt_t            nElectron;
+   UInt_t                       nElectron;
    Float_t                      Electron_deltaEtaSC[6];
    Float_t                      Electron_dr03EcalRecHitSumEt[6];
    Float_t                      Electron_dr03HcalDepth1TowerSumEt[6];
@@ -86,9 +86,9 @@ public :
    Int_t           Electron_vidNestedWPBitmap[6];
    Int_t           Electron_vidNestedWPBitmapHEEP[6];
    Bool_t          Electron_convVeto[6];
-   Bool_t           Electron_cutBased_HEEP[6];
-   Bool_t           Electron_isPFcand[6];
-   UChar_t           Electron_lostHits[6];
+   Bool_t          Electron_cutBased_HEEP[6];
+   Bool_t          Electron_isPFcand[6];
+   UChar_t         Electron_lostHits[6];
    Int_t           Electron_mvaFall17V1Iso_WP80[6];
    Int_t           Electron_mvaFall17V1Iso_WP90[6];
    Int_t           Electron_mvaFall17V1Iso_WPL[6];
@@ -101,12 +101,12 @@ public :
    Int_t           Electron_mvaFall17V2noIso_WP80[6];
    Int_t           Electron_mvaFall17V2noIso_WP90[6];
    Int_t           Electron_mvaFall17V2noIso_WPL[6];
-   UChar_t           Electron_seedGain[6];
+   UChar_t         Electron_seedGain[6];
 
 
 
-   UInt_t                  nMuon;
-    Int_t                       Muon_genPartIdx[6];
+   UInt_t                       nMuon;
+   Int_t                        Muon_genPartIdx[6];
 
    Float_t                      Muon_dxy[6];
    Float_t                      Muon_dxyErr[6];
@@ -145,12 +145,12 @@ public :
    Int_t           Muon_isGlobal[6];
    Int_t           Muon_isPFcand[6];
    Int_t           Muon_isTracker[6];
-   Bool_t           Muon_looseId[6];
-   Bool_t           Muon_mediumId[6];
+   Bool_t          Muon_looseId[6];
+   Bool_t          Muon_mediumId[6];
    Int_t           Muon_mediumPromptId[6];
    Int_t           Muon_miniIsoId[6];
    Int_t           Muon_multiIsoId[6];
-   UChar_t           Muon_mvaId[6];
+   UChar_t         Muon_mvaId[6];
    Int_t           Muon_pfIsoId[6];
    Int_t           Muon_softId[6];
    Int_t           Muon_softMvaId[6];
@@ -161,7 +161,7 @@ public :
    Float_t                  MET_phi;
    Float_t                  MET_pt;
 
-    UInt_t                         nJet; 
+   UInt_t                       nJet;
    Float_t                      Jet_area[6];
    Float_t                      Jet_btagCMVA[6];
    Float_t                      Jet_btagCSVV2[6]; 
@@ -228,11 +228,11 @@ public :
    Float_t             L1PreFiringWeight_Nom;
    Float_t             L1PreFiringWeight_Up;
 
-    Int_t             nGenPart;
-   Float_t             GenPart_mass[100];
-   Float_t             GenPart_phi[100];
-   Float_t             GenPart_pt[100];
-   Float_t             GenPart_eta[100];
+   Int_t           nGenPart;
+   Float_t         GenPart_mass[100];
+   Float_t         GenPart_phi[100];
+   Float_t         GenPart_pt[100];
+   Float_t         GenPart_eta[100];
    Int_t           GenPart_genPartIdxMother[100];
    Int_t           GenPart_pdgId[100];
    Int_t           GenPart_status[100];

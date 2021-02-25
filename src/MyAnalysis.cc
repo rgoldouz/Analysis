@@ -42,7 +42,6 @@ Double_t deltaPhi(Double_t phi1, Double_t phi2) {
   return dPhi;
 }
 
-
 Double_t deltaR(Double_t eta1, Double_t phi1, Double_t eta2, Double_t phi2) {
   Double_t dEta, dPhi ;
   dEta = eta1 - eta2;
@@ -510,19 +509,19 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     if(data == "mc" && year == "2016"){
       if(trig_HLT_Ele23_Ele12_CaloId
       L_TrackIdL_IsoVL_DZ_accept || trig_HLT_Ele27_WPTight_Gsf_accept ) triggerPassEE =true;
-      if(trig_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_accept || trig_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_accept || trig_HLT_Ele27_WPTight_Gsf_accept || trig_HLT_IsoMu24_accept || trig_HLT_IsoTkMu24_accept) triggerPassEMu =true;
+      if(trig_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_accept || trig_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_accept || trig_HLT_Ele27_WPTight_Gsf_accept || trig_HLT_IsoMu24_accept || trig_HLT_IsoTkMu24_accept) triggerPassEMu =true;
       if(trig_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_accept || trig_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_accept || trig_HLT_IsoMu24_accept || trig_HLT_IsoTkMu24_accept) triggerPassMuMu =true;
     }
 */
     if(data == "mc" && year == "2017"){
       if(HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL || HLT_Ele35_WPTight_Gsf) triggerPassEE =true;
-      if(HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ || HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL || HLT_Ele35_WPTight_Gsf || HLT_IsoMu27 ) triggerPassEMu =true;
+      if(HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ || HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ || HLT_Ele35_WPTight_Gsf || HLT_IsoMu27 ) triggerPassEMu =true;
       if(HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8 || HLT_IsoMu27) triggerPassMuMu =true;
     }
 /*
     if(data == "mc" && year == "2018"){
       if(trig_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_accept || trig_HLT_Ele32_WPTight_Gsf_accept) triggerPassEE =true;
-      if(trig_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_accept || trig_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_accept || trig_HLT_Ele32_WPTight_Gsf_accept || trig_HLT_IsoMu24_accept) triggerPassEMu =true;
+      if(trig_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_accept || trig_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_accept || trig_HLT_Ele32_WPTight_Gsf_accept || trig_HLT_IsoMu24_accept) triggerPassEMu =true;
       if(trig_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_accept || trig_HLT_IsoMu24_accept) triggerPassMuMu =true;
     } 
 */
@@ -533,15 +532,15 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
       if(year == "2016"){
         if(run == "H"){
           if(dataset=="MuonEG"){
-            if(trig_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_accept || trig_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_accept) triggerPassEMu =true;
+            if(trig_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_accept || trig_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_DZ_accept) triggerPassEMu =true;
           }
           if(dataset=="SingleElectron"){
             if(!(trig_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_accept) && trig_HLT_Ele27_WPTight_Gsf_accept) triggerPassEE =true;
-            if(!(trig_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_accept || trig_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_accept) && trig_HLT_Ele27_WPTight_Gsf_accept) triggerPassEMu =true;
+            if(!(trig_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_accept || trig_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_DZ_accept) && trig_HLT_Ele27_WPTight_Gsf_accept) triggerPassEMu =true;
           }
           if(dataset=="SingleMuon"){
             if(!(trig_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_accept || trig_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_accept) && (trig_HLT_IsoMu24_accept || trig_HLT_IsoTkMu24_accept)) triggerPassMuMu =true;
-            if(!(trig_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_accept || trig_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_accept || trig_HLT_Ele27_WPTight_Gsf_accept) && (trig_HLT_IsoMu24_accept || trig_HLT_IsoTkMu24_accept)) triggerPassEMu =true; 
+            if(!(trig_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_accept || trig_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_DZ_accept || trig_HLT_Ele27_WPTight_Gsf_accept) && (trig_HLT_IsoMu24_accept || trig_HLT_IsoTkMu24_accept)) triggerPassEMu =true;
           }
           if(dataset=="DoubleEG"){
             if(trig_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_accept) triggerPassEE =true;
@@ -552,15 +551,15 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
         }
         if(run != "H"){
           if(dataset=="MuonEG"){
-            if(trig_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_accept || trig_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_accept) triggerPassEMu =true;
+            if(trig_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_accept || trig_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_accept) triggerPassEMu =true;
           }
           if(dataset=="SingleElectron"){
             if(!(trig_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_accept) && trig_HLT_Ele27_WPTight_Gsf_accept) triggerPassEE =true;
-            if(!(trig_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_accept || trig_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_accept) && trig_HLT_Ele27_WPTight_Gsf_accept) triggerPassEMu =true;
+            if(!(trig_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_accept || trig_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_accept) && trig_HLT_Ele27_WPTight_Gsf_accept) triggerPassEMu =true;
           }
           if(dataset=="SingleMuon"){
             if(!(trig_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_accept || trig_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_accept) && (trig_HLT_IsoMu24_accept || trig_HLT_IsoTkMu24_accept)) triggerPassMuMu =true;
-            if(!(trig_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_accept || trig_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_accept || trig_HLT_Ele27_WPTight_Gsf_accept) && (trig_HLT_IsoMu24_accept || trig_HLT_IsoTkMu24_accept)) triggerPassEMu =true;
+            if(!(trig_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_accept || trig_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_accept || trig_HLT_Ele27_WPTight_Gsf_accept) && (trig_HLT_IsoMu24_accept || trig_HLT_IsoTkMu24_accept)) triggerPassEMu =true;
           }
           if(dataset=="DoubleEG"){
             if(trig_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_accept) triggerPassEE =true;
@@ -573,15 +572,15 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
       */
       if(year == "2017"){
         if(dataset=="MuonEG"){
-          if(HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ || HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL ) triggerPassEMu =true;
+          if(HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ || HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ ) triggerPassEMu =true;
         }
         if(dataset=="SingleElectron"){
           if(!(HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL && HLT_Ele35_WPTight_Gsf)) triggerPassEE =true;
-          if(!(HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ || HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL) && HLT_Ele35_WPTight_Gsf) triggerPassEMu =true;
+          if(!(HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ || HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ) && HLT_Ele35_WPTight_Gsf) triggerPassEMu =true;
         }
         if(dataset=="SingleMuon"){
 	  if(!HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8 && HLT_IsoMu27) triggerPassMuMu =true;
-          if(!(HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ|| HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL || HLT_Ele35_WPTight_Gsf) && HLT_IsoMu27) triggerPassEMu =true;
+          if(!(HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ|| HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ || HLT_Ele35_WPTight_Gsf) && HLT_IsoMu27) triggerPassEMu =true;
         }
         if(dataset=="DoubleEG"){
           if(HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL) triggerPassEE =true;
@@ -593,15 +592,15 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
 /*
       if(year == "2018"){
         if(dataset=="MuonEG"){
-          if(trig_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_accept || trig_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_accept) triggerPassEMu =true;
+          if(trig_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_accept || trig_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_accept) triggerPassEMu =true;
         }
         if(dataset=="EGamma"){
           if(trig_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_accept || trig_HLT_Ele32_WPTight_Gsf_accept) triggerPassEE =true;
-          if(!(trig_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_accept || trig_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_accept) && trig_HLT_Ele32_WPTight_Gsf_accept) triggerPassEMu =true;
+          if(!(trig_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_accept || trig_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_accept) && trig_HLT_Ele32_WPTight_Gsf_accept) triggerPassEMu =true;
 	}
 	if(dataset=="SingleMuon"){
 	  if(!trig_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_accept && trig_HLT_IsoMu24_accept) triggerPassMuMu =true;
-	  if(!(trig_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_accept || trig_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_accept || trig_HLT_Ele32_WPTight_Gsf_accept) && trig_HLT_IsoMu24_accept) triggerPassEMu =true;
+	  if(!(trig_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_accept || trig_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_accept || trig_HLT_Ele32_WPTight_Gsf_accept) && trig_HLT_IsoMu24_accept) triggerPassEMu =true;
 	}
 	if(dataset=="DoubleMu"){
 	  if(trig_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_accept) triggerPassMuMu =true;
@@ -610,41 +609,27 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
 */
 
     }
- 
-
-    //if (verbose ){
-    //cout<<" event  "<< "HLT_IsoMu27   "<<endl;
-    //cout<< event<<"  "<< HLT_IsoMu27  <<endl;
-
-    //cout<< triggerPassEE << " " << triggerPassEMu << "  " << triggerPassMuMu <<endl;
-    //cout<< "triggerPassEE" << " " << "triggerPassEMu" << "  " << "triggerPassMuMu" <<endl;
-
 
     if (verbose ) {
     cout << ".............................................................................................." << endl;
     cout << "event " << kentry << endl;
     }
     if(!(triggerPassEE || triggerPassEMu || triggerPassMuMu)) continue;
-    //if (verbose ) {
-    //    cout<<" event passed triggers!  "<<endl;
-    // }
     if(!metFilterPass) continue;
     if (verbose ) {
-        cout<<" event passed Trigger & MET filters! "<<endl;
+        cout<< "event passed Trigger & MET filters! "<<endl;
     };
+      
 // lepton selection
   selectedLeptons = new std::vector<lepton_candidate*>();//typlical ordered by pT
   selectedLeptons_copy = new std::vector<lepton_candidate*>();// ordered by [e, mu , bachelor lepton ]
   Ht=0;
   Ms=0;
 
-     if (verbose ){
-      cout << "There are  " << nElectron << " Electrons and " << nMuon  << " Muons as well as  " <<  nJet << " Jets "<< endl ;   
-      //cout << "mass of Jet 0   " << Jet_mass[0] << " phi of electron 0    " << Electron_phi[0] << endl ;   
-     cout << "Electron loop begins"  << endl;   
-     }
-
-
+  if (verbose ){
+      cout << "There are  " << nElectron << " Electrons and " << nMuon  << " Muons as well as  " <<  nJet << " Jets "<< endl ;
+      cout << "Electron loop begins"  << endl;
+  }
 
 // electron
     for (UInt_t l=0;l< nElectron ;l++){
@@ -654,18 +639,20 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
       elePt = Electron_pt[l]  ;   
       eleEta = Electron_eta[l] + Electron_deltaEtaSC[l]; 
 
-      //if (verbose ){
-      //cout << "loop over Electron number  " << l << " has pt  " << elePt << " and SC eta " <<  eleEta<< endl;   
-      //cout << "mass  " << Electron_mass[l] << " phi   " << Electron_phi[l] << endl  ;   
-      // }
+      if (verbose ){
+      cout <<endl<< "loop over Electron number  " << l << " has pt  " << elePt << " and SC eta " <<  eleEta<< endl;
+      cout << "mass  " << Electron_mass[l] << " phi   " << Electron_phi[l] << endl  ;
+       }
+        
       if(elePt <20 || abs(eleEta) > 2.4 || (abs(eleEta)> 1.4442 && (abs(eleEta)< 1.566))) continue;
       if((int) Electron_cutBased[l] < 4) continue; //  4 = tight for cut based ID
       selectedLeptons->push_back(new lepton_candidate(elePt,eleEta,Electron_phi[l],Electron_charge[l],l,1));
       selectedLeptons_copy->push_back(new lepton_candidate(elePt,eleEta,Electron_phi[l],Electron_charge[l],l,1));
       Ht+=((*selectedLeptons)[selectedLeptons->size()-1]->p4_).Pt();
       Ms+=((*selectedLeptons)[selectedLeptons->size()-1]->p4_).M();
+        
       if (verbose ){
-       cout << "selected Electron number  " << l << " has pt  " << elePt << " and SC eta " <<  eleEta << endl ;   
+       cout << "Electron number  " << l << " is selected !" << endl ;
       }
 
       if (data == "mc"){
@@ -681,29 +668,26 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
       }
     }
 
-    //if (verbose ){
-    //      cout << "Muon loop begins"  << endl;   
- 
-    //      }    
+    if (verbose ){
+          cout << "Muon loop begins"  << endl;
+    }
+      
 // Muon
     int genMuIdx =0;  
     for (UInt_t l=0;l< nMuon ;l++){
      
-
-      //if (verbose ){
-      //    cout << "loop over Muon  number  " << l << " has pt  " << Muon_pt[l] << " and eta " <<  Muon_eta[l] << endl;   
-      //    cout << "mass  " << Muon_mass[l] << " phi   " << Muon_phi[l] << endl  ;   
-      //}
+      if (verbose ){
+          cout << "loop over Muon number  " << l << " has pt  " << Muon_pt[l] << " and eta " <<  Muon_eta[l] << endl;
+          cout << "mass  " << Muon_mass[l] << " phi   " << Muon_phi[l] << endl  ;
+      }
+        
       if(data == "data"){
         muPtSFRochester = rc.kScaleDT(Muon_charge[l], Muon_pt[l],Muon_eta[l],Muon_phi[l], 0, 0);
       }
       if (data == "mc"){
-	 genMuIdx = Muon_genPartIdx[l];
+	     genMuIdx = Muon_genPartIdx[l];
          /// ??? I think mu_mc_index = Muon_genPartIdx
-         if (verbose ){
-          cout << "loop over Muon  number  " << l << " has pt  " << Muon_pt[l] << " and eta " <<  Muon_eta[l] << endl;   
-          cout << "Muon_genPartIdx[l] = genMuIdx = " << genMuIdx  << "  abs(GenPart_pdgId[Muon_genPartIdx[l]])   " <<  abs(GenPart_pdgId[Muon_genPartIdx[l]]) << endl  ;   
-         }
+        
          muPtSFRochester = 1.;
          if (genMuIdx!=-1 && abs(GenPart_pdgId[genMuIdx]) == 13) muPtSFRochester = rc.kSpreadMC(Muon_charge[l], Muon_pt[l],Muon_eta[l],Muon_phi[l], GenPart_pt[genMuIdx],0, 0);
 
@@ -716,14 +700,18 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
           muPtSFRochester = rc.kSmearMC(Muon_charge[l], Muon_pt[l] , Muon_eta[l] , Muon_phi[l], Muon_nTrackerLayers[l] , gRandom->Rndm(),0, 0);
          }
       }
-      //cout << "before pt and eta cut on muons  " << endl;
+      
+      if (verbose ){
+         cout <<endl<< "loop over Muon  number  " << l << " has pt  " << muPtSFRochester * Muon_pt[l] << " and eta " <<  Muon_eta[l] << endl;
+         cout << "Muon_genPartIdx[l] = genMuIdx = " << genMuIdx  << "  abs(GenPart_pdgId[Muon_genPartIdx[l]])   " <<  abs(GenPart_pdgId[Muon_genPartIdx[l]]) << endl;
+         cout << "Muon_pfRelIso04_all[l] = " << Muon_pfRelIso04_all[l] <<endl;
+      }
+        
       if( (muPtSFRochester * Muon_pt[l] <20) || (abs(Muon_eta[l]) > 2.4) ) continue;
-      //cout << "passed pt and eta cut on muons !!! " << endl;
 
       ///  Muon_mvaId == 2 is mu_MvaMedium
       /// https://github.com/Fedespring/cmssw/blob/3f7b3c37caeaaf058bb1c7461b9c3c91a0672f68/PhysicsTools/NanoAOD/python/muons_cff.py#L138
       //if ((!(*mu_MvaMedium)[l]) || (!(*mu_CutBasedIdMedium)[l])) continue;
-      if (verbose) cout <<"  Muon_pfRelIso04_all[l] = " << Muon_pfRelIso04_all[l] <<endl; 
       if (  (int) Muon_mvaId[l] < 2 || !(Muon_mediumId[l]) ) continue;
 
       
@@ -733,9 +721,11 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
       selectedLeptons_copy->push_back(new lepton_candidate(muPtSFRochester * Muon_pt[l],Muon_eta[l],Muon_phi[l],Muon_charge[l],l,10));
       Ht+=((*selectedLeptons)[selectedLeptons->size()-1]->p4_).Pt();
       Ms+=((*selectedLeptons)[selectedLeptons->size()-1]->p4_).M();
+        
       if (verbose ){
-	cout << "selected Muon number  " << l << " has pt  " << Muon_pt[l] << " and eta " <<  Muon_eta[l] << endl ;   
+	     cout << "Muon number  " << l << " is selected !" << endl ;
       }
+        
       if (data == "mc" && year == "2016") {
 	sf_Mu_ID = sf_Mu_ID * scale_factor(&sf_Mu_ID_H, Muon_eta[l], Muon_pt[l],"");
 	nominalWeights[2] = nominalWeights[2] * scale_factor(&sf_Mu_ID_H, Muon_eta[l], Muon_pt[l],"");
@@ -760,18 +750,15 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
       }
     }
     sort(selectedLeptons->begin(), selectedLeptons->end(), ComparePtLep);
-    // trilepton selection
-    if (verbose &&    selectedLeptons->size()==3 ) cout<<event<<" ### has 3 leptons   "<<metFilterPass<<"  "<<selectedLeptons->size()<<endl;
-    
-      if (verbose ){
+      
+    if (verbose ){
           cout << "event has X leptons, X = " <<  selectedLeptons->size()  << endl;   
- 
-      }
+    }
+     
+    // trilepton selection
     if(selectedLeptons->size()!=3 ||
        ((*selectedLeptons)[0]->pt_ <30) ||
        (abs((*selectedLeptons)[0]->charge_ + (*selectedLeptons)[1]->charge_ + (*selectedLeptons)[2]->charge_) != 1)) {
-      //      ((*selectedLeptons)[0]->lep_ + (*selectedLeptons)[1]->lep_ != 11 && ((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M()<106 && ((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M()>76) ||
-      //      ((*selectedLeptons)[0]->p4_ + (*selectedLeptons)[1]->p4_).M()<20) {
       for (int l=0;l<(int)selectedLeptons->size();l++){
         delete (*selectedLeptons)[l];
         delete (*selectedLeptons_copy)[l];
@@ -872,9 +859,14 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     selectedJets = new std::vector<jet_candidate*>();
     selectedJets_copy = new std::vector<jet_candidate*>();
     bool jetlepfail;
+      
+    if (verbose ){
+       cout << "Jet loop begins"  << endl;
+    }
+      
     for (UInt_t l=0;l< nJet;l++){
       if (verbose ){
-          cout << "loop over Jet  number  " << l << " has pt  " << Jet_pt[l] << " and eta " <<  Jet_eta[l] << endl;   
+          cout <<endl<< "loop over Jet number  " << l << " has pt  " << Jet_pt[l] << " and eta " <<  Jet_eta[l] << endl;
           cout << "mass  " << Jet_mass[l] << " phi   " << Jet_phi[l] << endl  ;   
       }
       if(data == "mc" && ((Jet_pt)[l] <30 || abs((Jet_eta)[l]) > 2.4)) continue;
@@ -919,6 +911,11 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
       }
       Ht+=((*selectedJets)[selectedJets->size()-1]->p4_).Pt();
       Ms+=((*selectedJets)[selectedJets->size()-1]->p4_).M();
+        
+      if (verbose ){
+           cout << "Jet number  " << l << " is selected !" << endl ;
+      }
+        
     }
 
     sort(selectedJets->begin(), selectedJets->end(), ComparePtJet);
@@ -927,13 +924,8 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     nbjet=0;
     for (int l=0;l<(int)selectedJets->size();l++){
       if((*selectedJets)[l]->btag_) nbjet++;
-      if (verbose ){
-	cout << "selected Jet number " << l  <<" has pt  " << (*selectedJets)[l]->pt_ << " and eta " << (*selectedJets)[l]->eta_ ;
-      }
       if(data == "data") continue;
-      // if (verbose ){
-      // cout << "selected Jet number " << l  <<" has pt  " << (*selectedJets)[l]->pt_ << " and eta " << (*selectedJets)[l]->eta_ ;   
-      // }
+      // B-tagging systematics
       if( abs((*selectedJets)[l]->flavor_) == 5){
         if( (*selectedJets)[l]->btag_ ) {
           P_bjet_mc = P_bjet_mc * scale_factor(&btagEff_b_H, (*selectedJets)[l]->pt_, abs((*selectedJets)[l]->eta_),"");
@@ -1100,6 +1092,7 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     JeDr=9;
     JmuDr=9;
     tM=0;
+    //Reconstruct Z candidate
     if (ch==1&&!compete){
       if(ch1==0||ch1==1){
 	    Zmass=((*selectedLeptons_copy)[0]->p4_+(*selectedLeptons_copy)[2]->p4_).M();
@@ -1149,6 +1142,7 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
           tM=sqrt(2*(MET_pt)*((*selectedLeptons_copy)[0]->p4_).Et()*(1-cos(deltaPhi((*selectedLeptons_copy)[0]->phi_,(MET_phi)))));
         }
     }
+      
     if (Zmass>76&&Zmass<106) {
       OnZ=true;
     }
@@ -1165,18 +1159,6 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
         JeDr=deltaR((*selectedLeptons_copy)[0]->eta_,(*selectedLeptons_copy)[0]->phi_,(*selectedJets_copy)[1]->eta_,(*selectedJets_copy)[1]->phi_);
         JmuDr=deltaR((*selectedLeptons_copy)[1]->eta_,(*selectedLeptons_copy)[1]->phi_,(*selectedJets_copy)[1]->eta_,(*selectedJets_copy)[1]->phi_);
     }
-    
-    //    if(ch==1){//debug
-    //    cout<<endl<<"ch1 = "<<ch1<<endl;
-    //    cout<<"compete = "<<compete<<endl;
-    //    cout<<"lep1 flavour = "<<(*selectedLeptons_copy)[0]->lep_<<" lep1 charge = "<<(*selectedLeptons_copy)[0]->charge_<<" ba = "<<(*selectedLeptons_copy)[0]->isbalep<<endl;
-    //    cout<<"lep2 flavour = "<<(*selectedLeptons_copy)[1]->lep_<<" lep1 charge = "<<(*selectedLeptons_copy)[1]->charge_<<" ba = "<<(*selectedLeptons_copy)[1]->isbalep<<endl;
-    //    cout<<"lep3 flavour = "<<(*selectedLeptons_copy)[2]->lep_<<" lep1 charge = "<<(*selectedLeptons_copy)[2]->charge_<<" ba = "<<(*selectedLeptons_copy)[2]->isbalep<<endl;
-    //      }
-    //
-    //    if (data == "mc" && ch==0) sf_Trigger = scale_factor(&sf_triggeree_H, (*selectedLeptons)[0]->pt_, (*selectedLeptons)[1]->pt_,"");
-    // i//f (data == "mc" && ch==1) sf_Trigger = scale_factor(&sf_triggeremu_H, (*selectedLeptons)[0]->pt_, (*selectedLeptons)[1]->pt_,"");
-    //if (data == "mc" && ch==2) sf_Trigger = scale_factor(&sf_triggermumu_H, (*selectedLeptons)[0]->pt_, (*selectedLeptons)[1]->pt_,"");
 
     if (data == "mc" && (*selectedLeptons)[0]->lep_ + (*selectedLeptons)[1]->lep_ == 2) {
       sf_Trigger = scale_factor(&sf_triggeree_H, (*selectedLeptons)[0]->pt_, (*selectedLeptons)[1]->pt_,"");}
@@ -1219,7 +1201,6 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
       sysDownWeights[7] = L1PreFiringWeight_Dn;
     }
     if (data == "mc" && ifTopPt) {
-
       
       for (int l=0;l< nGenPart ;l++){
         //float GenPart_energy;
@@ -1227,9 +1208,7 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
         float GenEnergy;
         TLorentzVector* gen_temp = new TLorentzVector() ;
         gen_temp->SetPtEtaPhiM( GenPart_pt[l],(GenPart_eta)[l],(GenPart_phi)[l], (GenPart_mass)[l] );
-        GenEnergy = gen_temp->Energy() ; 
-  
-
+        GenEnergy = gen_temp->Energy() ;
 
         if(GenPart_status[l]<30 && GenPart_status[l]>20 && GenPart_pdgId[l]==24) wp.SetPtEtaPhiE(GenPart_pt[l], GenPart_eta[l], (GenPart_phi)[l], GenEnergy) ;
         if(GenPart_status[l]<30 && GenPart_status[l]>20 && GenPart_pdgId[l]==-24) wm.SetPtEtaPhiE(GenPart_pt[l], (GenPart_eta)[l], (GenPart_phi)[l], GenEnergy) ;
@@ -1245,14 +1224,11 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
 
     if (data == "mc") weight_lep = sf_Ele_Reco * sf_Ele_ID * sf_Mu_ID * sf_Mu_ISO * sf_Trigger * weight_PU * weight_Lumi  * mc_w_sign * weight_prefiring * weight_topPt;
     if (data == "mc") weight_lepB = sf_Ele_Reco * sf_Ele_ID * sf_Mu_ID * sf_Mu_ISO * sf_Trigger * weight_PU * weight_Lumi * mc_w_sign *  weight_prefiring * weight_topPt * (P_bjet_data/P_bjet_mc);
-    //     cout<<ev_event<<"   "<<sf_Ele_Reco<<"   "<<sf_Ele_ID<<"      "<<sf_Mu_ID<<"   "<<sf_Mu_ISO<<"   "<<sf_Trigger<<"   "<<weight_PU<<endl;
-    //    if(selectedJets->size()<3 || MET_pt>30 || nbjet !=1) continue;
     
     weight_lepC = weight_lep;
     if (ch==1&&compete) weight_lepC = weight_lepB;
 
-
-    /// ??? fix this? which MET do we want?
+    // ??? fix this? which MET do we want?
     float MET_pt0;
     MET_pt0 = (MET_pt);
     float MET_phi0;
@@ -1305,7 +1281,6 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     Hists[ch][0][44]->Fill(JeDr,weight_lepB);
     Hists[ch][0][45]->Fill(JmuDr,weight_lepB);
     Hists[ch][0][46]->Fill(tM,weight_lepB);
-
 
     for (int n=0;n<8;++n){
     HistsSysUp[ch][0][0][n]->Fill((*selectedLeptons)[0]->pt_,weight_lep * (sysUpWeights[n]/nominalWeights[n]));
@@ -1454,8 +1429,8 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     Hists[ch][1][45]->Fill(JmuDr,weight_lepB);
     Hists[ch][1][46]->Fill(tM,weight_lepB);
     }
+      
     //Off Z
-
     if(!OnZ){
     Hists[ch][2][0]->Fill((*selectedLeptons)[0]->pt_,weight_lep);
     Hists[ch][2][1]->Fill((*selectedLeptons)[0]->eta_,weight_lep);
@@ -1555,6 +1530,7 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     Hists[ch][3][45]->Fill(JmuDr,weight_lepB);
     Hists[ch][3][46]->Fill(tM,weight_lepB);
     }
+      
     if(nbjet==1 && !OnZ){
     Hists[ch][4][0]->Fill((*selectedLeptons)[0]->pt_,weight_lepB);
     Hists[ch][4][1]->Fill((*selectedLeptons)[0]->eta_,weight_lepB);
@@ -1604,6 +1580,7 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     Hists[ch][4][45]->Fill(JmuDr,weight_lepB);
     Hists[ch][4][46]->Fill(tM,weight_lepB);
     }
+      
     if(nbjet>=2 && !OnZ){
     Hists[ch][5][0]->Fill((*selectedLeptons)[0]->pt_,weight_lepB);
     Hists[ch][5][1]->Fill((*selectedLeptons)[0]->eta_,weight_lepB);
@@ -1653,6 +1630,7 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     Hists[ch][5][45]->Fill(JmuDr,weight_lepB);
     Hists[ch][5][46]->Fill(tM,weight_lepB);
     }
+      
     if(MET_pt0<20 && !OnZ){
     Hists[ch][6][0]->Fill((*selectedLeptons)[0]->pt_,weight_lep);
     Hists[ch][6][1]->Fill((*selectedLeptons)[0]->eta_,weight_lep);
@@ -1802,7 +1780,6 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     Hists[ch][8][45]->Fill(JmuDr,weight_lepB);
     Hists[ch][8][46]->Fill(tM,weight_lepB);
     }
-
 
     if(nbjet==1 && MET_pt0>20 && selectedJets->size()<=2 && !OnZ){
     Hists[ch][9][0]->Fill((*selectedLeptons)[0]->pt_,weight_lepB);
@@ -2314,6 +2291,7 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
       delete (*selectedJets)[l];
       delete (*selectedJets_copy)[l];
     }
+      
     selectedLeptons->clear();
     selectedLeptons->shrink_to_fit();
     delete selectedLeptons;
@@ -2336,10 +2314,10 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
       for (int l=0;l<(int)vars.size();++l){
         Hists[i][k][l]  ->Write("",TObject::kOverwrite);
         for (int n=0;n<(int)sys.size();++n){
-	  if (k==0){
+	    if (k==0){//Only write the first set of histograms to save space
             HistsSysUp[i][k][l][n]->Write("",TObject::kOverwrite);
             HistsSysDown[i][k][l][n]->Write("",TObject::kOverwrite);
-	  }
+	     }
         }
       }
     }
@@ -2348,14 +2326,13 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
   for (int i=0;i<(int)channels.size();++i){
     for (int k=0;k<(int)regions.size();++k){
       for (int l=0;l<(int)vars.size();++l){
-        delete Hists[i][k][l];
+          delete Hists[i][k][l];
         for (int n=0;n<(int)sys.size();++n){
-	  delete HistsSysUp[i][k][l][n];
-	  delete HistsSysDown[i][k][l][n];
+	        delete HistsSysUp[i][k][l][n];
+	        delete HistsSysDown[i][k][l][n];
         }
       }
     }
   }
-
   file_out.Close() ;
 }
