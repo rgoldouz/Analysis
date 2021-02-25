@@ -630,7 +630,9 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
 
   if (verbose ){
       cout << "There are  " << nElectron << " Electrons and " << nMuon  << " Muons as well as  " <<  nJet << " Jets "<< endl ;
+      if (nElectron>0){
       cout <<endl<< "Electron loop begins"  << endl;
+      }
   }
 
 // electron
@@ -670,7 +672,7 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
       }
     }
 
-    if (verbose ){
+    if (verbose && nMuon>0){
           cout <<endl<< "Muon loop begins"  << endl;
     }
       
@@ -748,7 +750,7 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     sort(selectedLeptons->begin(), selectedLeptons->end(), ComparePtLep);
       
     if (verbose ){
-          cout <<endl<< "event has X leptons, X = " <<  selectedLeptons->size()  << endl;   
+          cout <<endl<< "event has X leptons passing full leption selection, X = " <<  selectedLeptons->size()  << endl;
     }
      
     // trilepton selection
@@ -856,7 +858,7 @@ void MyAnalysis::Loop(TString fname, TString data, TString dataset ,TString year
     selectedJets_copy = new std::vector<jet_candidate*>();
     bool jetlepfail;
       
-    if (verbose ){
+    if (verbose && nJet>0){
        cout <<endl<< "Jet loop begins"  << endl;
     }
       
